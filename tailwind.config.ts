@@ -9,8 +9,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        sky: {
+          brand: "#0ea5e9",
+          deep: "#075985",
+        },
+        amber: {
+          brand: "#f59e0b",
+          deep: "#d97706",
+        },
+        night: "#0a0f1e",
+        cloud: "#f8fafc",
+        asphalt: "#1e293b",
+      },
+      fontFamily: {
+        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+      },
+      animation: {
+        marquee: "marquee 60s linear infinite",
+      },
+      keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
       },
     },
   },

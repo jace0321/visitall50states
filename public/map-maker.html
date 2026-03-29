@@ -1,0 +1,3808 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Free 50 State Photo Map Maker | Visit All 50 States</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127463;&#127480;</text></svg>">
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Create your own 50 state photo map for free! Upload your travel photos, position them perfectly, and download a beautiful map of your adventures across America.">
+  <meta name="keywords" content="50 state map, travel map, photo map maker, visited states map, USA travel map, state photo map, travel memories, road trip map, vacation map">
+  <meta name="author" content="Visit All 50 States">
+
+  <!-- Open Graph for Facebook/Social Sharing -->
+  <meta property="og:title" content="Free 50 State Photo Map Maker">
+  <meta property="og:description" content="Create a beautiful photo map of your travels across America. Free, easy, and fun!">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://visitall50states.com/map-maker/">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free 50 State Photo Map Maker">
+  <meta name="twitter:description" content="Create a beautiful photo map of your travels across America.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+      --card:#fff;
+      --text:#1e293b;
+      --muted:#64748b;
+      --accent:#0ea5e9;
+      --accent-dark:#0284c7;
+      --success:#10b981;
+      --border:#e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+      --radius:16px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color:var(--text);
+    }
+    .wrap{
+      width:min(99vw, 2400px);
+      max-width:none;
+      margin:0 auto;
+      padding:16px 6px 80px;
+    }
+    header{ text-align:center; margin-bottom:24px; }
+    h1{
+      margin:0 0 8px;
+      font-family: 'Outfit', sans-serif;
+      font-size:2.5rem;
+      font-weight:800;
+      background: linear-gradient(135deg, var(--accent) 0%, #6366f1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+    .sub{ margin:0; color:var(--muted); font-size:1.1rem; font-weight:500; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+      gap:16px;
+      align-items: start;
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding:20px;
+    }
+    @media (max-width: 600px){
+      .card{ padding: 12px; }
+      .mapWrap{ min-height: 420px; border-radius:14px; }
+    }
+
+    /* ===== MAP AREA ===== */
+    .mapWrap{
+      position:relative;
+      width:100%;
+      min-height:clamp(460px, 64vh, 900px);
+      aspect-ratio: 1000 / 589;
+      overflow:hidden;
+      border-radius:18px;
+      border:none;
+      background:#fff;
+      box-shadow: 0 18px 50px rgba(15,23,42,.08);
+    }
+    .mapInner{
+      position:absolute;
+      inset:0;
+      transform-origin: center center;
+      will-change: transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .mapInner.dragging {
+      /* No transition during drag */
+    }
+    .mapInner:not(.dragging) {
+      transition: transform 0.1s ease-out;
+    }
+    .zoom-controls{
+      position:absolute;
+      top:12px;
+      right:12px;
+      z-index:20;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .mapWrap img.bg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      user-select:none;
+      pointer-events:none;
+      z-index:1;
+    }
+
+    /* SVG overlay MUST be on top */
+    .mapWrap svg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:5;
+      pointer-events:auto;
+    }
+    .photo-render-canvas{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:2;
+      pointer-events:none;
+      image-rendering: high-quality;
+      image-rendering: -webkit-optimize-contrast;
+    }
+    .mapWrap svg image {
+      image-rendering: optimizeQuality;
+      image-rendering: -webkit-optimize-contrast;
+    }
+
+    /* ===== SVG interaction (IMPORTANT: DO NOT SET fill HERE) ===== */
+    #usaSvg path,
+    #usaSvg polygon,
+    #usaSvg polyline,
+    #usaSvg rect{
+      stroke: rgba(0,0,0,.55);
+      stroke-width: 1;
+      pointer-events: all;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      /* NO fill here — canvas layer behind SVG renders photos */
+    }
+
+    /* Only show hover on devices with precise pointer (mouse), not touch */
+    @media (hover: hover) and (pointer: fine) {
+      #usaSvg path:hover,
+      #usaSvg polygon:hover,
+      #usaSvg polyline:hover,
+      #usaSvg rect:hover{
+        stroke:#000;
+        stroke-width:2.5;
+        opacity:.92;
+      }
+    }
+
+    /* Selected outline */
+    #usaSvg .selected{
+      stroke:#111 !important;
+      stroke-width:3 !important;
+      filter: drop-shadow(0 3px 10px rgba(0,0,0,.25));
+    }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+    .btn{
+      appearance:none;
+      border:none;
+      background: var(--accent);
+      color:#fff;
+      padding:12px 20px;
+      border-radius:10px;
+      font-weight:600;
+      font-size:14px;
+      cursor:pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(14,165,233,0.3);
+    }
+    .btn:hover{ background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 4px 8px rgba(14,165,233,0.3); }
+    .btn:active{ transform: translateY(0); }
+    .btn.secondary{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .btn.secondary:hover{ background:#f8fafc; }
+    .btn.success{
+      background: var(--success);
+      box-shadow: 0 2px 4px rgba(16,185,129,0.3);
+    }
+    .btn.success:hover{ background: #059669; }
+    .btn.print-btn{
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      box-shadow: 0 2px 4px rgba(139,92,246,0.3);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn.print-btn:hover{
+      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+      transform: translateY(-1px);
+    }
+
+    .section-title{
+      font-size:11px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+      color:var(--accent);
+      margin:20px 0 10px;
+    }
+    .section-title:first-child{ margin-top:0; }
+    .stateLine{ font-weight:700; font-size:1.25rem; margin-bottom:16px; color:var(--text); }
+    .hint{ color:var(--muted); font-size:13px; line-height:1.5; }
+    .tiny{ font-size:12px; color:var(--muted); margin-top:12px; word-break: break-word; }
+
+    input[type="file"]{ display:none; }
+    .fileBtn{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:12px 20px;
+      border-radius:10px;
+      border:2px dashed var(--accent);
+      background:rgba(14,165,233,0.05);
+      color:var(--accent);
+      cursor:pointer;
+      font-weight:600;
+      transition: all 0.2s ease;
+    }
+    .fileBtn:hover{ background:rgba(14,165,233,0.1); border-style:solid; }
+
+    .auto-save-notice{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:12px 16px;
+      background:rgba(16,185,129,0.1);
+      border-radius:10px;
+      color:#059669;
+      font-size:13px;
+      font-weight:500;
+    }
+    .auto-save-notice svg{ flex-shrink:0; }
+
+    /* ===== Edit-on-Map Photo Editor ===== */
+    #editPhoto {
+      position: absolute;
+      left: 0;
+      top: 0;
+      pointer-events: auto;
+      cursor: grab;
+      transform-origin: center center;
+      z-index: 10;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+      will-change: transform;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+    #editPhoto:active { cursor: grabbing; }
+    #editPhoto.hidden { display: none; }
+
+    .edit-controls {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      padding: 16px 20px;
+      background: rgba(15,23,42,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      z-index: 100;
+      align-items: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    .edit-controls.hidden { display: none; }
+    .edit-controls button {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .edit-controls .apply-btn { background: var(--success); color: #fff; }
+    .edit-controls .apply-btn:hover { background: #059669; }
+    .edit-controls .cancel-btn { background: #475569; color: #fff; }
+    .edit-controls .cancel-btn:hover { background: #64748b; }
+    .edit-controls label { color: #fff; font-size: 13px; font-weight: 500; }
+    .edit-controls input[type="range"] { width: 80px; accent-color: var(--accent); }
+    .edit-controls .hint {
+      color: #94a3b8;
+      font-size: 11px;
+      margin-left: 8px;
+    }
+    .edit-btn-group {
+      display: flex;
+      gap: 4px;
+    }
+    .edit-tool-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 8px;
+      background: #475569;
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .edit-tool-btn:hover { background: #64748b; }
+    .edit-tool-btn:active { background: #334155; }
+    .opacity-label { color: #fff; font-size: 13px; font-weight: 500; }
+    .desktop-only { display: inline; }
+    @media (max-width: 600px) {
+      .edit-controls { flex-wrap: wrap; justify-content: center; padding: 14px; gap: 8px; }
+      .edit-controls .hint { width: 100%; text-align: center; margin: 8px 0 0; }
+      .desktop-only { display: none; }
+      .edit-tool-btn { width: 44px; height: 44px; font-size: 22px; }
+      .opacity-label { display: none; }
+    }
+
+    /* ===== Fullscreen Photo Editor Modal ===== */
+    .fs-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      touch-action: none;
+      transform: none !important;
+      zoom: 1 !important;
+    }
+    .fs-modal.hidden { display: none; }
+
+    .fs-modal__header {
+      padding: 16px 20px;
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      font-weight: 600;
+      font-size: 18px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .fs-modal__canvas {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1a1a1a;
+    }
+
+    .fs-photo {
+      position: absolute;
+      transform-origin: center center;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      will-change: transform;
+    }
+
+    .fs-state-shape {
+      position: relative;
+      width: min(94vw, 1200px);
+      height: min(84vh, 820px);
+      pointer-events: none;
+      z-index: 10;
+    }
+    .fs-state-shape path,
+    .fs-state-shape polygon,
+    .fs-state-shape polyline,
+    .fs-state-shape rect {
+      fill: transparent;
+      stroke: #fff;
+      stroke-width: 2px;
+      vector-effect: non-scaling-stroke;
+      filter: drop-shadow(0 0 4px rgba(255,255,255,0.5));
+    }
+
+    .fs-modal__controls {
+      padding: 12px 16px;
+      background: rgba(0,0,0,0.9);
+      flex-shrink: 0;
+    }
+
+    .fs-btn-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .fs-btn-row:last-of-type { margin-bottom: 6px; }
+
+    .fs-tool-btn {
+      width: 48px;
+      height: 48px;
+      border: none;
+      border-radius: 12px;
+      background: #374151;
+      color: #fff;
+      font-size: 26px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fs-tool-btn:hover { background: #4b5563; }
+    .fs-tool-btn:active { background: #1f2937; transform: scale(0.95); }
+
+    .fs-btn {
+      padding: 16px 40px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      min-width: 120px;
+    }
+    .fs-btn--cancel { background: #4b5563; color: #fff; }
+    .fs-btn--cancel:hover { background: #6b7280; }
+    .fs-btn--apply { background: var(--success); color: #fff; }
+    .fs-btn--apply:hover { background: #059669; }
+
+    .fs-hint {
+      margin: 0;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 13px;
+    }
+
+    @media (max-height: 600px) {
+      .fs-modal__header { padding: 10px 16px; font-size: 16px; }
+      .fs-modal__controls { padding: 12px; }
+      .fs-tool-btn { width: 48px; height: 48px; font-size: 22px; }
+      .fs-btn { padding: 12px 30px; font-size: 14px; }
+      .fs-hint { font-size: 11px; }
+    }
+
+    .zoom-controls button{
+      width:36px;
+      height:36px;
+      border:1px solid var(--border);
+      border-radius:8px;
+      background:#fff;
+      font-size:18px;
+      font-weight:600;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: all 0.2s ease;
+      color: var(--text);
+    }
+    .zoom-controls button:hover{ background:var(--accent); color:#fff; border-color:var(--accent); }
+
+    /* ===== MOBILE FULLSCREEN MAP SELECTOR ===== */
+    .mobile-map-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      z-index: 9999;
+      background: #000;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .mobile-map-modal.active {
+      display: flex;
+    }
+    body.modal-open {
+      overflow: hidden !important;
+      position: fixed !important;
+      width: 100% !important;
+      height: 100% !important;
+      top: 0 !important;
+      left: 0 !important;
+      touch-action: none !important;
+    }
+    html.modal-open {
+      overflow: hidden !important;
+      touch-action: none !important;
+    }
+    .mobile-map-modal__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      padding-top: calc(12px + env(safe-area-inset-top));
+      background: rgba(0,0,0,0.95);
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .mobile-map-modal__title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .mobile-map-modal__close {
+      background: #374151;
+      border: none;
+      color: #fff;
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .mobile-map-modal__body {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: #111;
+    }
+    .mobile-map-modal__inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mobile-map-modal__svg-wrap {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      touch-action: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+    .mobile-map-modal__svg-wrap svg {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+      object-fit: contain;
+    }
+    .mobile-map-modal__svg-wrap svg path,
+    .mobile-map-modal__svg-wrap svg polygon,
+    .mobile-map-modal__svg-wrap svg polyline {
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+    }
+    .mobile-map-modal * {
+      touch-action: pan-x pan-y;
+    }
+    .mobile-map-modal__svg-wrap {
+      touch-action: none;
+    }
+    /* Landscape adjustments - maximize map space */
+    @media (orientation: landscape) {
+      .mobile-map-modal__header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 4px 12px;
+        padding-top: calc(4px + env(safe-area-inset-top));
+        padding-left: calc(12px + env(safe-area-inset-left));
+        background: rgba(0,0,0,0.7);
+        z-index: 20;
+      }
+      .mobile-map-modal__title {
+        font-size: 13px;
+      }
+      .mobile-map-modal__close {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+      }
+      .mobile-map-modal__body {
+        position: absolute;
+        inset: 0;
+      }
+      .mobile-map-modal__controls {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 8px 12px;
+        padding-bottom: calc(8px + env(safe-area-inset-bottom));
+        background: transparent !important;
+        z-index: 20;
+      }
+      .mobile-map-modal__btn {
+        padding: 10px 20px;
+        font-size: 14px;
+        min-width: auto;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      }
+      .mobile-map-modal__zoom {
+        bottom: 40px;
+        right: calc(10px + env(safe-area-inset-right));
+      }
+      .mobile-map-modal__zoom button {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+      }
+    }
+    .mobile-map-modal__controls {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+      background: rgba(0,0,0,0.95);
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .mobile-map-modal__btn {
+      padding: 14px 28px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      min-width: 140px;
+    }
+    .mobile-map-modal__btn--photo {
+      background: var(--accent);
+      color: #fff;
+    }
+    .mobile-map-modal__btn--photo:disabled {
+      background: #374151;
+      color: #6b7280;
+    }
+    .mobile-map-modal__zoom {
+      position: absolute;
+      bottom: 100px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
+    .mobile-map-modal__zoom button {
+      width: 52px;
+      height: 52px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(55,65,81,0.9);
+      color: #fff;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #openMobileMap { display: none; }
+    @media (min-width: 769px) {
+      .mobile-map-modal:not(.active) { display: none !important; }
+      .mobile-only { display: none !important; }
+      #openMobileMap { display: none !important; }
+    }
+    /* Keep modal visible when active, even in landscape */
+    .mobile-map-modal.active { display: flex !important; }
+    @media (max-width: 768px) {
+      #openMobileMap { display: block !important; }
+      .desktop-map-card { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+<!-- Site header -->
+<div style="background:rgba(15,23,42,0.95);padding:10px 20px;text-align:center;font-family:'Inter',system-ui,sans-serif;font-size:13px;border-bottom:1px solid rgba(245,158,11,0.15);">
+  <a href="/" style="color:#94a3b8;text-decoration:none;font-weight:500;letter-spacing:0.02em;">&#8592; Back to <span style="color:#f59e0b;">visitall50states.com</span></a>
+</div>
+<!-- Mobile Fullscreen Map Selector - MUST be outside .wrap for true fullscreen -->
+<div id="mobileMapModal" class="mobile-map-modal">
+  <div class="mobile-map-modal__header">
+    <span class="mobile-map-modal__title">Select a State</span>
+    <button id="mobileMapClose" class="mobile-map-modal__close" type="button">✕</button>
+  </div>
+  <div class="mobile-map-modal__body">
+    <div class="mobile-map-modal__inner">
+      <div class="mobile-map-modal__svg-wrap" id="mobileSvgWrap">
+        <!-- SVG will be cloned here -->
+      </div>
+    </div>
+    <div class="mobile-map-modal__zoom">
+      <button id="mobileZoomIn" type="button">+</button>
+      <button id="mobileZoomOut" type="button">−</button>
+    </div>
+  </div>
+  <div class="mobile-map-modal__controls">
+    <button id="mobileAddPhoto" class="mobile-map-modal__btn mobile-map-modal__btn--photo" type="button" disabled>
+      Select a state first
+    </button>
+  </div>
+</div>
+
+  <div class="wrap">
+    <header>
+      <h1>Make Your Own 50-State Photo Map</h1>
+      <p class="sub">Tap a state, choose a photo, and fill it in. Track your journey across all 50.</p>
+      <!-- Mode tabs -->
+      <div id="modeTabs" style="display:flex;gap:8px;justify-content:center;margin-top:16px;">
+        <button class="btn" id="tabPhotoMap" onclick="switchMode('photo')" style="background:var(--accent);color:#fff;">Photo Map</button>
+        <button class="btn secondary" id="tabFlagMap" onclick="switchMode('flag')">Flag Map</button>
+      </div>
+      <!-- Mobile: Big button to open fullscreen map -->
+      <button id="openMobileMap" type="button" style="
+        margin: 16px auto;
+        padding: 18px 32px;
+        font-size: 18px;
+        font-weight: 600;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        width: 100%;
+        max-width: 320px;
+      ">📍 Open Fullscreen Map</button>
+    </header>
+
+<!-- Hidden canvas for editing -->
+<canvas id="imageCanvas" style="display:none"></canvas>
+
+<!-- Fullscreen Photo Editor Modal -->
+<div id="photoEditorModal" class="fs-modal hidden">
+  <div class="fs-modal__header">
+    <span id="fsStateName">Position Your Photo</span>
+  </div>
+
+  <div class="fs-modal__canvas" id="fsCanvas">
+    <img id="fsPhoto" class="fs-photo" src="" alt="Your photo">
+    <svg id="fsStateShape" class="fs-state-shape" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+
+  <div class="fs-modal__controls">
+    <div class="fs-btn-row">
+      <button id="fsZoomOut" class="fs-tool-btn">-</button>
+      <button id="fsZoomIn" class="fs-tool-btn">+</button>
+      <button id="fsRotateL" class="fs-tool-btn">&#8634;</button>
+      <button id="fsRotateR" class="fs-tool-btn">&#8635;</button>
+      <button id="fsFlipH" class="fs-tool-btn" title="Flip horizontally">⇋</button>
+    </div>
+    <div class="fs-btn-row" style="flex-wrap:wrap;gap:6px 16px;">
+      <label style="color:#fff;font-size:12px;display:flex;align-items:center;gap:6px;">
+        Opacity: <span id="fsOpacityVal">100</span>%
+        <input type="range" id="fsOpacity" min="10" max="100" value="100" style="width:80px;cursor:pointer;">
+      </label>
+      <label style="color:#fff;font-size:12px;display:flex;align-items:center;gap:6px;">
+        Edges: <span id="fsFeatherVal">0</span>%
+        <input type="range" id="fsFeather" min="0" max="50" value="0" style="width:80px;cursor:pointer;">
+      </label>
+      <label style="color:#fff;font-size:12px;display:flex;align-items:center;gap:6px;">
+        Fill:
+        <input type="color" id="fsBgColor" value="#ffffff" style="width:28px;height:24px;border:none;border-radius:3px;cursor:pointer;">
+        <button id="fsBgTransparent" style="padding:4px 8px;font-size:11px;background:#475569;color:#fff;border:none;border-radius:3px;cursor:pointer;">None</button>
+      </label>
+    </div>
+    <div class="fs-btn-row">
+      <button id="fsCancel" class="fs-btn fs-btn--cancel">Cancel</button>
+      <button id="fsApply" class="fs-btn fs-btn--apply">Apply</button>
+    </div>
+    <p class="fs-hint">Drag to move &bull; Pinch to zoom &bull; Two fingers to rotate</p>
+  </div>
+</div>
+
+    <!-- ===== PHOTO MAP MODE ===== -->
+    <div id="photoMapMode">
+    <div class="grid">
+      <div class="card">
+        <div class="section-title">Selected State</div>
+        <div class="stateLine" id="selectedState">Tap a state to begin</div>
+
+        <div class="row">
+          <label class="fileBtn" for="fileInput">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Choose Photo
+          </label>
+          <button class="btn secondary" id="editBtn" type="button" style="display:none;">Edit</button>
+          <button class="btn secondary" id="clearBtn" type="button">Clear</button>
+        </div>
+
+        <input id="fileInput" type="file" accept="image/*" />
+
+        <div class="section-title">How It Works</div>
+        <div class="hint">
+          <strong>1.</strong> Tap any state on the map<br/>
+          <strong>2.</strong> Choose a photo from your device<br/>
+          <strong>3.</strong> Drag to position, scroll to zoom, shift+drag to rotate<br/>
+          <strong>4.</strong> Click <strong>Apply</strong> when it looks perfect!
+        </div>
+
+        <div class="section-title">Your Map</div>
+        <div class="row">
+          <button class="btn success" id="downloadBtn" type="button">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="vertical-align:middle;margin-right:4px;"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            Download Map
+          </button>
+          <button class="btn secondary" id="clearAllBtn" type="button">Start Over</button>
+        </div>
+
+        <div class="row" style="margin-top:8px;">
+          <a href="https://www.canvaspop.com/upload" target="_blank" rel="noopener" class="btn print-btn" id="orderPrintBtn">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align:middle;margin-right:4px;"><rect x="6" y="6" width="12" height="12" rx="1"/><path d="M6 9h12M9 6v3"/></svg>
+            Order as Canvas Print
+          </a>
+        </div>
+        <div class="hint" style="margin-top:6px;">Download your map first, then upload it to order a beautiful canvas print!</div>
+        <div class="tiny" style="margin-top:8px;color:#0f766e;background:#ecfeff;border:1px solid #a5f3fc;border-radius:10px;padding:8px 10px;">Preview on the map may look a little softer while editing. Your downloaded map exports at full quality.</div>
+
+        <div class="auto-save-notice" style="margin-top:16px;">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+          Your progress is automatically saved
+        </div>
+
+        <div class="tiny">Tip: On iPhone, tap "Browse" to pick from Photos or Files.</div>
+      </div>
+
+      <div>
+        <div class="mapWrap" id="mapWrap">
+          <!-- Zoom controls -->
+          <div class="zoom-controls">
+            <button id="zoomIn" title="Zoom in">+</button>
+            <button id="zoomOut" title="Zoom out">−</button>
+            <button id="zoomReset" title="Reset zoom">⟲</button>
+          </div>
+
+          <!-- Inner container for zoom/pan -->
+          <div class="mapInner" id="mapInner">
+          <!-- Optional background -->
+
+          <!-- Live photo render surface (under SVG interaction layer) -->
+          <canvas id="photoRenderCanvas" class="photo-render-canvas" aria-hidden="true"></canvas>
+
+          <!-- ===================================================== -->
+          <!-- PASTE YOUR FULL SVG RIGHT HERE                         -->
+          <!-- IMPORTANT: svg tag must be id="usaSvg"                 -->
+          <!-- ===================================================== -->
+
+          <!-- PASTE SVG BELOW THIS LINE -->
+
+
+<svg id="usaSvg"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 1000 589"
+     onclick="if(typeof handleSvgClick==='function')handleSvgClick(event)">
+<defs id="defs4">
+  <style id="style6" type="text/css">
+    path { fill-rule:evenodd }
+  </style>
+
+  <!-- image patterns get injected here -->
+  <g id="imgDefs"></g>
+</defs>
+<path id="MA" d="m956.312 153.05-.291-.193v.29zm-2.912-2.62.68-.291v-.388zm12.036-7.57-.097-1.36-.194-.776zm-42.417-9.998-.68.29-5.532 1.651-1.941.68-2.233.679-.776.291v.291l.291 5.048.291 4.659.291 4.27.486.292 1.747-.486 7.862-2.33.194.486 13.977-5.338.097.194 1.262-.486 4.465-1.747 4.27 5.145.583-.486.291-1.456-.097 2.33h.97l.292 1.165.874 1.65 4.562-5.533 3.785 1.262.874-1.941 6.212-3.3-2.621-5.145.68 3.3-3.204 2.427-3.591.291-7.183-7.668-3.203-4.853 3.203-3.397-3.3-.194-1.359-3.204-.097-.194-5.532 6.018-12.23 4.077z" data-id="MA" data-name="Massachusetts" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="MN" d="m558.547 73.847 1.941 6.892 4.077 24.848 1.941 9.9.583 8.736 2.232 5.242.485 4.464.389 1.456-.097.292-3.883 6.406 2.524 4.27 4.853 34.167.194 4.465 4.853-.292 19.122-1.067 47.755-3.98 4.756-.485v-.485l-1.36-7.474-5.92-3.01-4.659-4.852-7.377-4.465-2.33-.194-3.59-2.718.97-13.395-3.397-3.106 1.164-5.436 6.213-5.63-1.068-11.647 2.232-2.523 7.571-7.96 8.639-11.065 3.3-2.33 5.824-2.814 6.115-4.562-4.077.776-2.426-1.844-9.319 1.262-1.455-1.747-8.348 3.397-6.697-2.815-1.844-2.232-5.339.388-3.591-1.844 1.164-1.359-4.561-1.456h-4.077l-6.503 2.815-1.262-1.941-10.289-1.456-3.494-8.736-.388-2.62-4.465-1.263.388 7.474-11.842.874-14.656.582z" data-id="MN" data-name="Minnesota" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="MT" d="m465.658 72.974-32.128-2.136-23.392-2.232-23.296-2.718-14.462-1.941-23.101-3.591-11.55-1.942-25.82-4.95-2.717-.582-4.174 19.8 1.844 3.592 1.456 5.533-.873.776 1.844 5.047 2.524 2.136 7.182 12.036.68 2.038 2.912-.194-3.398 15.918-1.358.388-1.845 5.339 9.61.68.776 4.464 5.436 13.298.97.776 3.786 7.765.97-.776 8.057-.097 10.191 1.067 2.524-3.3 3.009 5.436.582.291.097-.582 1.36-9.513 33.195 4.077 26.498 2.524 13.977 1.165 24.945 1.455 1.262.098h.291l.097-1.36.292-6.697.388-8.832.097-2.233.194-3.882 1.553-30.478 1.262-23.684.097-3.882z" data-id="MT" data-name="Montana" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="ND" d="m556.509 73.847-29.313.583-20.48-.097-17.569-.389-20.577-.776-1.068-.097-.097 3.882-1.262 23.684-1.553 30.478-.194 3.882 3.785.194 42.805 1.165 39.505-.291 16.404-.486 3.3-.194-.389-1.456-.485-4.464-2.232-5.242-.583-8.736-1.941-9.9-4.077-24.848-1.94-6.892z" data-id="ND" data-name="North Dakota" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="HI" d="m416.35 515-3.01-2.233-2.62.68.582 5.435-3.591 4.465 3.106 7.085.874 7.28 3.59 2.33 2.233-3.592 3.98-2.912 4.853-1.262 5.339-4.561-5.242-4.465-.097-2.718zm-17.666-7.863-1.456-1.262-1.359 1.845zm-7.28-4.174.389-3.59-1.845-.292zm6.115-5.92-1.65.776 1.165 3.688 2.524.195.776 3.203 2.718 1.164 6.018-2.814-5.63-4.66zm-12.424-3.98-.873 2.62 4.173-.096 3.883.97-2.038-3.203zm-12.23-7.668-2.232-2.135-4.27 3.3 2.717 5.047 1.941-2.038 5.533 1.164-.486-2.33zm-43.484-4.27.582-1.36 1.65-.873zm15.433-8.834-6.794 2.524-.68 1.844 2.718 1.942 3.786.97 2.717-5.338zm-47.075-17.86v-.096h-.195zm-51.444-12.714v.194h.097zm-26.983-4.465.097.097zm-1.068-1.942zm-.874-.97h-.194v.097zm.68 0h-.097zm-.097-.097v.097zM187.475 409.2l-.097-.29v.096zm-66.488-21.256-.292.29.194.098zm-70.371-49.017zm2.426.097h-.097zm-.485-.097zm-41.446-18.151.291-.097v-.194z" data-id="HI" data-name="Hawaii" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="ID" d="m309.095 52.882-8.639-1.747-2.815-.68-1.261-.291-11.26 50.667.486 4.174-.389 4.367.195.971v.097l.097 1.844 3.3 3.592-4.756 11.938-10.095 13.201-.291 2.427 2.62 6.212-9.22 38.243-.389 2.038 2.718.582 27.469 5.436 10.968 2.038 2.815.485 2.718.486 13.977 2.232 25.042 3.786 2.815.388.388-3.203.874-6.31 3.3-25.236 1.747-12.52.388-3.204-.582-.291-3.01-5.436-2.523 3.3-10.191-1.067-8.057.097-.97.776-3.786-7.765-.97-.776-5.436-13.298-.776-4.465-9.61-.68 1.845-5.338 1.358-.388 3.398-15.918-2.912.194-.68-2.038-7.182-12.036-2.524-2.136-1.844-5.047.873-.776-1.456-5.533-1.844-3.591 4.174-19.801z" data-id="ID" data-name="Idaho" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="WA" d="m192.134 77.05.097-1.65-.194.097zm20.674-8.832.583-.97-.68-.098zm-1.844-1.747.582-1.942-.582-.194zm7.086-2.815-.097-1.942-1.65 2.524zm.194-4.077.291-1.941-.194-.486zm.291-9.512-.097-1.068-.388-.097zm3.106-6.406-.874-.097-1.747 2.717zm-2.427-2.621.486-.388.097-.291zm-.485.291-.291-1.941-.874 1.65zm-.485-2.718-.874-.388.68.97zm2.912 1.65v-1.261l-.291.485zm.873-1.261-.388-.292h-.097zm-5.532-2.136-.486-.388-.194-.097zm3.591-.388-2.62.68.679.194zm-2.135-.194-.486-.582-.097.097zm2.038-1.165h-.388l.485.194zm-19.024 49.794 3.494 3.785-.583 7.28.68 1.844 5.241 2.815 14.754 1.359.582 1.747 6.989.097 6.6.873 10.774-1.164 5.339.873 1.456-.68 27.274 6.213 1.845.388-.195-.97.389-4.368-.486-4.174 11.26-50.667-1.553-.291-22.713-5.339-19.801-5.047-22.422-6.212-6.697-1.65 1.553 8.444-1.456 2.718-2.62-1.359 2.523 11.745-2.718 3.882-1.262 3.592v3.688l-5.726 3.98-2.427-1.553-2.33 1.165 4.271-5.533-1.067 3.785 2.426-2.62 1.942.388-.583-4.853 1.262.194 2.62-5.824-.873-.873-3.397 4.367-2.233.097 2.427-2.717 2.718-.68-.97-4.95-2.719-.68-1.358-2.329-1.65.874-8.93-3.883-7.862-6.115-2.136 5.921-.194 2.524 1.65 4.465-1.068 14.462-.776 2.232 4.368.389-4.368 3.106 2.33 1.164-1.845 6.212-.873-4.853-1.65 5.63 2.232 2.718 2.427-.194 2.912 1.747 1.455 2.815z" data-id="WA" data-name="Washington" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="AZ" d="m372.186 309.905-32.71-4.077-17.569-2.523-25.042-3.98-2.524-.388v.194l-4.27 18.83-2.233-.097-3.397-3.009-4.27 3.591-.098 15.433-1.553 3.3v.389l-.194 2.426 3.397 9.124 3.009 4.077-5.436 3.203-2.135 3.98-3.494 8.541-1.747.388-.097 7.086 3.009 2.233-1.553 4.27-3.495.194-2.038 3.786 6.988 4.368 13.201 7.377 40.767 21.645 34.554 4.27h.388l2.718-28.633.68-7.086 7.28-75.127.387-3.494z" data-id="AZ" data-name="Arizona" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="CA" d="m206.014 363.775.388 2.135v.389zm-14.268-8.348.679 1.456.388-.097zm16.986-.29.29 2.523 1.748 1.262zm-11.745-13.784-1.068-.29.874.387zm-10.774-2.912-2.62 1.553.679.68zm-5.047-1.844-.194.777.873.194zm8.541 1.941 4.271 2.427.777-.68zm-33.098-85.512-.097.097zm10.385.485-.097-.291v.388zM223 179.841l-3.786-.971-41.543-11.454-15.433-4.659v.388l-.873 9.61-4.077 11.356-6.794 8.445-.194 4.27 3.3 5.921 1.65 7.765-2.33 6.31.389 6.308-1.165 2.621 3.98 8.639 2.523 3.3-.194 9.415 6.018 5.727 3.494-5.824 3.786 3.009 1.456-1.359-5.242.97-.097 4.95 1.068 6.213-2.912-2.815-1.65-3.785-.486 5.241 1.36 10.386 5.435 6.697-3.591 4.66.582 5.92 3.882 6.018 6.795 18.636 2.135 1.165-.68 12.91 1.068 1.552 14.56 5.242 4.465 4.756 1.553 3.106 4.27 2.426 4.66.874 1.94 5.338 3.883 1.845 5.824 6.891 5.436 9.027-.388 8.347 3.008 3.98 39.7 3.882 3.494-.194 1.553-4.27-3.01-2.233.098-7.086 1.747-.388 3.494-8.541 2.136-3.98 5.435-3.203-3.009-4.077-3.397-9.124.194-2.426v-.097l-2.524-3.397-7.765-10.386-15.044-21.16-20.966-30.09-11.842-16.403-11.453-16.5 13.2-56.006z" data-id="CA" data-name="California" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="CO" d="m489.632 255.55.389-19.025-4.66-.194-23.683-.874-2.33-.097-1.94-.097-28.828-1.844-19.219-1.553-23.974-2.33-2.33-.29-.291 2.523-5.242 50.57-1.844 17.665-.776 7.668-.194 2.524 3.009.291 48.92 4.27 21.547 1.36 21.451.97 3.106.098 1.942.097 4.076.097 1.941.097 6.115.194h1.553v-1.941l1.068-51.347.097-5.726v-1.845z" data-id="CO" data-name="Colorado" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="NV" d="m294.827 295.83 10.094-62.8 5.145-31.448.582-3.106-2.815-.485-10.968-2.038-27.469-5.436-2.718-.582-2.717-.583-13.686-3.008-24.557-5.824-2.718-.68-.874 3.689-13.2 56.005 11.453 16.5 11.842 16.404 20.966 30.09 15.044 21.16 7.765 10.386 2.524 3.397v-.291l1.553-3.3.097-15.434 4.27-3.59 3.398 3.008 2.233.097 4.27-18.83v-.194z" data-id="NV" data-name="Nevada" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="NM" d="m472.452 324.756.097-2.524.097-2.524.097-2.523-3.106-.098-21.45-.97-21.549-1.359-48.92-4.27-3.008-.292-.389 3.494-7.28 75.127-.679 7.086-2.718 28.633.389.097 13.394 1.262 1.262-6.794 2.427-1.941 27.178 2.426h.194l-2.427-4.756 12.327.874 30.77 1.747 19.218.873 3.3-91.045.68.097z" data-id="NM" data-name="New Mexico" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="OR" d="m162.238 162.757 15.433 4.66 41.543 11.453 3.786.97 2.718.68 24.557 5.824 13.686 3.008 2.717.583.389-2.038 9.22-38.243-2.62-6.212.291-2.427 10.095-13.2 4.756-11.94-3.3-3.59-.098-1.845v-.097l-1.844-.388-27.274-6.212-1.456.68-5.339-.874-10.774 1.164-6.6-.873-6.989-.097-.582-1.747-14.754-1.36-5.241-2.814-.68-1.844.583-7.28-3.494-3.786-.292.098-.68.485-4.852-2.524-2.912.874-1.941-.97-2.039 8.347-1.359 2.33-6.018 14.656-1.747 8.056-1.067.097-5.63 13.395-3.785 5.726-1.36.971-3.494 6.794-.68 7.183-2.134 6.406 1.261 5.824zm35.526-79.689-.292-.873-.097.68z" data-id="OR" data-name="Oregon" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="UT" d="m352.385 204.98-25.042-3.786-13.977-2.232-2.718-.486-.582 3.106-5.145 31.449-10.094 62.8-.486 3.106 2.524.388 25.042 3.98 17.569 2.523 32.71 4.077 2.524.291.194-2.524.776-7.668 1.844-17.665 5.242-50.57.291-2.524-1.941-.194-24.751-3.009-3.786-.485 2.427-18.927.194-1.262z" data-id="UT" data-name="Utah" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="WY" d="m461.387 192.167.776-15.142.971-20.383.097-2.523-1.262-.098-24.945-1.455-13.977-1.165-26.498-2.524-33.196-4.077-1.359 9.513-.097.582-.388 3.203-1.747 12.521-3.3 25.237-.874 6.309-.388 3.203-.194 1.262-2.427 18.927 3.786.485 24.75 3.01 1.942.193 2.33.292 23.974 2.33 19.219 1.552 28.827 1.844 1.942.097.097-2.523.485-10.192.874-17.762.388-7.571.097-2.524z" data-id="WY" data-name="Wyoming" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="AR" d="m690.456 328.056-10.483 1.553 4.27-6.795-1.843-3.785-36.981 3.591-31.255 2.524-4.562.291.583 2.718 3.785 19.606.097 4.368 1.068 26.401.097 4.368.291.097 1.456 1.553 5.824-.194.582 8.542.194 2.426 3.01-.29 9.22-.68 36.593-3.397h.194l-.097-2.136.97-.68-1.746-3.3 3.688-15.53-1.456-1.747 5.533-6.115-.388-5.241 4.076-6.794v-.098l-.194-.194 3.494-3.203-.97-3.882 2.717-4.271-.582-3.98 2.912-5.63v-.096z" data-id="AR" data-name="Arkansas" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="IA" d="m661.531 197.7-5.338-2.815-2.912-3.98-.97-5.726.776-2.621-2.815-3.397-4.756.485-47.755 3.98-19.122 1.067-4.853.292-2.038.097 1.65 10.774-1.36 5.144 2.136 3.203v.68l.68.097 3.106 9.124 3.009 4.756.194 5.435 3.3 4.562-.582 1.941 3.009 12.23v.292l19.897-.583 21.257-1.844 20.869-2.62 4.756 4.173.194.194.874-.388-.68-3.786 3.592-2.232 1.456-9.9-1.456-.68.873-5.047 4.368-.874 4.853-3.494 2.136-6.115.097-3.106-3.883-3.688-1.165-2.33-3.688-2.33.194-.485z" data-id="IA" data-name="Iowa" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="KS" d="m608.923 312.72-2.427-41.058-4.368-2.524-.388-1.94-3.494-3.107 3.397-4.174-1.359-2.426-2.523.097-2.33-1.65-.97-.777-3.3.194-35.817 1.36-16.404.388h-32.613l-13.103-.195-3.689-.097v1.845l-.097 5.726-1.068 51.347v1.94l4.174.098 22.519.291 52.705-.776 37.563-1.747 3.689-.292z" data-id="KS" data-name="Kansas" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="MO" d="m653.669 242.446-4.756-4.174-20.869 2.621-21.257 1.844-19.897.583-.098.582 2.427 4.659 2.232 1.553 2.621 4.659.388.388.971.777 2.33 1.65 2.523-.097 1.36 2.426-3.398 4.174 3.494 3.106.388 1.941 4.368 2.524 2.427 41.058.097 2.523.194 2.524.097 2.524.194 2.62.097 2.524 4.562-.291 31.255-2.524 36.98-3.591 1.845 3.785-4.27 6.795 10.482-1.553h.097v-.777l.194-4.465 1.941-2.426-.582-2.718-.097-.097-.097-.097.388-1.262.583.194.29.776-.096.292v.873l.388.097.776-.97v-.097l.097-.292 2.524-1.553.388-.194.874-7.959-.194-.388-.291-.097-6.892-5.63 1.068-2.038-1.941-5.533-3.495-2.718-6.6-2.911-4.174-3.398.486-6.988 1.261-6.503-6.988.388-2.136-2.233-.97-4.465-11.065-9.318-3.106-8.638.776-4.271z" data-id="MO" data-name="Missouri" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="NE" d="m572.33 204.688-3.009-3.009-10.58-3.106-3.397-.097-5.144 1.456-6.115-3.882-19.122.194-27.857-.291-32.904-1.068-2.912-.097-.097 2.524-.388 7.57-.874 17.763-.485 10.192-.097 2.523 2.329.097 23.683.874 4.66.194-.389 19.024-.097 1.262 3.689.097 13.103.195h32.613l16.404-.389 35.816-1.359 3.3-.194-.388-.388-2.62-4.659-2.233-1.553-2.427-4.66.097-.581v-.292l-3.008-12.23.582-1.94-3.3-4.563-.194-5.435-3.01-4.756-3.105-9.124-.68-.097z" data-id="NE" data-name="Nebraska" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="OK" d="m609.505 322.911-.194-2.62-.097-2.524-.194-2.524-3.688.292-37.564 1.747-52.705.776-22.519-.291-4.174-.097h-1.553l-6.115-.194-1.94-.097-4.077-.097-1.942-.098-.097 2.524-.097 2.524-.097 2.523-.097 2.621h.582l23.49.582 24.848.292.29 33.195 1.748 5.824 3.883 3.688 4.173.195.874-1.748 5.727 5.242 7.473.776 1.36 1.553 2.717-1.262 6.794 3.204v1.844l2.524-.097 2.62-2.233 4.854 3.106 4.562 1.65 3.106-4.27 9.9 4.659 3.689-3.01 3.009-1.164 2.426.582 9.124-2.62 4.853 2.038 4.368 2.815 3.786.68h.097l-.097-4.369-1.068-26.4-.097-4.369-3.786-19.606-.582-2.718z" data-id="OK" data-name="Oklahoma" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="SD" d="m566.895 135.58-16.404.485-39.505.291-42.805-1.165-3.785-.194-.097 2.233-.388 8.832-.292 6.698-.097 1.359h-.29l-.098 2.523-.97 20.383-.777 15.142-.097 2.621 2.912.097 32.904 1.068 27.857.291 19.122-.194 6.115 3.882 5.144-1.456 3.397.098 10.58 3.106 3.009 3.009 1.844.194v-.68L572.04 201l1.359-5.144-1.65-10.774 2.038-.097-.194-4.465-4.853-34.166-2.524-4.271 3.882-6.406.098-.292z" data-id="SD" data-name="South Dakota" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="LA" d="m689 469.283-1.262.29-.582.583zm4.077 0-.68-.292-.194.292zm2.33-.777h-.68l-.389.485zm-1.166-.68-.194-.29-.097.29zm7.765-5.144-.29.194h.485zm13.59-5.727.582-.776-.68.874zm1.94-2.523-.194.097v.097zm-49.89 8.541 1.456-1.844-3.98-1.067-1.747 1.455zm40.281-8.444-.388-.388-.097.194zm1.068-1.747-.97-.291.29.97zm7.96-1.65v-.291zm1.94-1.262-.097-.097.097.194zm-.776-.194-.194-.097-.097.29zm-6.795-.291.874-.292v-.29zm.486-.486.485-.485-.097-.097zm-3.397-3.591-.195.194h.098zm-35.817-54.355h-.194l-36.593 3.397-9.22.68-3.01.29.098 2.33 1.94 18.733 3.204 4.465.097 2.62 3.106 5.436 2.524 7.96-.874 4.464-.68 11.066-1.455 3.59h.194l.291 2.524-1.65 2.33 12.036-1.359 9.415 2.62 6.697.874 3.397-2.426-1.844-2.427 6.212-1.941-.194 2.135 3.203-.776 2.62 4.077 2.233-.777 5.824 3.98-3.591 1.261 8.25 2.427h3.106l1.844-2.232 3.98-2.136 2.815 4.077 1.941-3.689-.582-5.823 5.241 2.038.583 1.747 6.212.777 3.106 2.523-.389 2.039 4.368-4.077-1.65-2.135-7.28-1.845-2.717-1.553-.098-2.912 3.01.389 2.329-4.756-3.009-4.174-1.65 3.98-3.786-.68 2.621-4.27-1.747-.486-4.27 3.009-6.116.388-1.747-1.359 2.815-4.95 3.3-.097 5.63 1.844 4.076.388-2.232-2.814-4.27-8.348 1.164-4.659-33.487 3.688 1.262-1.261-1.359-3.495 2.038-3.009 1.165-7.57 7.377-12.619-3.591-4.368.194-3.203-2.233-5.241z" data-id="LA" data-name="Louisiana" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="TX" d="m573.98 536.935-4.659-17.568v3.3zm-1.068-30.866-3.3 6.212-.388 2.039zm2.621-4.562 3.106-4.076-2.232 1.359zm10.968-9.9-7.28 3.785 2.039-.388zm.97-1.359 2.04-1.65-.777.194zM472.356 327.376l-.68-.097-3.3 91.045-19.218-.873-30.769-1.747-12.327-.874 2.427 4.756.097.097 10.482 10.483 6.018 7.086 7.96 5.92 5.63 10.29 2.135 10.773 4.562 3.01 3.59 3.979 5.145 1.844 7.474 4.756 3.397 1.262 4.66-4.66 1.455-4.95 2.427-4.755 7.57-3.01 2.913 1.457 8.444.679 7.668 4.756 5.242.97-1.456 2.718 3.009 1.942 2.814 3.397.583 3.591 1.844 2.427 4.27 10.289 4.272 3.59 3.3 5.436 4.173 4.271 1.845.583 1.553 11.065 4.562 2.523.194 3.495 1.164-.292 7.96 9.707 3.98.873 5.047 3.01h7.765l5.63 3.105 6.697-1.456-3.01-2.814-2.717-8.154-1.068-7.085-1.553-2.33.68-4.756-2.039-.194-2.718-4.465 3.107 3.3 3.59-1.262 1.942-5.144-3.882-5.241 5.823.679 2.718-4.174-.388-1.456 2.426-3.203-.582 2.815 2.718-2.135-1.068-3.786 3.494 1.844 4.465-2.523-4.368-4.562 2.718 1.068 5.048.29 6.6-1.455 7.377-4.95 4.465-3.689.679-2.718 2.718-2.814-1.456-4.66.291-2.911 4.853-2.136-.388 5.145h2.912l-3.203 2.717 12.91-6.794 2.134-.097 1.36-6.212h.388l1.456-3.592.679-11.065.874-4.465-2.524-7.959-3.106-5.435-.097-2.621-3.203-4.465-1.942-18.733-.097-2.33-.194-2.426-.582-8.542-5.824.194-1.456-1.553-.291-.097h-.097l-3.786-.68-4.367-2.814-4.854-2.038-9.124 2.62-2.426-.582-3.01 1.165-3.687 3.009-9.9-4.66-3.107 4.271-4.562-1.65-4.853-3.106-2.62 2.233-2.524.097v-1.844l-6.795-3.203-2.718 1.261-1.358-1.553-7.474-.776-5.727-5.241-.874 1.747-4.173-.194-3.883-3.689-1.747-5.824-.291-33.195-24.848-.291-23.49-.583z" data-id="TX" data-name="Texas" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="CT" d="m936.996 143.345-13.977 5.338-.194-.485-7.862 2.33-1.747.485.194.97 3.688 14.268 1.165 1.456-2.524 3.106 1.748 1.65 5.63-5.435 3.008-4.174.583 1.165 14.17-6.31.292-.29-.097-2.33-.583-2.038-3.008-8.445-.389-1.067z" data-id="CT" data-name="Connecticut" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="NH" d="m923.893 75.983-1.262 1.553-1.456-.291-.777 6.406v.097l2.33 8.735-.194 1.748-4.174 5.532 1.068 5.047v6.31l-.777 5.823 4.368 15.919L927 131.6l12.23-4.077 5.532-6.018v-1.553l.291-2.523-.679.29-.097-.582-6.115-7.473-.194-.68-14.074-33.001z" data-id="NH" data-name="New Hampshire" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="RI" d="m946.508 152.08-.097-2.038-.29.776zm1.942-1.553-1.262-2.426-.097 2.523zm-.583-3.009.68 1.747.873 1.553.583-1.164-.874-1.65-.291-1.165h-.97zm-10.774-3.98.389 1.068 3.009 8.445.582 2.038.097 2.33.194-.291 4.66-3.689-.874-6.6 1.94-.388-4.27-5.145-4.465 1.747z" data-id="RI" data-name="Rhode Island" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="VT" d="m923.02 132.862-4.369-15.919.777-5.823v-6.31l-1.068-5.047 4.174-5.532.194-1.748-2.33-8.735-1.261.485-5.339 1.941-5.241 2.039-12.036 4.368-.68.194 4.368 10.191 1.456 9.61 5.145 8.056 4.853 15.918.194-.097.776-.291 2.233-.68 1.941-.68 5.533-1.65z" data-id="VT" data-name="Vermont" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="AL" d="m718.313 344.848.388.776 1.36.874.582 39.796.194 21.839 4.95 29.895.388-.097 4.368.874 1.165-8.639 1.941 4.853 3.3 3.01 6.31-3.69-.68-.582.194.097-4.368-9.997 41.931-6.794 2.815-.486v-.097l-2.62-4.95-.195-7.086-2.135-3.882 1.068-7.571 1.747-1.941-7.183-12.813-13.006-39.601-.097-.195-2.912.486-15.53 2.523-7.765.971-16.307 2.232z" data-id="AL" data-name="Alabama" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="FL" d="M854.687 535.285h-.194l.097.098zm-.874-.097v.097h.097zm.194-.097v-.097zm-13.2 1.456v.097zm-.194.097v-.097zm.097-.097zm-.971.097h-.097v.097zm27.566-6.115h-.097l.097.194zm2.62-.68v-.193l-.193.29zm-.97-.193-.388-.389-.097.098zm-.291.776-1.165-1.456.68 1.262zm9.22-5.727v.389l.195-.194zm1.36-.97.29-.485-.387.388zm.29-.97h-.096v.096zm-1.746-.292-.097-.097zm.873-1.456-.097-.097v.194zm-2.62-.097-.097-.097zm3.3-2.232-.194.097.29.097zm.388 0-.194-.195.097.292zm-.68-.195-.097-.097v.194zm3.592-.679v-.097l-.194.388zm-4.077.388h-.194l.194.097zm2.039-1.165h-.292l-.097.098zm.776-.485h-.097zm-8.153.388v-.194l-.097.194zm.873-.29h-.29l.29.582zm-2.33.096v-.582l-.484.097zm-1.358-.97.485.485v-.194zm14.268.582-1.747.777.582.097zm-13.589-.874h-.582v.195zm15.336-4.853.097-.485.098-1.262zm.097-5.435-.388-.97-.194.387zm-22.421 2.426-.194.292.485.097zm-1.844-.873-.874.291.68.097zm-1.942.194v-.291l-.097.097zm-2.038-.097-.582.388.776.388zm2.718.097-.097-.291-.486-.097zm-12.715-9.512-.583.29 1.165.39zm-2.33-3.106-.776-1.165.29.874zm3.009 1.941-1.359-3.106-.97-.291zm-3.882-3.883-.292-.776-.194-.485zm-8.057-10.774-1.747-1.261.68.68zm43.679-6.503-7.086-11.841h-.388zm-49.017-18.927-.291-.097.29.194zm-.583-.68-.097.098.097.097zm-.679-.97v-.097l-.097.097zm.388-.388.291.194v-.194zm.583-.389-.389.097h.097zm-.68-.097-.291-.29.097.096zm-.68-1.067h-.193l.29.097zm.68-1.165h-.388l-.097.097zm.388.194-.485-.485.194.097zm-3.688-4.174-.194-.097v.097zm-4.174 0-.29-.388.096.485zm-35.33-3.203 2.911-2.232-3.203 2.135zm5.823-4.659.291-.291-1.164.485zm-36.884-6.503-10.58 3.397 5.824-1.65zm26.304-16.5-2.815.484-41.93 6.795 4.367 9.997.291.097-1.068 3.98 3.107-1.359 3.397-3.009 5.824-.194 6.697-2.426 4.562.679-1.068 1.65 8.348 2.815 7.182 3.494 1.65 3.883 5.339-1.165 12.618-10.289 4.659.194 19.024 14.366 3.883-.777 4.077 5.436.776 8.638-1.262 5.436.583 2.718 3.397 6.794-1.553-5.338 4.368-.098.388 3.883-2.33 6.018 8.057 11.065 3.009.097-2.524-3.397 3.106.388 1.844-1.164-.776 6.212 4.173 3.3 2.815 7.57 3.786 2.33 4.853 1.262 6.697 8.542 3.494 1.844-4.659.29 2.136 2.427 7.668-2.523 3.785-2.136 3.495-12.23-1.748-19.024-.388-1.941-9.318-15.53-7.96-11.26-4.464-9.22 3.785 3.203.777-.583 1.65 8.056 4.27 6.115-4.173-8.153.194-3.882-12.52-15.24-3.01-4.755-3.98-8.057-2.717-6.794-2.136-2.427-.485-3.106-.097-.097-6.697-.388-2.621 2.038-1.456 7.474-1.359-3.494-45.814 5.727-3.3-5.145z" data-id="FL" data-name="Florida" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="GA" d="m845.854 396.097-.097-2.912-.68 2.524zm1.068-4.465-.389-2.232-.29 1.358zm-45.426-61.15-1.262.291-3.688.777-13.589 2.815-1.262.29-1.359.195-7.57 1.456-2.039.388-8.25 1.553-1.747.194.097.195 13.006 39.601 7.183 12.813-1.747 1.94-1.068 7.572 2.135 3.882.195 7.086 2.62 4.95v.097l-.097.097 3.3 5.145 45.814-5.727 1.359 3.494 1.456-7.474 2.62-2.038 6.698.388-.582-10.483 1.261-2.232-.68-4.174 1.36-3.98 2.038-2.232-1.456-1.359 3.397-4.173h-.097l-5.823-5.436-7.96-11.356-4.367-2.039-18.734-15.724-4.562-5.824-8.832-3.688-.486-1.941z" data-id="GA" data-name="Georgia" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="MS" d="m716.76 442.784-.485.097v.097zm9.027-1.164h-1.359l1.262.097zm-11.26.97-.388.388.097.097zm9.124-.776h-3.688l3.494.097zm-40.475-92.502v.098l-4.076 6.794.388 5.241-5.533 6.115 1.456 1.748-3.688 15.53 1.747 3.3-.97.68.096 2.135v.679l2.233 5.241-.194 3.204 3.591 4.367-7.377 12.619-1.165 7.57-2.038 3.01 1.359 3.494-1.262 1.262 33.487-3.689-1.165 4.66 4.271 8.347 2.232 2.814v-.097l3.592-4.076 7.57-1.65 6.99.776 1.067-1.359v-.097l-4.95-29.895-.194-21.84-.583-39.795-1.359-.874-.388-.776h-.194l-4.853.679-8.542 1.165-19.412 2.426z" data-id="MS" data-name="Mississippi" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="SC" d="m801.496 330.482-2.718 5.339.486 1.941 8.832 3.688 4.562 5.824 18.734 15.724 4.367 2.039 7.96 11.356 5.823 5.436.971-4.465-1.553-4.271 4.174 3.106 2.33-1.844-3.98-3.3 4.853-.292 7.57-6.406-.873-1.65 4.66-3.591-.486-1.747 3.397-2.136.194-4.95 5.339-9.9 3.591-4.562.388-.194-21.645-13.686-8.056 1.553-10.968-.389-5.436-2.814-32.225 10.191z" data-id="SC" data-name="South Carolina" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="IL" d="m661.434 198.185-.194.486 3.688 2.329 1.165 2.33 3.883 3.688-.098 3.106-2.135 6.115-4.853 3.494-4.368.874-.873 5.047 1.455.68-1.455 9.9-3.592 2.232.68 3.786-.874.388-.776 4.27 3.106 8.64 11.065 9.318.97 4.464 2.136 2.233 6.988-.388-1.261 6.503-.486 6.988 4.174 3.398 6.6 2.912 3.494 2.717 1.942 5.533-1.068 2.038 6.892 5.63.29.097-.582-.582 1.942-4.562 7.473 2.038 1.845-2.135-1.456-4.271 6.115-3.592-1.65-2.329 1.456-3.3v-.291l-.389-.097.097-8.64 2.136-1.552 3.688-8.639-.776-3.785-2.427-4.562 1.359-5.144-6.794-47.853-.971-1.067-2.524-5.727-2.038-2.135-.874-5.63v-.194l-13.103 1.844-7.862.97z" data-id="IL" data-name="Illinois" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="IN" d="m750.344 200.224-14.85 2.62-3.398.68-12.036 1.94-2.523 2.04-3.786 1.746-1.456-.097-1.747-.873-.582-.583 6.794 47.852-1.359 5.145 2.427 4.562.776 3.785-3.688 8.639-2.136 1.553-.097 8.638.389.098.388-.098 1.456-2.717h3.591l4.368-1.456 5.435 2.038.583-2.232 3.106-2.33 4.659.68 2.524-4.95 6.891.582-.097-2.815 6.115-8.056-.97-3.689 4.27-.097 5.241-4.174-1.261-4.756.194-.194-.194-1.65-5.824-34.36-2.62-14.657-.292-1.553z" data-id="IN" data-name="Indiana" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="KY" d="m693.174 317.185-.292-.777-.582-.194-.388 1.262.097.097 1.068-.097zm66.39-63.48-.193.194 1.262 4.757-5.242 4.173-4.27.097.97 3.689-6.115 8.056.097 2.815-6.891-.583-2.524 4.95-4.66-.679-3.105 2.33-.582 2.232-5.436-2.038-4.368 1.456h-3.591l-1.456 2.718-.388.097v.29l-1.456 3.301 1.65 2.33-6.115 3.59 1.456 4.272-1.844 2.135-7.474-2.038-1.942 4.562.583.582.194.388-.874 7.96-.388.194-2.524 1.553-.097.29 2.815-.387 19.607-2.621-.97-3.883 3.3-.097 39.504-5.241 27.76-4.66.388-.29.68-.777 7.28-3.882 5.63-7.377.776-2.524 3.688-2.912 4.66-5.92.679-.971-.292-.097h-2.426l-3.106-1.748-5.533-6.697-1.941-6.794v-.194l-.194-.195-4.077-2.329-1.844-3.106-3.688 3.591-2.33.583-2.912-1.165-2.523 1.941-5.242-2.33-1.359.583-4.95-4.27-2.524-1.263-4.756.583z" data-id="KY" data-name="Kentucky" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="NC" d="m890.212 332.23-1.068 1.067.194.194zm.776-5.63-.485.776.194.777zm5.824-9.027-1.456.97-.776 1.165zm12.521-6.115-.582-.388-1.262-.097zm-2.62-.583h-.874l-1.456.777zm3.008 1.068 2.815-6.988-1.94 2.912zm4.174-9.22 1.262-1.845h-.68zm8.154-7.572-2.136-10.774 1.844 5.63zm-11.842-24.557-.194.097-.292.097h.098l5.338 9.027 4.174 4.174zm-1.747.583-.777.194.194.097h1.65l-.194-.582-.29.097h-.292v.194l-.194.097zm-89.784 22.13-.485 1.456.097 4.174-1.068-.097-2.523 5.144-2.815.291-5.242 5.144-2.329-.873-3.009 4.465-7.96 7.183-3.882.97-4.076 3.786-.194 2.523-3.592 1.941.097 4.271v.97l1.262-.29 13.589-2.815 3.688-.777 1.262-.29h.291l32.225-10.192 5.436 2.814 10.968.389 8.056-1.553 21.645 13.686.389-.292 9.997-4.076.097-5.339 3.591-6.503 3.883-3.688 8.056-5.339 1.068-1.941 2.135.97.971-6.406-1.165 2.233-4.076 1.359-3.883.097 4.756-3.494-1.456-1.554 1.65-3.494-9.124-1.456-.388-.485 7.765-1.456 2.524 1.262 3.203-.291 2.62-1.942 1.942-3.785 1.747-.485-.291-5.339-2.233-2.135-2.232 2.038.485 5.144-1.65-6.309-1.262-.29-9.609 3.979 4.27-4.174.195-1.65 4.465-1.068 1.262-3.3 3.009 1.747-3.203-4.756-2.233-1.941-38.825 11.065-24.751 6.31-25.043 4.658z" data-id="NC" data-name="North Carolina" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="OH" d="m818.191 206.63-2.427-10.483-.485-2.136-2.718-11.938-3.494 2.232-7.474 5.727-4.853 5.92-3.785.583-6.989 3.98-3.883-2.33-11.744-1.359-6.212 1.553-6.115 1.456-6.406 1.36-.971.29.291 1.553 2.62 14.657 5.825 34.36.194 1.65.776-.776 4.756-.583 2.524 1.262 4.95 4.271 1.36-.582 5.24 2.33 2.524-1.942 2.912 1.165 2.33-.583 3.688-3.591 1.844 3.106 4.077 2.33.194.194 4.174-2.039 1.456-3.203-1.165-3.3 3.3-5.047 2.427-.388-.292-4.271 3.98-5.436.68.777 3.59-2.718 3.107-4.66.485-21.256.194-.097z" data-id="OH" data-name="Ohio" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="TN" d="m786.257 300.49-27.76 4.659-39.505 5.241-3.3.097.97 3.883-19.606 2.62-2.815.389v.097l-.776.97-.388-.097v-.873l-1.068.097.097.097.582 2.718-1.94 2.426-.195 4.465v.874l-2.912 5.63.582 3.98-2.717 4.27.97 3.882-3.494 3.203.194.195 2.136-.195 19.412-2.426 8.542-1.165 4.853-.68h.194l-.097-.193 16.307-2.233 7.765-.97 15.53-2.524 2.912-.485 1.747-.195 8.25-1.553 2.038-.388 7.571-1.456 1.36-.194v-.97l-.098-4.271 3.591-1.942.195-2.523 4.076-3.786 3.883-.97 7.959-7.183 3.009-4.465 2.33.874 5.24-5.145 2.816-.29 2.523-5.145 1.068.097-.097-4.174.485-1.456-1.553.291-5.532 1.553-6.6 1.36-16.598 3.397-1.748.29z" data-id="TN" data-name="Tennessee" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="VA" d="M908.75 270.983h.292l.291-.098-.194-.485-.388.583zm-3.3-10.872v.486l.486-.291zm1.748-3.397-.097-.776zm-.583 1.165-.194 1.262-.29.485zm.874-2.524.097-.582-.194.582zm.582-2.62.292-.68-.486 1.747zm.098-1.456.388-2.136-.486.486zm1.747-9.61.194-.873-.097.194zm-.389-2.232-1.261.485-1.942.874-.68.873.292.098-2.33 14.462.874 2.33 1.359-6.018 2.524-7.863 1.164-5.144zm1.942-.776-.292.097-.097.388-.485 3.009.388-1.068zm-101.431 37.175-.68.97-4.659 5.921-3.688 2.912-.777 2.524-5.63 7.377-7.28 3.882-.679.777 1.748-.292 16.597-3.397 6.6-1.359 5.533-1.553 1.553-.29.097.193 25.043-4.659 24.75-6.309 38.826-11.065-.291-.485-.097-.292.68.68.776-.194-.097-.097-.68-3.3.485.097 1.553 2.911.292-.097.194-.097-.388-.776-3.98-6.115-4.95.873-2.233 1.845-2.135-1.942-7.28-2.426-5.047-.194 9.803-.874 5.436 3.688 1.553-2.426-4.368-5.533 3.106.194-1.65-4.465-3.883.195-9.22-7.474h-1.165l13.006 6.406-.873-4.465.873-1.456-6.6-2.524-5.727-.388-2.815-2.524-2.33 1.456-.873-6.697.97.194-.193-5.435-.194-.194-.195.097-.194-.097-.485-.389-.291-.29-3.106-1.36-3.203-2.33-4.465-1.164-.291-.097v.097l-.583 4.077-9.027-3.883.194 5.63-4.95 9.415-3.009 3.3-1.941 5.727-5.92-2.039-2.913 13.201-2.33 4.465-.387 5.824-1.748 2.814-6.503 1.942-5.338 4.173-2.524.389-2.427 2.135-6.115-2.232-1.067-3.01z" data-id="VA" data-name="Virginia" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="WI" d="m705.792 134.803-2.427 3.009-1.456 4.368.68 2.426zm-55.714-22.81 1.456-2.038-1.068.97zm2.232-3.203-.485-.582-1.068.68zm-21.16 5.436-2.232 2.523 1.068 11.648-6.212 5.63-1.165 5.435 3.397 3.106-.97 13.395 3.59 2.718 2.33.194 7.377 4.465 4.659 4.853 5.92 3.009 1.36 7.474v.485l2.815 3.397-.777 2.62.97 5.727 2.913 3.98 5.338 2.815-.097.485 21.16-2.426 7.862-.971 13.103-1.844-.388-1.456v-4.562l-2.62-4.853-.68-6.115 1.262-6.795-.68-5.241 2.33-6.503-.874-1.068.194-6.018 1.262-4.562-1.456-1.553-2.815.97-1.553 4.077-3.688 2.136 1.165-5.145 3.3-4.367.194-1.942.097-.097-4.659-4.659v-6.6l-5.241-4.27-7.183-.486-7.377-1.941-15.918-4.854-3.106-1.747-.291.291-4.95-.679-1.65.97.679-7.085-7.96 4.077-9.706 1.553zm19.025-5.145-.194-.68-.68.292zm-3.495-.68.292-.582-.195-.194zm7.086-1.65-.291-1.358-.291 1.65z" data-id="WI" data-name="Wisconsin" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="WV" d="m836.73 223.713-13.783 3.397-4.27-18.442-.195.097-.485 21.257-3.106 4.659-3.592 2.718-.679-.777-3.98 5.436.292 4.27-2.427.389-3.3 5.047 1.165 3.3-1.456 3.203-4.174 2.039v.194l1.941 6.794 5.533 6.698 3.106 1.747h2.426l.292.097.194.097 1.067 3.009 6.115 2.232 2.427-2.135 2.524-.388 5.338-4.174 6.503-1.941 1.748-2.815.388-5.824 2.33-4.465 2.911-13.2 5.921 2.038 1.941-5.727 3.01-3.3 4.95-9.415-.195-5.63 9.027 3.883.583-4.077v-.097l-2.815-4.853-5.824-.68-3.397 2.621v1.941l-2.912.68-4.27 3.009-2.233.485-4.465 6.31-2.233-10.192z" data-id="WV" data-name="West Virginia" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="DE" d="m893.803 207.697.388 1.456 8.057 23.004 9.22-2.717-.096-.195h.194l.29.098.195-.098-.194-.388-2.33-6.212-11.356-10.774.485-7.474h-2.33l-1.746 1.36z" data-id="DE" data-name="Delaware" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="DC" d="m878.176 229.148.485.389.194.097.195-.097.194.097.68.388.193.291v.68l.194.388 1.262-2.33-1.359-.776-1.65.097z" data-id="DC" data-name="District of Columbia" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="MD" d="m911.566 238.272.68-5.241-.583 3.882-.388 1.65-.098.195.292-.098zm.485-9.027-.194.097.194.583v1.165zm-73.38-6.018 2.233 10.192 4.465-6.309 2.232-.485 4.27-3.01 2.913-.679v-1.941l3.397-2.62 5.824.679 2.815 4.853.29.097 4.466 1.165 3.203 2.33 3.106 1.358.291.291.388-.776 1.65-.097 1.36.776-1.263 2.33v.097l-1.844 5.63 6.018 3.882 6.018.291 3.98 1.844-1.65-4.659-5.145-1.747-1.262-3.98 3.203 4.271 2.621.389-2.33-2.33-1.844-6.891.486-3.98-2.039-4.368 2.136-1.747 1.553-5.63-.583 8.348 1.65 2.815 1.554-3.3.873 5.435-1.65 3.98 4.756 1.747-4.077 1.359 2.136 3.98 3.494 1.164 1.941-3.397-.194 4.756 3.3-.097 2.136 2.426h.097l.68-.873 1.94-.874 1.262-.485-.097-.194 2.524-7.474v-.291l-.485-1.941v-.098l-9.221 2.718-8.057-23.004-.388-1.456-1.65.486-6.891 2.135-37.952 10.58-6.892 1.844z" data-id="MD" data-name="Maryland" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="NJ" d="m916.807 207.31-.485-1.166v1.165zm.97-3.592.292-2.912-.582 2.524zm-3.979-29.799-10.191-2.523-1.748-.486-1.65-.388-4.076 9.027 1.747 2.135-.097 6.504 1.844.29 3.785 9.901-.194.292-4.756 6.988.485 5.339 11.454 3.882.097 4.465 2.62-3.688.389-5.339 2.718-1.844-1.068-3.98 2.038-4.756v-10.386l-.68-3.397-4.561.097 1.165-4.659z" data-id="NJ" data-name="New Jersey" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="NY" d="m913.507 181.782-1.456 2.038-.388.582zm13.395-4.757 4.853-4.27v-.194zm-12.716 3.01v-3.3l-.29 1.746zm22.519-15.53-1.165-.292-.194.874zm2.62-1.748-.096.97.194-.582zm-2.717.097-6.503 6.018-9.998 4.271-2.62 2.232-.195 2.136-2.717 2.232.388 2.912 4.174-1.65 6.115-4.95 6.794-3.591 10.289-9.707-7.28 5.533-2.33.97zm3.009-4.076.388-.583-1.165 1.36zm-109.099-3.592-1.553-.194 1.165 1.553zm32.225-29.701.194-1.068-.776.97zm.485-6.989-.388.195-.485 1.067zm-41.057 55.132.679 2.912 5.144 1.262 29.508-8.056 29.7-8.93 5.436 4.174 1.068 2.426 6.31 2.718.193.388 1.65.389 1.748.485 10.191 2.523-.194-.485.874 3.98 1.94-.486 1.069-4.367v-.098l-1.748-1.65 2.524-3.106-1.165-1.456-3.688-14.268-.194-.97-.486-.292-.29-4.27-.292-4.66-.291-5.047v-.29l-.194.096-4.853-15.918-5.145-8.056-1.456-9.61-4.368-10.191-.582.29-20.286 6.795-4.077 4.368-4.562 8.736.194 1.941-6.018 9.124 3.689 1.262 1.068 6.891-4.271 5.63-12.813 7.765-2.426-.97-9.512 1.358-8.833 5.339.485 2.815 3.106 2.717-1.747 8.542-6.988 8.153z" data-id="NY" data-name="New York" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="PA" d="m900.015 170.134-6.309-2.718-1.068-2.426-5.435-4.174-29.701 8.93-29.508 8.056-5.144-1.262-.68-2.912-1.65 1.262-2.62 1.844-4.756 4.853-.583.486 2.718 11.938.485 2.136 2.427 10.483.485 2.038 4.271 18.442 13.783-3.397 1.941-.486 1.747-.485 6.892-1.844 37.952-10.58 6.891-2.135 1.65-.486.777-1.94 1.747-1.36h2.33l.29-.873 3.786-4.271.388-.68.291-.194-3.785-9.9-1.844-.291.097-6.504-1.747-2.135 4.076-9.027z" data-id="PA" data-name="Pennsylvania" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="ME" d="M946.8 118.4h-.097l.194.096zm7.182-20.675-.776-1.165v.582zm-1.359-1.068v-.97l-.097-.583zm3.495-4.076-.194-.098.097.292zm9.706-4.854-.194-1.456-.388.68zm-2.427.583.097-1.068-1.164.194zm3.592-3.203h-.389v.194zm-4.853 1.456-.874-.195-.097.874zm4.95-3.01.873.68-.29-.776zm-2.62.098-.874 1.65 1.164-.583zm-4.175.097-.388.582.291.874zm5.727-3.203-.097-.777-.291.486zm-.485.388-.874-.777v.68zm-5.436 2.232-.194-1.067-.388.873zm9.221-3.397-1.456 2.136-.097-1.553zm7.086-6.503-.68-.97-.388.193zm2.62-4.368-.582-.291-.097.291zm1.262-7.57h-.873l.97.29zm1.456.97-.29-1.747-.777-.097zm-1.553-1.553-.194-1.844-.68 1.261zm-56.296 15.239 14.074 33.001.194.68 6.115 7.473v-.097l.97-.29.195-5.533 1.553-1.942.97-5.144-.873-.874 1.65-5.047 5.63-2.62 3.688-4.465 1.359-7.766 5.92-.388-.776-3.98 7.377-2.814.485-4.368 1.747.388 4.854-3.98 2.135-5.144-4.95-4.95-5.242-1.068-1.94-3.98v-2.329l-3.204.97-3.591-1.26v-3.98l-9.707-20.966-7.085-3.689-7.862 6.6-2.136-.387-1.844-3.398-2.524.97-3.591 17.86 1.262 5.824 1.068 11.842-2.815 9.124 1.941 1.456-2.33 4.465-2.523-.388z" data-id="ME" data-name="Maine" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="MI" d="m719.963 138.2-.485-.776-.097.97zm1.553-1.747-1.165-1.553-.194.68zm.97-6.988-.97-.874v.194zm-2.426 76 12.036-1.941 3.397-.68 14.85-2.62.292 1.261.97-.29 6.407-1.36 6.115-1.456 6.212-1.553-.097-.29 3.203-6.31-.291-5.241 3.591-9.027 2.815 1.65 1.068-2.039-.292-7.765-2.62-4.853-3.883-10.288-3.397-3.786-1.747-.485-6.31 4.368.68.873-3.3 6.212-3.203-.582-.97-6.503 1.358-.486 2.815-6.503.291-11.453-4.368-9.707-9.706-1.65-.97-1.456-9.028-2.62-4.076 5.047.388 4.368-3.106 3.882.68 6.018-3.01 2.136v-7.571l-2.717 5.726-3.203 5.048-2.136 1.65 1.068 5.338-1.359 5.533.777 6.891-.971 3.398 6.989 13.394.873 5.145-.873 9.512-4.66 10.677zm20.772-87.454-2.524.194 1.553 1.165zm-14.754 2.524h-.776l.873.388zm16.986-12.327-.97-1.553-.389.097zm-87.94 7.085 3.107 1.747 15.918 4.854 7.377 1.94 7.183.486 5.241 4.271v6.6l4.66 4.66v-.098l3.785-10.968 4.562-3.203 3.494-3.883.582 3.495 3.592-5.533 8.638-3.3.68-1.359 8.735 1.068 3.398 1.747 1.65-4.27 1.553.97 6.794-1.068-1.65-2.718-3.009-1.747.582-6.309-5.92 3.3-5.436-.68-1.747-4.173.582-1.359-7.377 3.494-4.756.292-8.541 5.241-.97 1.941-5.242-1.262-3.3 1.456-6.6-5.726-14.657-4.465-.291-1.747-9.415 9.027-5.339 1.358-7.57 5.727zm34.361-22.033-11.356 5.63 3.785 3.688 1.456-3.688 3.883-4.756zM676.77 79.962l-7.765 5.339-.388 2.62 6.115-4.464z" data-id="MI" data-name="Michigan" style="stroke-width:.97063118000000004;fill:#f9f9f9"/><path id="AK" d="m101.283 542.953-.486.195.389.097zm3.591.583v.097zm-1.747-1.65v.29l.194-.096zm-.874-.486v-.097zm1.845.971v-.194l-.098.097zm-.195-.194v-.097h-.194zm-75.709-63.77-.097.679.194 1.941zm-.485-2.621.097.873.097-.29zm76.194 65.226.098-.582-.389.194zm11.066 4.756-.097-.097.194.388zm-7.183-3.397-1.068-.97v2.329zm2.427 2.135-.098-.679-1.65-.097zm5.823 1.36-.097.193h.194zm.389.096h-.195l.389.097zm1.164.389h-.194zm-85.706-65.81.388.098.291-.097zm83.571 64.45-.777-.096.292.29zm-88.813-72.02-1.359-.582-.097.29zm91.24 72.215-.195-.097v.097zm5.92 1.165-3.785.29-.874.39zM19.75 457.732h-1.068l.194.291zm115.796 93.084v-.389h-.194zm5.047.097.194-.194-.194-.195zm3.786 1.067.194-.097h-.097zm-3.106-1.747-.097-.388h-.194zm6.503 1.456-.097.097h.097zM20.332 452.782l-1.456.194 1.844 1.65zm122.3 97.451.194-.582h-.097zm16.403-1.456.097-.194-.194-.097zm-2.426-.873-3.397 3.009 2.426-.194 2.815-2.233zm6.115 1.067-.68-.194.486.389zm1.359.097-1.068-.29-.194.096zm-3.689-1.358h-1.067l1.844.485zm4.465.97-.097-.194-.388.097zm-2.912-1.165-.388-.194v1.068zm12.424 2.427-.097-.097h-.194zm.194-.097v-.097l-.194-.097zm-1.65-.582.194.388v-.097zm.874 0-.874-.292 1.068.777zm1.262-.971v.097zm11.55 1.456-.194-.388h-.097zm104.44-6.503-.194-.194.097.194zm-117.64 3.009v-.097l-.097.097zm120.455-4.756.291.388h.194zm-106.09 7.28-.097.096v.292zm-12.036-1.748.194-.776h-.097zm123.756-7.765-.874.485.777.389zm-122.009 7.28-.097-.194zm-7.28-2.136-2.426.486-2.135 2.815zm17.375 3.689-.582.485.582-.097zm111.914-9.318-.194-.388-.098.194zm-121.232 6.794-.68-.097.68.68zm114.825-5.532-.194.194.194.68zm-113.272 5.435-.291.097.388.291zm7.183 2.038h-.292l-.194-.194zm-7.96-2.038-.485-.291.194.291zm6.504 1.068-.874.291-.582 1.553zm105.41-6.795v.68l.388-.485zm-116.864 3.69.777-.194h-.097zm-.97-.583-.195-.194v.097zm117.834-3.785-.194-.097-.097.291zm-106.478 5.824-.194-.097-.194.29zm105.507-5.63.098-.485-.195-.097zm-.776-.485-.291.388.485.097zm-100.654 4.756-.195-.194h-.097zm100.363-6.503.776.29.291-.387zm1.165-.68-.292.194.486.292zm-2.233.583-.194-.389-.194.194zm9.706-3.592-1.261 3.592 1.261-.777zm-115.02 7.474h-.097zm106.479-6.115-.874.874.194.97zm-90.366 7.765v-.388l-.097.194zm89.298-8.736 2.815 4.271 6.31 3.98-1.457-3.397-6.018-5.145zm-93.18 7.183-.098-.291-.194.097zm96.48-8.833-.388 1.456.68-.485zm2.039 0-.097.971.873.291zm-95.413 7.571-.486-.097-.485.194zm9.997.777-.388.68.194-.583zm1.456.097-.874.097.486.582zm-58.82-12.424.97.485-.194-.194zm38.534 9.61.097-.098zm.291-.098h.097v-.097zm100.363-7.474.486 1.844.97-.582zm-97.742 6.406.097-.097zm93.569-5.63.485 4.466.97-.971zm.485-1.455 2.232 3.106-.29-2.039zm-6.892.776-.582 1.844.777-1.261zm-77.65 4.756-.097-.097zm9.22.194-.193-.29.194.387zm68.625-6.406 3.882 6.406-.582-4.367zm-63.189 3.397-.29.292.485.194zm-1.261.195.097-.292h-.389zm-.971 0-2.524 1.65-3.106 4.076 1.553 1.65 7.183-5.338zm61.247-6.31-.68-.388v.583zm-61.83 5.145.098.388.68.388zm63.674-6.989-1.941.97 1.844.583zm-1.262 0-.194-.194-.097.194zm5.921-1.553-.776-.29-.195.581zm-4.174.68-.68-.097v.194zm2.136-.777 3.98 5.824-1.068-5.338zm-64.062 6.31-2.33 1.746 1.068 1.165 3.106-2.33zm-26.401-3.69-.097-.096v.097zm-1.068-.484-.097-.486v.194zm29.799 1.261-.195.098v.097zm-.971-.194h-.097l-.194.292zm2.33-.776-.292-.194v.097zm.776-.097-.291-.194v.097zm-1.262-.291h-.388v.097zm19.316-1.942.097-.29-.194.193zm5.92-3.106 1.165-1.456-.388.291zm-11.841-.194.388-.291.097-.388zm0-1.068-.388.292.679-.195zm-15.919 0-.097-.388h-.097zm15.53-.097-.388.389-.194.388zm10.678-1.164h.194zm.485 0-.194-.098v.098zm-1.165-.098.097.098v-.098zm-7.96.583.39-.388-.486.388zm5.922-1.165zm-4.756.291-2.33 3.786 3.01-3.495zm-3.01.486-.29-.389-.098.194zm7.378-.874-.195-.097.097.097zm2.523.194v-.68l-.194.292zm-71.244-7.474-4.66-.194 3.204 3.397zm66.294 6.892.194.68.485-.777zm-3.883-.097-.29 2.135.485-1.359zm-84.25-16.113.097-.388zm83.28 14.754.097.291.194-.097zm-.486.388-.194-.582-.29.194zm4.562-1.165v-.388l-.29.194zm-4.367-.582v.97l.29-.679zm-7.377-1.165v-.291zm-50.667-12.036.194-.582-.097.097zm.291-.97-.097-.097-.097.097zm4.27-2.33v-.097zm0-.388-.096-.194zm1.748-2.524h-.097zm.582.194-.388-.194v.097zm-.582-.388v-.194l-.194.194zm-15.53-4.562-.194-.485-.097-.291zm1.456-1.747h.097l.097.097zm-2.62-.485-.777-.97.582.776zm-1.554-1.553h-.194l.291.097zm.194-1.068zm-.194-.097.194.097zm25.722 7.668-1.068.097.583.291zm-26.79-9.415-.776 2.912 2.426.388 3.204 3.3 1.94-.873zm16.986 1.165v-.195zm-4.853-10.29-.194-.096.097.097zm2.815.971.291-.097h-.097zm1.941-.582h.292l.873-.388zm3.495-1.068.194-.194-.291.194zm.485-.097.582-.29-.485.096zm1.456-.582-.485.097v.097zm.582-.097zm61.732-17.472-.388-.29-.68-.292zm-50.86-2.135.873-1.165-.485.389zm1.164-1.359.388-.582-.194.194zm.582-.776.68-.583-.388.194zm30.575.194.486.485h.29zm-15.627-6.406-3.98 3.3-2.426-.68-5.63 3.203-1.067-.679-6.406 7.183-6.504 1.456.583 3.494 2.912 3.98 5.435 5.24-.873 2.04 4.076 1.746-2.135.389-2.62-2.039 1.358 3.01-1.747 1.067-5.533-5.047-4.368.776-7.473 2.815 3.397 3.785-.486 2.33 2.233 2.718 7.377 2.912 5.338-2.718.874 2.038-1.456 6.115h-4.465l-5.242 2.33-.29-1.65-2.718 1.067-1.262 2.815-4.465 3.397v4.95l1.747.777-1.359 4.174 5.824 5.047 3.688-1.553-.776 6.212 1.067 1.359 4.465.97 1.65 1.845 3.883.291 1.844 1.941 3.98-1.165-1.844 2.524-1.456 5.144-11.842 7.668-1.553 1.553-2.233-.873-3.59.873-5.145 3.398 8.056-2.33 1.165 1.747 10.385-3.397.292 1.359 4.076-4.077 8.542-5.92.68.388 7.473-5.921-1.941-2.33 2.524-4.173 6.6-7.862 5.047-.971 1.553 1.068-6.115 1.747-1.65 6.503.194 3.494 2.136-.194 10.288-6.212.777-2.33-.874-3.59 3.106.776 2.233-1.456 6.406 3.882-.485 1.068 14.559 1.844 3.397-1.067.97 1.455 12.62 6.018 2.134-1.261.195-7.28 1.65 3.3 8.153 5.92.68 2.427 7.085 3.98 1.844 5.144 1.747-3.98 3.592 6.99 2.426-3.98-1.941-4.95-7.474-.777-11.453-10.968-6.212-4.562-4.756 4.659h-2.815l-6.504-4.27-6.406-.292-9.124-57.558-1.553-2.718-3.688-2.233-5.533 1.068-4.27-.874-5.436-2.135-5.727.388-1.456-2.717-4.562-.68-.776-1.65-2.038 2.33z" data-id="AK" data-name="Alaska" style="stroke-width:.97063118000000004;fill:#f9f9f9"/></svg>
+
+          <!-- PASTE SVG ABOVE THIS LINE -->
+          </div><!-- end mapInner -->
+
+          <!-- Edit-on-Map photo (appears during editing) -->
+          <img id="editPhoto" class="hidden" draggable="false" />
+        </div>
+
+        <div class="tiny" style="margin-top:12px;">
+          Tip: iPhone "Browse" lets you pick from Photos or Files.
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+
+  const svg = document.getElementById("usaSvg");
+  if (!svg) {
+    alert('SVG not found. Make sure your SVG has id="usaSvg".');
+    throw new Error("SVG not found");
+  }
+
+  let selectedId = null;
+  const statePhotoData = {};
+  const originalImages = {};  // Store original images for re-editing
+  const legacyStateImages = {};
+  const photoRenderCanvas = document.getElementById("photoRenderCanvas");
+
+  const fileInput = document.getElementById("fileInput");
+  const selectedStateEl = document.getElementById("selectedState");
+
+  /* ---------- Auto-save to localStorage ---------- */
+  function saveToLocalStorage() {
+    try {
+      const payload = {};
+      const stateIds = new Set([
+        ...Object.keys(statePhotoData),
+        ...Object.keys(legacyStateImages)
+      ]);
+      stateIds.forEach((stateId) => {
+        const photoData = statePhotoData[stateId] || null;
+        payload[stateId] = {
+          image: legacyStateImages[stateId] || null,
+          photoData: photoData ? {
+            ...photoData,
+            sourceImage: null
+          } : null
+        };
+      });
+      localStorage.setItem("photoMapProgress", JSON.stringify(payload));
+    } catch (e) {
+      console.warn("Could not save to localStorage:", e);
+    }
+  }
+
+  function loadFromLocalStorage() {
+    try {
+      const saved = localStorage.getItem("photoMapProgress");
+      if (saved) {
+        const obj = JSON.parse(saved);
+        Object.entries(obj).forEach(([stateId, savedValue]) => {
+          const dataUrl = typeof savedValue === "string" ? savedValue : savedValue && savedValue.image;
+          const photoData = typeof savedValue === "object" && savedValue ? savedValue.photoData : null;
+          if (typeof dataUrl === "string" && dataUrl.startsWith("data:image/")) {
+            legacyStateImages[stateId] = dataUrl;
+            originalImages[stateId] = dataUrl;
+          }
+          if (photoData && typeof photoData === "object") {
+            statePhotoData[stateId] = {
+              ...photoData,
+              sourceImage: photoData.sourceImage || dataUrl || null
+            };
+            if (statePhotoData[stateId].sourceImage) {
+              originalImages[stateId] = statePhotoData[stateId].sourceImage;
+            }
+          }
+        });
+        queuePhotoRender();
+        requestAnimationFrame(() => queuePhotoRender());
+        window.addEventListener('load', () => queuePhotoRender(), { once: true });
+      }
+    } catch (e) {
+      console.warn("Could not load from localStorage:", e);
+    }
+  }
+
+  /* ---------- helpers ---------- */
+
+  function ensureDefs() {
+    let defs = svg.querySelector("defs");
+    if (!defs) {
+      defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+      svg.insertBefore(defs, svg.firstChild);
+    }
+    return defs;
+  }
+
+  function getStateId(el) {
+    return el.getAttribute("data-id") || el.id || null;
+  }
+
+  function clearSelectedStroke() {
+    svg.querySelectorAll(".selected").forEach(n => n.classList.remove("selected"));
+  }
+
+  const editBtn = document.getElementById("editBtn");
+
+  function selectState(el) {
+    const id = getStateId(el);
+    if (!id) return;
+
+    selectedId = id;
+    clearSelectedStroke();
+    el.classList.add("selected");
+
+    const nm = el.getAttribute("data-name") || id;
+    selectedStateEl.textContent = `${nm} (${id})`;
+
+    // Show Edit button if state has a photo
+    editBtn.style.display = originalImages[id] ? "inline-block" : "none";
+  }
+
+  function findStateElement(start) {
+    let el = start;
+    while (el && el !== svg) {
+      if (el.nodeType === 1) {
+        const tag = (el.tagName || "").toLowerCase();
+        if (["path","polygon","polyline","rect"].includes(tag)) {
+          if (el.id || el.getAttribute("data-id")) return el;
+        }
+      }
+      el = el.parentNode;
+    }
+    return null;
+  }
+/* ---------- reset ---------- */
+function blankOutSvg() {
+  svg.querySelectorAll('path, polygon, polyline, rect').forEach(el => {
+    el.removeAttribute('style');
+    el.removeAttribute('fill');
+    el.removeAttribute('class');
+  });
+
+  svg.querySelectorAll("pattern, image").forEach(n => n.remove());
+  ensureDefs();
+
+  svg.querySelectorAll(
+    "path[id], path[data-id], polygon[id], polygon[data-id], polyline[id], polyline[data-id], rect[id], rect[data-id]"
+  ).forEach(el => {
+    el.setAttribute("fill", "none");
+  });
+}
+
+  function clearStateImage(stateId) {
+    const defs = ensureDefs();
+    defs.querySelectorAll(`pattern[id="img-${CSS.escape(stateId)}"]`)
+        .forEach(p => p.remove());
+
+    const el =
+      svg.querySelector(`#${CSS.escape(stateId)}`) ||
+      svg.querySelector(`[data-id="${stateId}"]`);
+
+    if (el) {
+      el.removeAttribute("style");
+      el.setAttribute("fill", "none");
+    }
+
+    delete legacyStateImages[stateId];
+    delete statePhotoData[stateId];
+    delete originalImages[stateId];
+    queuePhotoRender();
+
+    // Hide edit button if clearing the currently selected state
+    if (stateId === selectedId) {
+      editBtn.style.display = "none";
+    }
+
+    // Auto-save to localStorage
+    saveToLocalStorage();
+  }
+
+  function clearAll() {
+    const allStateIds = new Set([...Object.keys(statePhotoData), ...Object.keys(legacyStateImages)]);
+    allStateIds.forEach(clearStateImage);
+    Object.keys(statePhotoData).forEach(key => delete statePhotoData[key]);
+    Object.keys(legacyStateImages).forEach(key => delete legacyStateImages[key]);
+    localStorage.removeItem("photoMapProgress");
+    queuePhotoRender();
+  }
+
+
+  /* ---------- Edit-on-Map Photo Editor ---------- */
+  // Photo is edited directly on the map (Figma-style)
+  // Much simpler coordinate mapping - everything is in mapWrap space
+
+  const editPhoto = document.getElementById("editPhoto");
+  const editControls = document.getElementById("editControls");
+  const editOpacity = document.getElementById("editOpacity");
+  const mapWrap = document.getElementById("mapWrap");
+  const mapInner = document.getElementById("mapInner");
+
+  // Map zoom/pan state
+  let mapZoom = 1;
+  let mapPanX = 0;
+  let mapPanY = 0;
+  let suppressPhotoMapClickUntil = 0;
+  const MIN_ZOOM = 1;
+  const MAX_ZOOM = 8;  // Increased for small northeastern states
+
+  function updateMapTransform() {
+    mapInner.style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapZoom})`;
+  }
+
+  function zoomMap(delta, centerX, centerY) {
+    const oldZoom = mapZoom;
+    mapZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, mapZoom * delta));
+
+    if (mapZoom === 1) {
+      // Reset pan when fully zoomed out
+      mapPanX = 0;
+      mapPanY = 0;
+    } else if (centerX !== undefined) {
+      // Zoom toward the point
+      const rect = mapWrap.getBoundingClientRect();
+      const cx = centerX - rect.left - rect.width / 2;
+      const cy = centerY - rect.top - rect.height / 2;
+      const scale = mapZoom / oldZoom;
+      mapPanX = cx - (cx - mapPanX) * scale;
+      mapPanY = cy - (cy - mapPanY) * scale;
+    }
+
+    // Constrain pan to keep map visible
+    constrainPan();
+    updateMapTransform();
+  }
+
+  function constrainPan() {
+    const rect = mapWrap.getBoundingClientRect();
+    const maxPan = (mapZoom - 1) * Math.max(rect.width, rect.height) / 2;
+    mapPanX = Math.max(-maxPan, Math.min(maxPan, mapPanX));
+    mapPanY = Math.max(-maxPan, Math.min(maxPan, mapPanY));
+  }
+
+  function resetMapZoom() {
+    mapZoom = 1;
+    mapPanX = 0;
+    mapPanY = 0;
+    updateMapTransform();
+  }
+
+  // Zoom buttons
+  document.getElementById("zoomIn").addEventListener("click", () => zoomMap(1.3));
+  document.getElementById("zoomOut").addEventListener("click", () => zoomMap(0.7));
+  document.getElementById("zoomReset").addEventListener("click", resetMapZoom);
+
+  // Mouse wheel zoom on map
+  mapWrap.addEventListener("wheel", e => {
+    // If hovering over photo, let photo zoom handler handle it
+    if (e.target.id === "editPhoto") return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    zoomMap(delta, e.clientX, e.clientY);
+  }, { passive: false });
+
+  // Pan with mouse drag when zoomed
+  let mapDragging = false;
+  let mapDragMoved = false;
+  let mapLastX = 0, mapLastY = 0;
+
+  mapWrap.addEventListener("mousedown", e => {
+    // Allow map drag when zoomed, even while editing (but not when clicking photo or controls)
+    const clickedPhoto = e.target.id === "editPhoto";
+    const clickedControls = e.target.closest('.zoom-controls') !== null;
+    if (mapZoom > 1 && !clickedPhoto && !clickedControls) {
+      mapDragging = true;
+      mapDragMoved = false;
+      mapLastX = e.clientX;
+      mapLastY = e.clientY;
+      mapWrap.style.cursor = "grabbing";
+      mapInner.classList.add("dragging");
+    }
+  });
+
+  window.addEventListener("mousemove", e => {
+    if (mapDragging) {
+      const dx = e.clientX - mapLastX;
+      const dy = e.clientY - mapLastY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) mapDragMoved = true;
+      mapPanX += dx;
+      mapPanY += dy;
+      mapLastX = e.clientX;
+      mapLastY = e.clientY;
+      constrainPan();
+      updateMapTransform();
+    }
+  });
+
+  window.addEventListener("mouseup", () => {
+    if (mapDragging && mapDragMoved) suppressPhotoMapClickUntil = Date.now() + 250;
+    mapDragging = false;
+    mapDragMoved = false;
+    mapWrap.style.cursor = "";
+    mapInner.classList.remove("dragging");
+  });
+
+  // Touch pinch zoom and pan for map
+  let mapTouchDist = 0;
+  let mapTouchCenter = { x: 0, y: 0 };
+
+  mapWrap.addEventListener("touchstart", e => {
+    // If touching the photo, let photo handlers handle it
+    if (e.target.id === "editPhoto") return;
+    if (e.touches.length === 2) {
+      e.preventDefault(); // Prevent page zoom
+      const [t0, t1] = e.touches;
+      mapTouchDist = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+      mapTouchCenter = { x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 };
+      mapInner.classList.add("dragging");
+    } else if (e.touches.length === 1 && mapZoom > 1) {
+      e.preventDefault(); // Prevent page scroll
+      mapDragging = true;
+      mapDragMoved = false;
+      mapLastX = e.touches[0].clientX;
+      mapLastY = e.touches[0].clientY;
+      mapInner.classList.add("dragging");
+    }
+  }, { passive: false });
+
+  mapWrap.addEventListener("touchmove", e => {
+    // If touching photo, let photo handlers handle it
+    if (e.target.id === "editPhoto") return;
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const [t0, t1] = e.touches;
+      const dist = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+      const center = { x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 };
+
+      if (mapTouchDist > 0) {
+        zoomMap(dist / mapTouchDist, center.x, center.y);
+        mapTouchDist = dist;
+      }
+    } else if (e.touches.length === 1 && mapDragging) {
+      const dx = e.touches[0].clientX - mapLastX;
+      const dy = e.touches[0].clientY - mapLastY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) mapDragMoved = true;
+      mapPanX += dx;
+      mapPanY += dy;
+      mapLastX = e.touches[0].clientX;
+      mapLastY = e.touches[0].clientY;
+      constrainPan();
+      updateMapTransform();
+    }
+  }, { passive: false });
+
+  mapWrap.addEventListener("touchend", () => {
+    if (mapDragging && mapDragMoved) suppressPhotoMapClickUntil = Date.now() + 250;
+    mapTouchDist = 0;
+    mapDragging = false;
+    mapDragMoved = false;
+    mapInner.classList.remove("dragging");
+  });
+
+  const STATE_TEXTURE_MAX_DIM = 4096; // Legacy edit-on-map fallback raster cap
+  const PATTERN_SOURCE_SCALE = 1;
+  const DOWNLOAD_EXPORT_WIDTH = 6000; // Final downloadable map width for crisper exports
+  const LIVE_PREVIEW_MIN_WIDTH = 4800; // Keep on-map preview close to export sharpness without matching full export cost
+  const SETTLED_PREVIEW_WIDTH = 6000; // Match export resolution after user stops interacting
+  const SETTLED_DELAY_MS = 300; // ms of inactivity before hi-res re-render
+  const PHOTO_MAP_BASE_FILL = "#f8fafc";
+  const photoImageCache = new Map();
+  const stateGeometryCache = new Map();
+  let photoRenderQueued = false;
+
+  function getStateCanvasSize(stateW, stateH, outputScale = 1) {
+    const safeMaxDim = Math.max(512, Math.round(STATE_TEXTURE_MAX_DIM * Math.max(outputScale, 0.25)));
+    let canvasW, canvasH;
+    if (stateW > stateH) {
+      canvasW = safeMaxDim;
+      canvasH = safeMaxDim * (stateH / stateW);
+    } else {
+      canvasH = safeMaxDim;
+      canvasW = safeMaxDim * (stateW / stateH);
+    }
+    return {
+      width: Math.max(1, Math.round(canvasW)),
+      height: Math.max(1, Math.round(canvasH))
+    };
+  }
+
+  function setStateImage(stateId, dataUrl, options = {}) {
+    if (!stateId || typeof dataUrl !== "string") return;
+    legacyStateImages[stateId] = dataUrl;
+    queuePhotoRender();
+    if (options.persist !== false) {
+      saveToLocalStorage();
+    }
+  }
+
+  function getViewBoxMetrics(sourceSvg = svg) {
+    const viewBox = sourceSvg.getAttribute("viewBox") || "0 0 1000 589";
+    const [vbXRaw, vbYRaw, vbWidthRaw, vbHeightRaw] = viewBox.split(/\s+/).map(Number);
+    return {
+      vbX: vbXRaw || 0,
+      vbY: vbYRaw || 0,
+      vbWidth: vbWidthRaw || 1000,
+      vbHeight: vbHeightRaw || 589
+    };
+  }
+
+  function buildPathFromElement(el) {
+    const tag = (el.tagName || "").toLowerCase();
+    let path = null;
+
+    if (tag === "path") {
+      const d = el.getAttribute("d");
+      if (d) path = new Path2D(d);
+    } else if (tag === "polygon" || tag === "polyline") {
+      const points = el.getAttribute("points");
+      if (points) {
+        path = new Path2D();
+        const pts = points.trim().split(/\s+/).map(pair => pair.split(',').map(Number)).filter(pair => pair.length === 2 && pair.every(Number.isFinite));
+        pts.forEach(([x, y], idx) => {
+          if (idx === 0) path.moveTo(x, y); else path.lineTo(x, y);
+        });
+        if (tag === "polygon") path.closePath();
+      }
+    } else if (tag === "rect") {
+      path = new Path2D();
+      path.rect(Number(el.getAttribute("x")) || 0, Number(el.getAttribute("y")) || 0, Number(el.getAttribute("width")) || 0, Number(el.getAttribute("height")) || 0);
+    }
+
+    return path;
+  }
+
+  function getStateGeometry(stateId, sourceSvgRoot = svg) {
+    const cacheKey = sourceSvgRoot === svg ? stateId : `${stateId}::external`;
+    if (sourceSvgRoot === svg && stateGeometryCache.has(cacheKey)) return stateGeometryCache.get(cacheKey);
+
+    const el = sourceSvgRoot.querySelector(`#${CSS.escape(stateId)}`) || sourceSvgRoot.querySelector(`[data-id="${stateId}"]`);
+    if (!el || typeof el.getBBox !== "function") return null;
+
+    const path = buildPathFromElement(el);
+    if (!path) return null;
+
+    const geometry = { stateId, element: el, bbox: el.getBBox(), path };
+    if (sourceSvgRoot === svg) stateGeometryCache.set(cacheKey, geometry);
+    return geometry;
+  }
+
+  function loadPhotoImage(src) {
+    if (!src) return Promise.resolve(null);
+    if (!photoImageCache.has(src)) {
+      photoImageCache.set(src, new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      }).catch((error) => {
+        photoImageCache.delete(src);
+        throw error;
+      }));
+    }
+    return photoImageCache.get(src);
+  }
+
+  async function compressImageForStorage(src, maxDim = 1600, quality = 0.86) {
+    const img = await loadPhotoImage(src);
+    if (!img) return src;
+
+    const largestDim = Math.max(img.width || 0, img.height || 0);
+    if (!largestDim || largestDim <= maxDim) return src;
+
+    const scale = maxDim / largestDim;
+    const width = Math.max(1, Math.round((img.width || maxDim) * scale));
+    const height = Math.max(1, Math.round((img.height || maxDim) * scale));
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return src;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, width, height);
+
+    try {
+      return canvas.toDataURL('image/jpeg', quality);
+    } catch (e) {
+      console.warn('Could not compress image for storage:', e);
+      return src;
+    }
+  }
+
+  function drawStatePhotoToContext(ctx, photoData, geometry) {
+    return loadPhotoImage(photoData?.sourceImage).then((img) => {
+      if (!img || !geometry) return false;
+
+      const bbox = geometry.bbox;
+      const padding = photoData.padding || 0;
+      const sourceBBox = photoData.bbox || bbox;
+      const viewBoxW = sourceBBox.width + padding * 2;
+      const viewBoxH = sourceBBox.height + padding * 2;
+      const viewBoxAspect = viewBoxW / viewBoxH;
+      const shapeW = photoData.shapeW || bbox.width;
+      const shapeH = photoData.shapeH || bbox.height;
+      const shapeBoxAspect = shapeW / shapeH;
+
+      let contentW, contentH;
+      if (shapeBoxAspect > viewBoxAspect) {
+        contentH = shapeH;
+        contentW = shapeH * viewBoxAspect;
+      } else {
+        contentW = shapeW;
+        contentH = shapeW / viewBoxAspect;
+      }
+
+      const stateRatioW = sourceBBox.width / viewBoxW;
+      const stateRatioH = sourceBBox.height / viewBoxH;
+      const actualStateW = contentW * stateRatioW;
+      const actualStateH = contentH * stateRatioH;
+      const fitScaleX = bbox.width / actualStateW;
+      const fitScaleY = bbox.height / actualStateH;
+      const scaleToOutput = Math.min(fitScaleX, fitScaleY);
+      const imgW = (photoData.imgWidth || img.width) * (photoData.scale || 1) * scaleToOutput;
+      const imgH = (photoData.imgHeight || img.height) * (photoData.scale || 1) * scaleToOutput;
+
+      ctx.save();
+      ctx.clip(geometry.path);
+      if (photoData.bgColor) {
+        ctx.fillStyle = photoData.bgColor;
+        ctx.fill(geometry.path);
+      }
+
+      ctx.translate(bbox.x + bbox.width / 2, bbox.y + bbox.height / 2);
+      ctx.rotate((photoData.rotation || 0) * Math.PI / 180);
+      ctx.scale(photoData.flipX || 1, 1);
+      ctx.translate((photoData.x || 0) * scaleToOutput * (photoData.flipX || 1), (photoData.y || 0) * scaleToOutput);
+      ctx.globalAlpha = (photoData.opacity ?? 100) / 100;
+
+      if (photoData.feather > 0) {
+        const f = photoData.feather / 100;
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = Math.max(1, Math.round(imgW));
+        tempCanvas.height = Math.max(1, Math.round(imgH));
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.imageSmoothingEnabled = true;
+        tempCtx.imageSmoothingQuality = 'high';
+        tempCtx.drawImage(img, 0, 0, tempCanvas.width, tempCanvas.height);
+        tempCtx.globalCompositeOperation = 'destination-out';
+
+        const fadeW = Math.max(1, Math.round(tempCanvas.width * f));
+        const fadeH = Math.max(1, Math.round(tempCanvas.height * f));
+
+        const leftGrad = tempCtx.createLinearGradient(0, 0, fadeW, 0);
+        leftGrad.addColorStop(0, 'rgba(0,0,0,1)');
+        leftGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        tempCtx.fillStyle = leftGrad;
+        tempCtx.fillRect(0, 0, fadeW, tempCanvas.height);
+
+        const rightGrad = tempCtx.createLinearGradient(tempCanvas.width - fadeW, 0, tempCanvas.width, 0);
+        rightGrad.addColorStop(0, 'rgba(0,0,0,0)');
+        rightGrad.addColorStop(1, 'rgba(0,0,0,1)');
+        tempCtx.fillStyle = rightGrad;
+        tempCtx.fillRect(tempCanvas.width - fadeW, 0, fadeW, tempCanvas.height);
+
+        const topGrad = tempCtx.createLinearGradient(0, 0, 0, fadeH);
+        topGrad.addColorStop(0, 'rgba(0,0,0,1)');
+        topGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        tempCtx.fillStyle = topGrad;
+        tempCtx.fillRect(0, 0, tempCanvas.width, fadeH);
+
+        const bottomGrad = tempCtx.createLinearGradient(0, tempCanvas.height - fadeH, 0, tempCanvas.height);
+        bottomGrad.addColorStop(0, 'rgba(0,0,0,0)');
+        bottomGrad.addColorStop(1, 'rgba(0,0,0,1)');
+        tempCtx.fillStyle = bottomGrad;
+        tempCtx.fillRect(0, tempCanvas.height - fadeH, tempCanvas.width, fadeH);
+
+        ctx.drawImage(tempCanvas, -imgW / 2, -imgH / 2, imgW, imgH);
+      } else {
+        ctx.drawImage(img, -imgW / 2, -imgH / 2, imgW, imgH);
+      }
+
+      ctx.restore();
+      return true;
+    });
+  }
+
+  async function renderPhotoMapToCanvas(targetCanvas, options = {}) {
+    if (!targetCanvas) return;
+    const { vbX, vbY, vbWidth, vbHeight } = getViewBoxMetrics(svg);
+    const width = options.width || targetCanvas.width || Math.round(mapWrap.clientWidth || vbWidth);
+    const height = options.height || targetCanvas.height || Math.round(width * (vbHeight / vbWidth));
+    const includeStrokes = options.includeStrokes !== false;
+    const clearColor = options.clearColor || "#ffffff";
+    const clear = options.clear !== false;
+
+    if (targetCanvas.width !== width) targetCanvas.width = width;
+    if (targetCanvas.height !== height) targetCanvas.height = height;
+
+    const ctx = targetCanvas.getContext("2d");
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    if (clear) {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = clearColor;
+      ctx.fillRect(0, 0, width, height);
+    }
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+
+    const scaleX = width / vbWidth;
+    const scaleY = height / vbHeight;
+    ctx.save();
+    ctx.scale(scaleX, scaleY);
+    ctx.translate(-vbX, -vbY);
+
+    const stateIds = [];
+    svg.querySelectorAll("path, polygon, polyline, rect").forEach((el) => {
+      const stateId = el.id || el.getAttribute("data-id");
+      if (stateId) stateIds.push(stateId);
+    });
+
+    for (const stateId of stateIds) {
+      const geometry = getStateGeometry(stateId, svg);
+      if (!geometry) continue;
+
+      ctx.save();
+      ctx.fillStyle = PHOTO_MAP_BASE_FILL;
+      ctx.fill(geometry.path);
+
+      const photoData = statePhotoData[stateId];
+      if (photoData?.sourceImage) {
+        try {
+          await drawStatePhotoToContext(ctx, photoData, geometry);
+        } catch (error) {
+          console.warn('Photo render failed for', stateId, error);
+        }
+      } else if (legacyStateImages[stateId]) {
+        try {
+          const legacyImg = await loadPhotoImage(legacyStateImages[stateId]);
+          if (legacyImg) {
+            ctx.save();
+            ctx.clip(geometry.path);
+            ctx.drawImage(legacyImg, geometry.bbox.x, geometry.bbox.y, geometry.bbox.width, geometry.bbox.height);
+            ctx.restore();
+          }
+        } catch (error) {
+          console.warn('Legacy photo render failed for', stateId, error);
+        }
+      }
+      ctx.restore();
+    }
+
+    if (includeStrokes) {
+      svg.querySelectorAll("path, polygon, polyline, rect").forEach((el) => {
+        const stateId = el.id || el.getAttribute("data-id");
+        const geometry = stateId ? getStateGeometry(stateId, svg) : null;
+        if (!geometry) return;
+        ctx.strokeStyle = "#94a3b8";
+        ctx.lineWidth = 1;
+        ctx.stroke(geometry.path);
+      });
+    }
+
+    ctx.restore();
+  }
+
+  function queuePhotoRender() {
+    if (!photoRenderCanvas || photoRenderQueued) return;
+    photoRenderQueued = true;
+    requestAnimationFrame(async () => {
+      photoRenderQueued = false;
+      const { vbWidth, vbHeight } = getViewBoxMetrics(svg);
+      const width = LIVE_PREVIEW_MIN_WIDTH;
+      const height = Math.round(width * (vbHeight / vbWidth));
+      await renderPhotoMapToCanvas(photoRenderCanvas, { width, height, includeStrokes: false });
+      photoRenderCanvas.style.width = "100%";
+      photoRenderCanvas.style.height = "100%";
+    });
+  }
+
+  // Edit state - position/scale/rotation in mapWrap coordinates
+  let editState = {
+    active: false,
+    stateId: null,
+    imageUrl: null,
+    // Position in mapWrap pixels (relative to mapWrap top-left)
+    x: 0,
+    y: 0,
+    scale: 1,
+    rotation: 0,
+    opacity: 100,
+    imgWidth: 0,
+    imgHeight: 0,
+    openZoom: 1  // Zoom level when editor was opened
+  };
+
+  // Get state bounding box in mapWrap pixel coordinates
+  function getStateBounds(stateId) {
+    const stateEl = svg.querySelector(`#${CSS.escape(stateId)}`) ||
+                    svg.querySelector(`[data-id="${stateId}"]`);
+    if (!stateEl) return null;
+
+    // Use getBoundingClientRect for accurate screen position
+    const mapRect = mapWrap.getBoundingClientRect();
+    const stateRect = stateEl.getBoundingClientRect();
+
+    // Convert to mapWrap-relative coordinates
+    return {
+      x: stateRect.left - mapRect.left,
+      y: stateRect.top - mapRect.top,
+      width: stateRect.width,
+      height: stateRect.height,
+      cx: stateRect.left - mapRect.left + stateRect.width / 2,
+      cy: stateRect.top - mapRect.top + stateRect.height / 2
+    };
+  }
+
+  function openEditor(stateId, imageDataUrl) {
+    // Don't reset zoom - let user keep their view
+    const bounds = getStateBounds(stateId);
+    if (!bounds) return;
+
+    // Store original image for re-editing later
+    originalImages[stateId] = imageDataUrl;
+
+    editState.active = true;
+    editState.stateId = stateId;
+    editState.imageUrl = imageDataUrl;
+    editState.rotation = 0;
+    editState.opacity = 60;  // Start lower so you can see state outline
+    editState.openZoom = mapZoom;  // Remember zoom level when editor opened
+    if (editOpacity) editOpacity.value = 60;
+
+    // Load image to get dimensions, then position over state
+    const img = new Image();
+    img.onload = () => {
+      editState.imgWidth = img.width;
+      editState.imgHeight = img.height;
+
+      // Scale so image covers the state nicely
+      // Use the larger state dimension to ensure coverage
+      const stateSize = Math.max(bounds.width, bounds.height);
+      const imgSize = Math.max(img.width, img.height);
+      const fitScale = (stateSize / imgSize) * 1.3;
+      editState.scale = fitScale;
+
+      // Center over state
+      editState.x = bounds.cx;
+      editState.y = bounds.cy;
+
+      renderEdit();
+      if (editPhoto) editPhoto.classList.remove("hidden");
+      if (editControls) editControls.classList.remove("hidden");
+    };
+    img.src = imageDataUrl;
+    if (editPhoto) editPhoto.src = imageDataUrl;
+  }
+
+  function closeEditor() {
+    editState.active = false;
+    if (editPhoto) editPhoto.classList.add("hidden");
+    if (editControls) editControls.classList.add("hidden");
+  }
+
+  let renderPending = false;
+  function renderEdit() {
+    if (renderPending) return;
+    renderPending = true;
+    requestAnimationFrame(() => {
+      renderPending = false;
+      // Position photo using transform for smooth rendering (no trails)
+      const w = editState.imgWidth * editState.scale;
+      const h = editState.imgHeight * editState.scale;
+
+      editPhoto.style.width = w + "px";
+      editPhoto.style.height = h + "px";
+      // Use transform for position + rotation (avoids repaint trails on mobile)
+      editPhoto.style.transform = `translate(${editState.x - w/2}px, ${editState.y - h/2}px) rotate(${editState.rotation}deg)`;
+      editPhoto.style.opacity = editState.opacity / 100;
+    });
+  }
+
+  // Old edit controls - may not exist anymore
+  if (editOpacity) {
+    editOpacity.addEventListener("input", e => {
+      editState.opacity = parseInt(e.target.value);
+      renderEdit();
+    });
+  }
+
+  function applyEdit() {
+    if (!editState.active || !editState.imageUrl) return;
+
+    const s = { ...editState }; // Snapshot
+    const currentZoom = mapZoom; // Capture current zoom level
+    const openZoom = s.openZoom || 1; // Safeguard if openZoom wasn't set
+    const bounds = getStateBounds(s.stateId);
+    if (!bounds) return;
+
+    // Unzoom the bounds to get actual state dimensions
+    const stateW = bounds.width / currentZoom;
+    const stateH = bounds.height / currentZoom;
+
+    // Canvas matches the state's aspect ratio, but stays within browser-safe raster limits.
+    const { width: canvasW, height: canvasH } = getStateCanvasSize(stateW, stateH, PATTERN_SOURCE_SCALE);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = canvasW;
+    canvas.height = canvasH;
+    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+
+    const img = new Image();
+    img.onload = () => {
+      ctx.globalAlpha = s.opacity / 100;
+
+      // Photo position was set at openZoom, state bounds are at currentZoom
+      // Convert both to unzoomed coordinates before computing offset
+      const offsetX = s.x / openZoom - bounds.cx / currentZoom;
+      const offsetY = s.y / openZoom - bounds.cy / currentZoom;
+
+      // Scale: canvas pixels per unzoomed mapWrap pixel
+      // Since canvas matches state aspect ratio, scaleX = scaleY
+      const scale = canvasW / stateW;
+
+      ctx.translate(canvasW / 2, canvasH / 2);
+      ctx.rotate(s.rotation * Math.PI / 180);
+
+      // Apply offset in canvas space
+      ctx.translate(offsetX * scale, offsetY * scale);
+
+      // Photo size was set at openZoom - convert to unzoomed coordinates
+      const photoW = s.imgWidth * s.scale / openZoom;
+      const photoH = s.imgHeight * s.scale / openZoom;
+      const imgW = photoW * scale;
+      const imgH = photoH * scale;
+
+      ctx.drawImage(img, -imgW / 2, -imgH / 2, imgW, imgH);
+
+      setStateImage(s.stateId, canvas.toDataURL("image/png"));
+      closeEditor();
+    };
+    img.src = s.imageUrl;
+  }
+
+  // ============ EDIT-ON-MAP EVENT HANDLERS ============
+  // Drag, zoom, rotate the photo directly on the map
+
+  let dragging = false;
+  let lastX = 0, lastY = 0;
+
+  editPhoto.addEventListener("pointerdown", e => {
+    if (!editState.active) return;
+    dragging = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    editPhoto.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+
+  editPhoto.addEventListener("pointermove", e => {
+    if (!dragging || !editState.active) return;
+    e.preventDefault();
+    const mapRect = mapWrap.getBoundingClientRect();
+
+    if (e.shiftKey) {
+      // Shift+drag = rotate
+      const cx = mapRect.left + editState.x;
+      const cy = mapRect.top + editState.y;
+      const prev = Math.atan2(lastY - cy, lastX - cx);
+      const curr = Math.atan2(e.clientY - cy, e.clientX - cx);
+      editState.rotation -= (curr - prev) * (180 / Math.PI);
+    } else {
+      // Drag = move
+      editState.x += e.clientX - lastX;
+      editState.y += e.clientY - lastY;
+    }
+    lastX = e.clientX;
+    lastY = e.clientY;
+    renderEdit();
+  });
+
+  editPhoto.addEventListener("pointerup", () => { dragging = false; });
+  editPhoto.addEventListener("pointercancel", () => { dragging = false; });
+
+  // Wheel = zoom
+  editPhoto.addEventListener("wheel", e => {
+    if (!editState.active) return;
+    e.preventDefault();
+    editState.scale *= e.deltaY > 0 ? 0.9 : 1.1;
+    editState.scale = Math.max(0.001, Math.min(20, editState.scale));
+    renderEdit();
+  }, { passive: false });
+
+  // Touch: pinch zoom + two-finger rotate
+  let touchDist = 0, touchAngle = 0, touchCenter = {x:0, y:0};
+
+  editPhoto.addEventListener("touchstart", e => {
+    if (!editState.active) return;
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      dragging = false;
+      const [t0, t1] = e.touches;
+      touchDist = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+      touchAngle = Math.atan2(t0.clientY - t1.clientY, t0.clientX - t1.clientX);
+      touchCenter = { x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 };
+    }
+  }, { passive: false });
+
+  editPhoto.addEventListener("touchmove", e => {
+    if (!editState.active) return;
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const [t0, t1] = e.touches;
+      const dist = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+      const angle = Math.atan2(t0.clientY - t1.clientY, t0.clientX - t1.clientX);
+      const center = { x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 };
+
+      if (touchDist > 0) {
+        editState.x += center.x - touchCenter.x;
+        editState.y += center.y - touchCenter.y;
+        editState.scale *= dist / touchDist;
+        editState.scale = Math.max(0.001, Math.min(20, editState.scale));
+        editState.rotation += (angle - touchAngle) * (180 / Math.PI);
+        renderEdit();
+      }
+      touchDist = dist;
+      touchAngle = angle;
+      touchCenter = center;
+    }
+  }, { passive: false });
+
+  editPhoto.addEventListener("touchend", () => { touchDist = 0; });
+
+  // These buttons may not exist - add null checks
+  const editCancelBtn = document.getElementById("editCancel");
+  const editApplyBtn = document.getElementById("editApply");
+  const editZoomInBtn = document.getElementById("editZoomIn");
+  const editZoomOutBtn = document.getElementById("editZoomOut");
+  const editRotateLBtn = document.getElementById("editRotateL");
+  const editRotateRBtn = document.getElementById("editRotateR");
+
+  if (editCancelBtn) editCancelBtn.addEventListener("click", closeEditor);
+  if (editApplyBtn) editApplyBtn.addEventListener("click", applyEdit);
+  if (editZoomInBtn) editZoomInBtn.addEventListener("click", () => {
+    if (!editState.active) return;
+    editState.scale *= 1.15;
+    renderEdit();
+  });
+  if (editZoomOutBtn) editZoomOutBtn.addEventListener("click", () => {
+    if (!editState.active) return;
+    editState.scale *= 0.85;
+    renderEdit();
+  });
+  if (editRotateLBtn) editRotateLBtn.addEventListener("click", () => {
+    if (!editState.active) return;
+    editState.rotation -= 15;
+    renderEdit();
+  });
+  if (editRotateRBtn) editRotateRBtn.addEventListener("click", () => {
+    if (!editState.active) return;
+    editState.rotation += 15;
+    renderEdit();
+  });
+
+
+  // ============ FULLSCREEN PHOTO EDITOR ============
+  const fsModal = document.getElementById("photoEditorModal");
+  const fsCanvas = document.getElementById("fsCanvas");
+  const fsPhoto = document.getElementById("fsPhoto");
+  const fsStateShape = document.getElementById("fsStateShape");
+  const fsStateName = document.getElementById("fsStateName");
+
+  const fsState = {
+    active: false,
+    stateId: null,
+    imageUrl: null,
+    x: 0,
+    y: 0,
+    scale: 1,
+    rotation: 0,
+    flipX: 1,
+    opacity: 100,
+    feather: 0,
+    bgColor: null,  // null = transparent, otherwise hex color
+    imgWidth: 0,
+    imgHeight: 0
+  };
+
+  const fsOpacitySlider = document.getElementById("fsOpacity");
+  const fsOpacityVal = document.getElementById("fsOpacityVal");
+  fsOpacitySlider.addEventListener("input", () => {
+    fsState.opacity = parseInt(fsOpacitySlider.value);
+    fsOpacityVal.textContent = fsState.opacity;
+    renderFsPhoto();
+  });
+
+  const fsFeatherSlider = document.getElementById("fsFeather");
+  const fsFeatherVal = document.getElementById("fsFeatherVal");
+  fsFeatherSlider.addEventListener("input", () => {
+    fsState.feather = parseInt(fsFeatherSlider.value);
+    fsFeatherVal.textContent = fsState.feather;
+    renderFsPhoto();
+  });
+
+  const fsBgColorPicker = document.getElementById("fsBgColor");
+  const fsBgTransparentBtn = document.getElementById("fsBgTransparent");
+  fsBgColorPicker.addEventListener("input", () => {
+    fsState.bgColor = fsBgColorPicker.value;
+    fsBgTransparentBtn.textContent = "None";
+    renderFsPhoto();
+  });
+  fsBgTransparentBtn.addEventListener("click", () => {
+    fsState.bgColor = null;
+    fsBgTransparentBtn.textContent = "None (active)";
+    renderFsPhoto();
+  });
+
+  function openFullscreenEditor(stateId, imageDataUrl) {
+    const stateEl = svg.querySelector(`#${CSS.escape(stateId)}`) ||
+                    svg.querySelector(`[data-id="${stateId}"]`);
+    if (!stateEl) return;
+
+    // Store original image for re-editing
+    originalImages[stateId] = imageDataUrl;
+
+    // Clone state shape into modal
+    fsStateShape.innerHTML = "";
+    const clonedPath = stateEl.cloneNode(true);
+    clonedPath.removeAttribute("id");
+    clonedPath.removeAttribute("data-id");
+    clonedPath.removeAttribute("fill");
+    clonedPath.removeAttribute("style");
+
+    // Get the bounding box of the state to set viewBox
+    const bbox = stateEl.getBBox();
+    const padding = Math.max(bbox.width, bbox.height) * 0.1;
+    fsStateShape.setAttribute("viewBox",
+      `${bbox.x - padding} ${bbox.y - padding} ${bbox.width + padding*2} ${bbox.height + padding*2}`
+    );
+    fsStateShape.appendChild(clonedPath);
+
+    // Store bbox and padding for apply calculation
+    fsState.bbox = { x: bbox.x, y: bbox.y, width: bbox.width, height: bbox.height };
+    fsState.padding = padding;
+
+    // Get state name
+    const stateName = stateEl.getAttribute("data-name") || stateId.toUpperCase();
+    fsStateName.textContent = `Position photo for ${stateName}`;
+
+    // Setup state
+    fsState.active = true;
+    fsState.stateId = stateId;
+    fsState.imageUrl = imageDataUrl;
+    fsState.rotation = 0;
+    fsState.flipX = 1;
+    fsState.x = 0;
+    fsState.y = 0;
+    fsState.opacity = 100;
+    fsOpacitySlider.value = 100;
+    fsOpacityVal.textContent = "100";
+    fsState.feather = 0;
+    fsFeatherSlider.value = 0;
+    fsFeatherVal.textContent = "0";
+    fsState.bgColor = null;
+    fsBgTransparentBtn.textContent = "None (active)";
+
+    // Load image
+    const img = new Image();
+    img.onload = () => {
+      fsState.imgWidth = img.width;
+      fsState.imgHeight = img.height;
+      fsPhoto.src = imageDataUrl;
+
+      // Show modal FIRST so getBoundingClientRect works
+      fsModal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+
+      // Check if page is zoomed and warn user
+      if (window.visualViewport && window.visualViewport.scale > 1.05) {
+        alert('Please zoom out to 100% before editing. Double-tap or pinch out on the page first.');
+        closeFsEditor();
+        return;
+      }
+
+      // Reset any inline styles
+      fsModal.style.width = '';
+      fsModal.style.height = '';
+      fsModal.style.transform = '';
+      fsModal.style.left = '';
+      fsModal.style.top = '';
+
+      // Wait for layout, then calculate scale and render
+      requestAnimationFrame(() => {
+        // Use the actual rendered SVG content box so each state fills the editor as much as possible
+        const shapeRect = fsStateShape.getBoundingClientRect();
+        fsState.shapeW = shapeRect.width;
+        fsState.shapeH = shapeRect.height;
+
+        const paddingRatio = 0.92;
+        const fitScale = Math.min(
+          (shapeRect.width * paddingRatio) / img.width,
+          (shapeRect.height * paddingRatio) / img.height
+        );
+        fsState.scale = fitScale;
+        renderFsPhoto();
+      });
+    };
+    img.src = imageDataUrl;
+  }
+
+  function closeFsEditor() {
+    fsState.active = false;
+    fsModal.classList.add("hidden");
+    document.body.style.overflow = "";
+
+    // Reset zoom compensation styles
+    fsModal.style.width = '';
+    fsModal.style.height = '';
+    fsModal.style.transform = '';
+    fsModal.style.transformOrigin = '';
+    fsModal.style.left = '';
+    fsModal.style.top = '';
+  }
+
+  function getFsPlacementData() {
+    return {
+      sourceImage: fsState.imageUrl,
+      x: fsState.x,
+      y: fsState.y,
+      scale: fsState.scale,
+      rotation: fsState.rotation,
+      flipX: fsState.flipX,
+      opacity: fsState.opacity,
+      feather: fsState.feather,
+      bgColor: fsState.bgColor,
+      imgWidth: fsState.imgWidth,
+      imgHeight: fsState.imgHeight,
+      shapeW: fsState.shapeW,
+      shapeH: fsState.shapeH,
+      bbox: fsState.bbox,
+      padding: fsState.padding
+    };
+  }
+
+
+  function renderFsPhoto() {
+    if (!fsState.active) return;
+    const w = fsState.imgWidth * fsState.scale;
+    const h = fsState.imgHeight * fsState.scale;
+
+    // Use shape center, not canvas center (they differ for non-square states)
+    const canvasRect = fsCanvas.getBoundingClientRect();
+    const shapeRect = fsStateShape.getBoundingClientRect();
+    const shapeCenterX = shapeRect.left - canvasRect.left + shapeRect.width / 2;
+    const shapeCenterY = shapeRect.top - canvasRect.top + shapeRect.height / 2;
+    const cx = shapeCenterX + fsState.x;
+    const cy = shapeCenterY + fsState.y;
+
+    fsPhoto.style.width = w + "px";
+    fsPhoto.style.height = h + "px";
+    fsPhoto.style.left = cx + "px";
+    fsPhoto.style.top = cy + "px";
+    fsPhoto.style.transform = `translate(-50%, -50%) scaleX(${fsState.flipX}) rotate(${fsState.rotation}deg)`;
+    fsPhoto.style.opacity = fsState.opacity / 100;
+
+    // Background color preview
+    if (fsState.bgColor) {
+      fsCanvas.style.backgroundColor = fsState.bgColor;
+    } else {
+      fsCanvas.style.backgroundColor = '#1a1a1a';
+    }
+
+    // Edge feather preview using CSS mask
+    if (fsState.feather > 0) {
+      const f = fsState.feather;
+      // Create edge fade using combined linear gradients
+      const maskH = `linear-gradient(to right, transparent, black ${f}%, black ${100-f}%, transparent)`;
+      const maskV = `linear-gradient(to bottom, transparent, black ${f}%, black ${100-f}%, transparent)`;
+      fsPhoto.style.maskImage = `${maskH}, ${maskV}`;
+      fsPhoto.style.maskComposite = 'intersect';
+      fsPhoto.style.webkitMaskImage = `${maskH}, ${maskV}`;
+      fsPhoto.style.webkitMaskComposite = 'source-in';
+    } else {
+      fsPhoto.style.maskImage = 'none';
+      fsPhoto.style.webkitMaskImage = 'none';
+    }
+  }
+
+  async function applyFsEdit() {
+    if (!fsState.active || !fsState.imageUrl) return;
+
+    const photoData = getFsPlacementData();
+    originalImages[fsState.stateId] = photoData.sourceImage;
+
+    try {
+      photoData.sourceImage = await compressImageForStorage(photoData.sourceImage);
+    } catch (e) {
+      console.warn('Could not compress source image for storage:', e);
+    }
+
+    statePhotoData[fsState.stateId] = photoData;
+
+    try {
+      const fallbackCanvas = await renderPhotoDataToStateCanvas(photoData, fsState.stateId, 1);
+      if (fallbackCanvas) {
+        legacyStateImages[fsState.stateId] = fallbackCanvas.toDataURL("image/jpeg", 0.9);
+      }
+    } catch (e) {
+      console.warn('Could not create legacy fallback image for', fsState.stateId, e);
+    }
+
+    queuePhotoRender();
+    saveToLocalStorage();
+    closeFsEditor();
+  }
+
+  // Fullscreen editor touch/pointer handlers
+  let fsDragging = false;
+  let fsRotating = false; // Shift+drag to rotate
+  let fsLastX = 0, fsLastY = 0;
+  let fsTouchDist = 0, fsTouchAngle = 0;
+
+  fsCanvas.addEventListener("pointerdown", e => {
+    if (!fsState.active) return;
+    if (e.pointerType === "touch") return; // Let touch handlers handle it
+    fsDragging = true;
+    fsRotating = e.shiftKey; // Track if shift was held at start
+    fsLastX = e.clientX;
+    fsLastY = e.clientY;
+    fsCanvas.setPointerCapture(e.pointerId);
+  });
+
+  fsCanvas.addEventListener("pointermove", e => {
+    if (!fsDragging || !fsState.active) return;
+    if (e.pointerType === "touch") return;
+
+    if (fsRotating || e.shiftKey) {
+      // Shift+drag = rotate based on horizontal movement
+      const dx = e.clientX - fsLastX;
+      fsState.rotation -= dx * 0.5; // Adjust sensitivity
+      fsLastX = e.clientX;
+      fsLastY = e.clientY;
+      renderFsPhoto();
+    } else {
+      // Normal drag = move
+      fsState.x += e.clientX - fsLastX;
+      fsState.y += e.clientY - fsLastY;
+      fsLastX = e.clientX;
+      fsLastY = e.clientY;
+      renderFsPhoto();
+    }
+  });
+
+  fsCanvas.addEventListener("pointerup", () => { fsDragging = false; fsRotating = false; });
+  fsCanvas.addEventListener("pointercancel", () => { fsDragging = false; fsRotating = false; });
+
+  // Mouse wheel zoom
+  fsCanvas.addEventListener("wheel", e => {
+    if (!fsState.active) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    fsState.scale *= delta;
+    fsState.scale = Math.max(0.02, Math.min(15, fsState.scale));
+    renderFsPhoto();
+  }, { passive: false });
+
+  // Touch: drag with one finger, pinch-zoom and rotate with two
+  let fsTouchStartX = 0, fsTouchStartY = 0;
+
+  fsCanvas.addEventListener("touchstart", e => {
+    if (!fsState.active) return;
+    e.preventDefault();
+
+    if (e.touches.length === 1) {
+      fsTouchStartX = e.touches[0].clientX;
+      fsTouchStartY = e.touches[0].clientY;
+      fsLastX = e.touches[0].clientX;
+      fsLastY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      const [t0, t1] = e.touches;
+      fsTouchDist = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+      fsTouchAngle = Math.atan2(t0.clientY - t1.clientY, t0.clientX - t1.clientX);
+    }
+  }, { passive: false });
+
+  fsCanvas.addEventListener("touchmove", e => {
+    if (!fsState.active) return;
+    e.preventDefault();
+
+    if (e.touches.length === 1) {
+      // Single finger drag
+      fsState.x += e.touches[0].clientX - fsLastX;
+      fsState.y += e.touches[0].clientY - fsLastY;
+      fsLastX = e.touches[0].clientX;
+      fsLastY = e.touches[0].clientY;
+      renderFsPhoto();
+    } else if (e.touches.length === 2) {
+      // Two finger pinch zoom and rotate
+      const [t0, t1] = e.touches;
+      const dist = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+      const angle = Math.atan2(t0.clientY - t1.clientY, t0.clientX - t1.clientX);
+
+      if (fsTouchDist > 0) {
+        // Scale
+        fsState.scale *= dist / fsTouchDist;
+        fsState.scale = Math.max(0.02, Math.min(15, fsState.scale));
+
+        // Rotate
+        fsState.rotation += (angle - fsTouchAngle) * (180 / Math.PI);
+
+        renderFsPhoto();
+      }
+
+      fsTouchDist = dist;
+      fsTouchAngle = angle;
+    }
+  }, { passive: false });
+
+  fsCanvas.addEventListener("touchend", e => {
+    if (e.touches.length < 2) {
+      fsTouchDist = 0;
+      fsTouchAngle = 0;
+    }
+    // Update last position to prevent jump when transitioning from 2 fingers to 1
+    if (e.touches.length === 1) {
+      fsLastX = e.touches[0].clientX;
+      fsLastY = e.touches[0].clientY;
+    }
+  });
+
+  // Fullscreen editor button handlers
+  document.getElementById("fsZoomIn").addEventListener("click", () => {
+    fsState.scale *= 1.2;
+    renderFsPhoto();
+  });
+  document.getElementById("fsZoomOut").addEventListener("click", () => {
+    fsState.scale *= 0.8;
+    renderFsPhoto();
+  });
+  document.getElementById("fsRotateL").addEventListener("click", () => {
+    fsState.rotation -= 15;
+    renderFsPhoto();
+  });
+  document.getElementById("fsRotateR").addEventListener("click", () => {
+    fsState.rotation += 15;
+    renderFsPhoto();
+  });
+  document.getElementById("fsFlipH").addEventListener("click", () => {
+    fsState.flipX = fsState.flipX === -1 ? 1 : -1;
+    renderFsPhoto();
+  });
+  document.getElementById("fsCancel").addEventListener("click", closeFsEditor);
+  document.getElementById("fsApply").addEventListener("click", applyFsEdit);
+
+  // Close fullscreen editor with Escape key
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && fsState.active) {
+      closeFsEditor();
+    }
+  });
+
+
+  /* ---------- init ---------- */
+
+  blankOutSvg();
+  queuePhotoRender();
+  window.addEventListener('resize', queuePhotoRender);
+
+  // DEBUG: Confirm JS is running
+  console.log("JS loaded, svg =", svg);
+
+  /* ---------- events ---------- */
+
+  // Global handler for SVG clicks (called from inline onclick)
+  window.handleSvgClick = function(e) {
+    if (Date.now() < suppressPhotoMapClickUntil) return;
+    const hit = findStateElement(e.target);
+    if (hit) {
+      e.preventDefault();
+      selectState(hit);
+    }
+  };
+
+  // iOS needs touchend because click events can be unreliable on SVG
+  // Track if touch moved (to distinguish tap from scroll/pan)
+  let tapStartX = 0, tapStartY = 0, tapMoved = false;
+
+  document.addEventListener("touchstart", e => {
+    if (e.touches.length === 1) {
+      tapStartX = e.touches[0].clientX;
+      tapStartY = e.touches[0].clientY;
+      tapMoved = false;
+    }
+  }, { passive: true });
+
+  document.addEventListener("touchmove", e => {
+    if (e.touches.length === 1) {
+      const dx = Math.abs(e.touches[0].clientX - tapStartX);
+      const dy = Math.abs(e.touches[0].clientY - tapStartY);
+      if (dx > 8 || dy > 8) tapMoved = true;
+    }
+  }, { passive: true });
+
+  document.addEventListener("touchend", e => {
+    // Only handle taps (not drags)
+    if (tapMoved) return;
+    if (e.changedTouches.length !== 1) return;
+
+    const touch = e.changedTouches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!el) return;
+
+    // Check if tapped inside the map area on a state
+    const inMap = el.closest("#mapWrap") || el.closest("#usaSvg");
+    if (!inMap) return;
+
+    // Skip if tapped on controls
+    if (el.closest(".zoom-controls")) return;
+    if (el.id === "editPhoto") return;
+
+    const hit = findStateElement(el);
+    if (hit) {
+      e.preventDefault();
+      selectState(hit);
+    }
+  }, { passive: false });
+
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+
+    if (!selectedId) {
+      alert("Tap a state first.");
+      fileInput.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      openFullscreenEditor(selectedId, reader.result);
+      fileInput.value = "";
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById("editBtn").addEventListener("click", () => {
+    if (selectedId && originalImages[selectedId]) {
+      openFullscreenEditor(selectedId, originalImages[selectedId]);
+    }
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", () => {
+    if (selectedId) clearStateImage(selectedId);
+  });
+
+  document.getElementById("clearAllBtn").addEventListener("click", clearAll);
+
+  // Download map as PNG
+  document.getElementById("downloadBtn").addEventListener("click", async () => {
+    const { vbWidth, vbHeight } = getViewBoxMetrics(svg);
+    const width = DOWNLOAD_EXPORT_WIDTH;
+    const height = Math.round(width * (vbHeight / vbWidth));
+
+    const canvas = document.createElement("canvas");
+    await renderPhotoMapToCanvas(canvas, { width, height, includeStrokes: true, clearColor: "#ffffff" });
+
+    // Use toBlob for better quality (avoids base64 encoding overhead)
+    if (canvas.toBlob) {
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.download = "my-photo-map.png";
+        link.href = url;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      }, "image/png");
+    } else {
+      const link = document.createElement("a");
+      link.download = "my-photo-map.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+  });
+
+  // Load saved progress on page load
+  setTimeout(loadFromLocalStorage, 100);
+
+  // ========== MOBILE FULLSCREEN MAP ==========
+  const mobileMapModal = document.getElementById('mobileMapModal');
+  const mobileMapClose = document.getElementById('mobileMapClose');
+  const mobileSvgWrap = document.getElementById('mobileSvgWrap');
+  const mobileAddPhoto = document.getElementById('mobileAddPhoto');
+  const mobileZoomIn = document.getElementById('mobileZoomIn');
+  const mobileZoomOut = document.getElementById('mobileZoomOut');
+  const openMobileMapBtn = document.getElementById('openMobileMap');
+
+  let mobileSelectedState = null;
+  let mobileZoom = 1;
+  let mobilePan = { x: 0, y: 0 };
+  let mobileSvgClone = null;
+
+  function isMobile() {
+    return window.innerWidth <= 768;
+  }
+
+  // Show/hide mobile button based on screen size
+  // Don't close modal on resize - user might be rotating phone
+  function updateMobileUI() {
+    // Use touch detection instead of just width for button visibility
+    const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (hasTouch || window.innerWidth <= 768) {
+      openMobileMapBtn.style.display = 'block';
+    } else {
+      openMobileMapBtn.style.display = 'none';
+      // Only close modal if truly on desktop (no touch)
+      if (!hasTouch) {
+        mobileMapModal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+      }
+    }
+  }
+  updateMobileUI();
+  window.addEventListener('resize', updateMobileUI);
+
+  // Open mobile map modal
+  openMobileMapBtn.addEventListener('click', () => {
+    // Check if page is zoomed
+    if (window.visualViewport && window.visualViewport.scale > 1.05) {
+      alert('Please zoom out to 100% before selecting a state. Double-tap or pinch out on the page first.');
+      return;
+    }
+
+    mobileMapModal.classList.add('active');
+    document.body.classList.add('modal-open');
+    document.documentElement.classList.add('modal-open');
+    window.scrollTo(0, 0);
+
+    // Lock viewport to prevent zoom on rotation
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      viewport._mapModalOriginal = viewport.content;
+      viewport.content = 'width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no';
+    }
+
+    // Clone the SVG
+    mobileSvgWrap.innerHTML = '';
+    mobileSvgClone = svg.cloneNode(true);
+    mobileSvgClone.id = 'mobileSvg';
+    mobileSvgClone.style.touchAction = 'none';
+    mobileSvgClone.style.width = '100%';
+    mobileSvgClone.style.height = 'auto';
+    mobileSvgClone.style.maxHeight = '100%';
+    mobileSvgClone.style.background = '#fff';
+
+    // Make states visible with light fill
+    mobileSvgClone.querySelectorAll('path, polygon, polyline').forEach(el => {
+      if (!el.style.fill || el.style.fill === 'none' || el.style.fill === 'transparent') {
+        el.style.fill = '#e2e8f0';
+      }
+      el.style.stroke = '#64748b';
+      el.style.strokeWidth = '1';
+    });
+
+    mobileSvgWrap.appendChild(mobileSvgClone);
+
+    // Reset zoom/pan
+    mobileZoom = 1;
+    mobilePan = { x: 0, y: 0 };
+    updateMobileTransform();
+
+    // Add click handlers to states in clone
+    mobileSvgClone.querySelectorAll('path[id], polygon[id]').forEach(el => {
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Don't select state if user was dragging/panning the map
+        if (mobileDragged) return;
+        handleMobileStateClick(el);
+      });
+    });
+
+    mobileSelectedState = null;
+    mobileAddPhoto.disabled = true;
+    mobileAddPhoto.textContent = 'Select a state first';
+  });
+
+  // Handle state selection in mobile modal
+  function handleMobileStateClick(el) {
+    // Clear previous selection - restore original gray stroke
+    if (mobileSvgClone) {
+      mobileSvgClone.querySelectorAll('.mobile-selected').forEach(s => {
+        s.classList.remove('mobile-selected');
+        s.style.stroke = '#64748b';
+        s.style.strokeWidth = '1';
+      });
+    }
+
+    // Highlight selected state
+    el.classList.add('mobile-selected');
+    el.style.stroke = '#0ea5e9';
+    el.style.strokeWidth = '3';
+
+    const stateId = el.id || el.getAttribute('data-id');
+    const stateName = el.getAttribute('data-name') || stateId;
+    mobileSelectedState = { id: stateId, name: stateName, el: el };
+
+    // Also select in main SVG
+    const mainEl = svg.querySelector(`#${stateId}`) || svg.querySelector(`[data-id="${stateId}"]`);
+    if (mainEl) selectState(mainEl);
+
+    mobileAddPhoto.disabled = false;
+    mobileAddPhoto.textContent = `Add Photo to ${stateName}`;
+  }
+
+  // Helper to restore viewport
+  function restoreViewport() {
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport && viewport._mapModalOriginal) {
+      viewport.content = viewport._mapModalOriginal;
+    }
+  }
+
+  // Close mobile modal
+  mobileMapClose.addEventListener('click', () => {
+    mobileMapModal.classList.remove('active');
+    document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
+    restoreViewport();
+  });
+
+  // Add photo button - trigger file input
+  mobileAddPhoto.addEventListener('click', () => {
+    if (!mobileSelectedState) return;
+    mobileMapModal.classList.remove('active');
+    document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
+    restoreViewport();
+    fileInput.click();
+  });
+
+  // Mobile zoom controls
+  function updateMobileTransform() {
+    if (mobileSvgClone) {
+      mobileSvgClone.style.transform = `scale(${mobileZoom}) translate(${mobilePan.x}px, ${mobilePan.y}px)`;
+      mobileSvgClone.style.transformOrigin = 'center center';
+    }
+  }
+
+  // Reset zoom/pan on orientation change or resize while modal is open
+  function handleMobileModalResize() {
+    if (mobileMapModal.classList.contains('active')) {
+      mobileZoom = 1;
+      mobilePan = { x: 0, y: 0 };
+      updateMobileTransform();
+    }
+  }
+  window.addEventListener('orientationchange', () => {
+    setTimeout(handleMobileModalResize, 150);
+  });
+  window.addEventListener('resize', handleMobileModalResize);
+
+  mobileZoomIn.addEventListener('click', () => {
+    mobileZoom = Math.min(mobileZoom * 1.3, 5);
+    updateMobileTransform();
+  });
+
+  mobileZoomOut.addEventListener('click', () => {
+    mobileZoom = Math.max(mobileZoom / 1.3, 0.5);
+    updateMobileTransform();
+  });
+
+  // Mobile pan and pinch-to-zoom
+  let mobileTouchStart = null;
+  let mobilePanStart = null;
+  let mobilePinchStartDist = 0;
+  let mobileDragged = false; // Track if user dragged to prevent state selection
+  let mobilePinchStartZoom = 1;
+
+  function getTouchDistance(t1, t2) {
+    return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+  }
+
+  // Double-tap to reset zoom (but not after pinch)
+  let lastTapTime = 0;
+  let wasPinching = false;
+  mobileSvgWrap.addEventListener('touchend', (e) => {
+    if (mobilePinchStartDist > 0) {
+      wasPinching = true;
+      setTimeout(() => { wasPinching = false; }, 100);
+    }
+    if (e.changedTouches.length === 1 && !wasPinching) {
+      const now = Date.now();
+      if (now - lastTapTime < 300) {
+        // Double tap - reset zoom and pan
+        mobileZoom = 1;
+        mobilePan = { x: 0, y: 0 };
+        updateMobileTransform();
+        e.preventDefault();
+      }
+      lastTapTime = now;
+    }
+  }, { passive: false });
+
+  mobileSvgWrap.addEventListener('touchstart', (e) => {
+    mobileDragged = false; // Reset drag flag on new touch
+    if (e.touches.length === 1) {
+      mobileTouchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      mobilePanStart = { ...mobilePan };
+    } else if (e.touches.length === 2) {
+      // Pinch start
+      e.preventDefault();
+      mobilePinchStartDist = getTouchDistance(e.touches[0], e.touches[1]);
+      mobilePinchStartZoom = mobileZoom;
+      mobileTouchStart = null; // Cancel pan
+    }
+  }, { passive: false });
+
+  mobileSvgWrap.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 1 && mobileTouchStart) {
+      // Single finger pan
+      const dx = (e.touches[0].clientX - mobileTouchStart.x) / mobileZoom;
+      const dy = (e.touches[0].clientY - mobileTouchStart.y) / mobileZoom;
+      // Mark as dragged if moved more than 10px (prevents accidental state selection)
+      if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+        mobileDragged = true;
+      }
+      mobilePan.x = mobilePanStart.x + dx;
+      mobilePan.y = mobilePanStart.y + dy;
+      updateMobileTransform();
+    } else if (e.touches.length === 2 && mobilePinchStartDist > 0) {
+      // Pinch zoom
+      e.preventDefault();
+      mobileDragged = true; // Also prevent selection during pinch
+      const currentDist = getTouchDistance(e.touches[0], e.touches[1]);
+      const scale = currentDist / mobilePinchStartDist;
+      mobileZoom = Math.min(Math.max(mobilePinchStartZoom * scale, 0.5), 5);
+      updateMobileTransform();
+    }
+  }, { passive: false });
+
+  mobileSvgWrap.addEventListener('touchend', () => {
+    mobileTouchStart = null;
+    mobilePinchStartDist = 0;
+  });
+
+  </script>
+
+    </div><!-- end #photoMapMode -->
+
+    <!-- ===== FLAG MAP MODE ===== -->
+    <div id="flagMapMode" style="display:none;">
+      <div id="flagModeLayout" style="display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:18px;align-items:start;">
+        <div class="card" style="max-height:80vh;overflow-y:auto;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <h3 style="margin:0;font-family:'Outfit',sans-serif;font-size:1.2rem;">
+              <span id="flagCounter" style="color:var(--accent);">0</span> / 50 States Visited
+            </h3>
+            <button class="btn" onclick="flagSelectAll()" style="font-size:12px;padding:6px 14px;">Select All</button>
+          </div>
+
+          <!-- Color/Flag Mode Toggle -->
+          <div id="flagModeToggle" style="display:flex;gap:4px;margin-bottom:12px;background:#f1f5f9;border-radius:10px;padding:3px;">
+            <button id="btnColorMode" onclick="setFlagDisplayMode('color')" style="flex:1;padding:8px 12px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;background:var(--accent);color:#fff;">Color Mode</button>
+            <button id="btnFlagMode" onclick="setFlagDisplayMode('flag')" style="flex:1;padding:8px 12px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);">Flag Mode</button>
+          </div>
+
+          <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;user-select:none;">
+            <input id="flagAbbrToggle" type="checkbox" checked style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;" />
+            Show state abbreviations
+          </label>
+
+          <div id="colorCategoryPanel" style="display:grid;gap:8px;margin-bottom:12px;">
+            <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;user-select:none;">
+              <input id="colorAbbrToggle" type="checkbox" checked style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;" />
+              Show state abbreviations on color map
+            </label>
+            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;">Color map mode</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button id="btnVisitedOnly" type="button" class="btn secondary" style="font-size:12px;padding:8px 12px;" onclick="setColorCategoryMode('visited')">Visited only</button>
+              <button id="btnVisitedLived" type="button" class="btn secondary" style="font-size:12px;padding:8px 12px;" onclick="setColorCategoryMode('lived')">Visited + lived</button>
+            </div>
+            <div class="tiny">Visited stays green. Lived uses a second color after you mark it.</div>
+          </div>
+
+          <div id="flagChecklist" style="display:grid;grid-template-columns:1fr 1fr;gap:4px;"></div>
+
+          <details id="flagPlacementDetails" style="margin-top:16px;border:1px solid var(--border);border-radius:12px;background:#f8fafc;overflow:hidden;">
+            <summary style="cursor:pointer;list-style:none;padding:12px 14px;font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <span>Advanced flag adjustments</span>
+              <span style="font-size:12px;color:var(--muted);font-weight:600;">Optional</span>
+            </summary>
+            <div id="flagPlacementPanel" style="padding:0 12px 12px;border-top:1px solid var(--border);background:#f8fafc;display:none;">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding-top:12px;">
+                <strong id="flagPlacementTitle" style="font-size:14px;">Flag placement</strong>
+                <button class="btn secondary" id="flagPlacementReset" type="button" style="font-size:12px;padding:6px 12px;">Reset state</button>
+              </div>
+              <div style="margin-top:10px;display:grid;gap:10px;">
+                <label style="font-size:12px;color:var(--muted);display:grid;gap:4px;">
+                  Scale
+                  <input id="flagPlacementScale" type="range" min="0.7" max="1.8" step="0.01" value="1.15" />
+                  <span id="flagPlacementScaleValue">1.15x</span>
+                </label>
+                <label style="font-size:12px;color:var(--muted);display:grid;gap:4px;">
+                  Horizontal offset
+                  <input id="flagPlacementOffsetX" type="range" min="-0.5" max="0.5" step="0.01" value="0" />
+                  <span id="flagPlacementOffsetXValue">0%</span>
+                </label>
+                <label style="font-size:12px;color:var(--muted);display:grid;gap:4px;">
+                  Vertical offset
+                  <input id="flagPlacementOffsetY" type="range" min="-0.5" max="0.5" step="0.01" value="0" />
+                  <span id="flagPlacementOffsetYValue">0%</span>
+                </label>
+                <label style="font-size:12px;color:var(--muted);display:grid;gap:4px;">
+                  Rotation
+                  <input id="flagPlacementRotation" type="range" min="-25" max="25" step="1" value="0" />
+                  <span id="flagPlacementRotationValue">0°</span>
+                </label>
+              </div>
+              <div class="tiny" style="margin-top:8px;">Only use this if a flag looks off. Most people won't need it.</div>
+            </div>
+          </details>
+
+          <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn secondary" onclick="flagDownload()" style="flex:1;">Download PNG</button>
+            <button class="btn print-btn" onclick="window.print()" style="flex:1;">Print</button>
+          </div>
+          <div style="margin-top:12px;">
+            <button class="btn secondary" onclick="flagClearAll()" style="width:100%;font-size:12px;padding:8px;">Clear All</button>
+          </div>
+        </div>
+
+        <div style="position:relative;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+            <div>
+              <div style="font-weight:700;color:var(--text);">Map preview</div>
+              <div class="tiny">Use zoom to inspect small states. Download uses the full clean export.</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <label style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;">
+                Zoom
+                <input id="flagPreviewZoom" type="range" min="1" max="3.5" step="0.05" value="1" style="width:140px;" />
+                <span id="flagPreviewZoomValue">100%</span>
+              </label>
+              <button class="btn secondary" id="flagPreviewZoomReset" type="button" style="font-size:12px;padding:6px 12px;">Reset view</button>
+            </div>
+          </div>
+          <div id="flagPreviewViewport" style="width:100%;min-height:clamp(560px,78vh,1220px);aspect-ratio:1000/589;position:relative;border-radius:18px;overflow:hidden;border:none;background:#fff;touch-action:none;cursor:grab;box-shadow:0 18px 50px rgba(15,23,42,.08);">
+            <div id="flagPreviewStage" style="position:absolute;inset:0;transform-origin:center center;">
+              <div id="flagMapContainer" style="width:100%;height:100%;position:relative;background:#fff;"></div>
+              <canvas id="flagPreviewCanvas" style="width:100%;height:100%;display:none;background:#fff;"></canvas>
+            </div>
+          </div>
+          <canvas id="flagCanvas" style="display:none;"></canvas>
+          <!-- Progress bar legend -->
+          <div id="flagProgressBar" style="margin-top:16px;padding:0 4px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:12px;flex-wrap:wrap;">
+              <span style="font-size:13px;font-weight:600;color:var(--text);" id="flagProgressLabel">0 / 50 States Visited</span>
+              <span style="font-size:12px;color:var(--muted);font-weight:600;" id="flagLivedLabel">0 States Lived</span>
+              <span style="font-size:12px;color:var(--muted);" id="flagProgressPct">0%</span>
+            </div>
+            <div style="width:100%;height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;">
+              <div id="flagProgressFill" style="width:0%;height:100%;border-radius:999px;background:linear-gradient(90deg,#0ea5e9,#6366f1);transition:width 0.4s ease;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile layout override -->
+      <style>
+        @media (min-width: 901px) {
+          #flagModeLayout {
+            grid-template-columns: minmax(320px, 380px) minmax(0, 1fr) !important;
+            gap: 16px !important;
+          }
+          #flagPreviewViewport {
+            min-height: clamp(460px, 64vh, 900px);
+          }
+        }
+
+        @media (max-width: 900px) {
+          #flagModeLayout {
+            grid-template-columns: 1fr !important;
+          }
+          #flagPreviewViewport {
+            min-height: 420px;
+            border-radius: 14px;
+          }
+          #flagChecklist {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      </style>
+    </div>
+
+    <!-- Flag Map Script -->
+    <script>
+    const FLAG_MODE_STATE = {
+      displayMode: 'color',
+      previewReady: false,
+      selectedPlacementState: null,
+      showAbbreviations: true,
+      showColorAbbreviations: true,
+      colorCategoryMode: 'visited'
+    };
+
+    (function() {
+      const HIGHLIGHT_COLOR = '#a7f3d0';
+      const HIGHLIGHT_STROKE = '#059669';
+      const FLAG_BADGE_GRADIENT = 'linear-gradient(135deg,#0ea5e9,#6366f1)';
+      const LABEL_POSITION_OVERRIDES = {
+        LA: { x: -8, y: -20 },
+        MI: { x: 10, y: 8 },
+        FL: { x: 14, y: -10 },
+        MD: { x: 8, y: -6 },
+        MA: { x: 8, y: -2 },
+        RI: { x: 8, y: 0 },
+        HI: { x: 0, y: -8 }
+      };
+
+      const STATES = [
+        'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA',
+        'HI','ID','IL','IN','IA','KS','KY','LA','ME','MD',
+        'MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ',
+        'NM','NY','NC','ND','OH','OK','OR','PA','RI','SC',
+        'SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'
+      ];
+
+      const STATE_NAMES = {
+        AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',
+        CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',
+        HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',
+        KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',
+        MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',
+        MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',
+        NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',
+        OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',
+        SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',
+        VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'
+      };
+
+      const STATE_ABBR_LOWER = {};
+      STATES.forEach(code => { STATE_ABBR_LOWER[code] = code.toLowerCase(); });
+
+      const DEFAULT_FLAG_PLACEMENT = { scale: 1.12, x: 0, y: 0, rotation: 0 };
+      const DEFAULT_FLAG_OVERRIDES = {
+        AK: { scale: 1.02, x: 0.02, y: 0.02, rotation: 0 },
+        CA: { scale: 1.16, x: -0.08, y: -0.03, rotation: 0 },
+        FL: { scale: 1.18, x: 0.04, y: 0.02, rotation: 6 },
+        HI: { scale: 0.92, x: 0.02, y: 0.04, rotation: 0 },
+        ID: { scale: 1.02, x: 0.08, y: 0.02, rotation: 0 },
+        LA: { scale: 1.08, x: 0.02, y: -0.02, rotation: -6 },
+        MD: { scale: 1.32, x: 0.02, y: 0.02, rotation: 0 },
+        MA: { scale: 1.34, x: 0.02, y: 0, rotation: 0 },
+        MI: { scale: 1.06, x: 0.12, y: 0.02, rotation: 0 },
+        NH: { scale: 1.34, x: 0.04, y: 0, rotation: 0 },
+        NJ: { scale: 1.28, x: 0.04, y: 0.02, rotation: 0 },
+        NV: { scale: 1.04, x: -0.02, y: 0.02, rotation: 0 },
+        RI: { scale: 1.46, x: 0.03, y: 0, rotation: 0 },
+        TX: { scale: 1.04, x: 0.02, y: 0.02, rotation: 0 },
+        VT: { scale: 1.32, x: 0.03, y: 0, rotation: 0 }
+      };
+      const flagPlacementOverrides = { ...DEFAULT_FLAG_OVERRIDES };
+
+      const visited = new Set();
+      const lived = new Set();
+      const flagImageCache = {};
+      const stateGeometry = {};
+      const statePathCache = {};
+      let baseSvgMarkup = '';
+      let sourceSvg = null;
+      let sourceViewBox = { x: 0, y: 0, width: 1000, height: 589 };
+
+      const checklist = document.getElementById('flagChecklist');
+      const container = document.getElementById('flagMapContainer');
+      const exportCanvas = document.getElementById('flagCanvas');
+      const placementDetails = document.getElementById('flagPlacementDetails');
+      const placementPanel = document.getElementById('flagPlacementPanel');
+      const placementTitle = document.getElementById('flagPlacementTitle');
+      const placementScale = document.getElementById('flagPlacementScale');
+      const placementOffsetX = document.getElementById('flagPlacementOffsetX');
+      const placementOffsetY = document.getElementById('flagPlacementOffsetY');
+      const placementScaleValue = document.getElementById('flagPlacementScaleValue');
+      const placementOffsetXValue = document.getElementById('flagPlacementOffsetXValue');
+      const placementOffsetYValue = document.getElementById('flagPlacementOffsetYValue');
+      const placementRotation = document.getElementById('flagPlacementRotation');
+      const placementRotationValue = document.getElementById('flagPlacementRotationValue');
+      const placementReset = document.getElementById('flagPlacementReset');
+      const previewViewport = document.getElementById('flagPreviewViewport');
+      const previewStage = document.getElementById('flagPreviewStage');
+      const flagPreviewCanvas = document.getElementById('flagPreviewCanvas');
+      const previewZoom = document.getElementById('flagPreviewZoom');
+      const previewZoomValue = document.getElementById('flagPreviewZoomValue');
+      const previewZoomReset = document.getElementById('flagPreviewZoomReset');
+      const flagAbbrToggle = document.getElementById('flagAbbrToggle');
+      const colorAbbrToggle = document.getElementById('colorAbbrToggle');
+      const colorCategoryPanel = document.getElementById('colorCategoryPanel');
+
+      function getFlagUrl(code) {
+        return '/state-flags/' + STATE_ABBR_LOWER[code] + '.png?v=3';
+      }
+
+      function getFlagPlacement(code) {
+        return { ...DEFAULT_FLAG_PLACEMENT, ...(flagPlacementOverrides[code] || {}) };
+      }
+
+      function saveFlagPlacementState() {
+        try { localStorage.setItem('flagMapPlacementOverrides', JSON.stringify(flagPlacementOverrides)); } catch (e) {}
+      }
+
+      function loadFlagPlacementState() {
+        try {
+          const saved = JSON.parse(localStorage.getItem('flagMapPlacementOverrides') || '{}');
+          Object.entries(saved).forEach(([code, value]) => {
+            if (!STATE_NAMES[code] || !value || typeof value !== 'object') return;
+            flagPlacementOverrides[code] = {
+              scale: Number.isFinite(value.scale) ? value.scale : (DEFAULT_FLAG_OVERRIDES[code]?.scale ?? DEFAULT_FLAG_PLACEMENT.scale),
+              x: Number.isFinite(value.x) ? value.x : 0,
+              y: Number.isFinite(value.y) ? value.y : 0,
+              rotation: Number.isFinite(value.rotation) ? value.rotation : 0
+            };
+          });
+        } catch (e) {}
+      }
+
+      function syncPlacementPanel() {
+        if (!placementPanel || !FLAG_MODE_STATE.selectedPlacementState) {
+          if (placementPanel) placementPanel.style.display = 'none';
+          return;
+        }
+
+        const code = FLAG_MODE_STATE.selectedPlacementState;
+        const placement = getFlagPlacement(code);
+        placementPanel.style.display = placementDetails && placementDetails.open ? 'block' : 'none';
+        placementTitle.textContent = 'Flag placement: ' + STATE_NAMES[code] + ' (' + code + ')';
+        placementScale.value = placement.scale;
+        placementOffsetX.value = placement.x;
+        placementOffsetY.value = placement.y;
+        if (placementRotation) placementRotation.value = placement.rotation || 0;
+        placementScaleValue.textContent = placement.scale.toFixed(2) + 'x';
+        placementOffsetXValue.textContent = Math.round(placement.x * 100) + '%';
+        placementOffsetYValue.textContent = Math.round(placement.y * 100) + '%';
+        if (placementRotationValue) placementRotationValue.textContent = Math.round(placement.rotation || 0) + '°';
+      }
+
+      const previewTransform = { scale: 1, x: 0, y: 0 };
+      let previewDrag = null;
+      let previewSuppressClickUntil = 0;
+
+      function clampPreviewTransform() {
+        if (!previewViewport) return;
+        const rect = previewViewport.getBoundingClientRect();
+        const maxX = ((previewTransform.scale - 1) * rect.width) / 2;
+        const maxY = ((previewTransform.scale - 1) * rect.height) / 2;
+        previewTransform.x = Math.max(-maxX, Math.min(maxX, previewTransform.x));
+        previewTransform.y = Math.max(-maxY, Math.min(maxY, previewTransform.y));
+      }
+
+      function applyPreviewTransform() {
+        if (!previewStage || !previewZoomValue) return;
+        clampPreviewTransform();
+        previewStage.style.transform = 'translate(' + previewTransform.x + 'px,' + previewTransform.y + 'px) scale(' + previewTransform.scale + ')';
+        previewZoomValue.textContent = Math.round(previewTransform.scale * 100) + '%';
+        if (previewViewport) {
+          previewViewport.style.cursor = previewTransform.scale > 1 ? (previewDrag ? 'grabbing' : 'grab') : 'default';
+        }
+      }
+
+      function getCanvasStateAtPoint(clientX, clientY) {
+        if (!flagPreviewCanvas) return null;
+        const rect = flagPreviewCanvas.getBoundingClientRect();
+        if (!rect.width || !rect.height) return null;
+
+        const stageX = clientX - rect.left;
+        const stageY = clientY - rect.top;
+
+        const localX = (stageX - previewTransform.x) / previewTransform.scale;
+        const localY = (stageY - previewTransform.y) / previewTransform.scale;
+
+        const svgX = (localX / rect.width) * sourceViewBox.width;
+        const svgY = (localY / rect.height) * sourceViewBox.height;
+
+        const hitCanvas = document.createElement('canvas');
+        hitCanvas.width = 1;
+        hitCanvas.height = 1;
+        const hitCtx = hitCanvas.getContext('2d');
+        if (!hitCtx) return null;
+
+        for (let i = STATES.length - 1; i >= 0; i--) {
+          const code = STATES[i];
+          const path = getStatePath(code);
+          if (!path) continue;
+          if (hitCtx.isPointInPath(path, svgX, svgY) || hitCtx.isPointInStroke(path, svgX, svgY)) {
+            return code;
+          }
+        }
+        return null;
+      }
+
+      function resetPreviewTransform() {
+        previewTransform.scale = 1;
+        previewTransform.x = 0;
+        previewTransform.y = 0;
+        if (previewZoom) previewZoom.value = '1';
+        applyPreviewTransform();
+      }
+
+      function selectPlacementState(code) {
+        FLAG_MODE_STATE.selectedPlacementState = STATE_NAMES[code] ? code : null;
+        syncPlacementPanel();
+      }
+
+      function buildChecklist() {
+        checklist.innerHTML = '';
+        STATES.forEach((code) => {
+          const label = document.createElement('label');
+          label.dataset.code = code;
+          label.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;transition:all 0.15s;border:1px solid transparent;user-select:none;';
+          label.onmouseenter = () => label.style.background = 'rgba(14,165,233,0.05)';
+          label.onmouseleave = () => label.style.background = visited.has(code) ? 'rgba(167,243,208,0.35)' : 'transparent';
+
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.value = code;
+          cb.style.cssText = 'width:16px;height:16px;accent-color:var(--accent);cursor:pointer;pointer-events:none;';
+          cb.onchange = () => {
+            if (cb.checked) {
+              visited.add(code);
+              if (FLAG_MODE_STATE.colorCategoryMode === 'lived') {
+                if (lived.has(code)) lived.delete(code); else lived.add(code);
+              }
+            } else {
+              visited.delete(code);
+              lived.delete(code);
+            }
+            selectPlacementState(code);
+            updateFlagCounter();
+            saveFlagState();
+            syncPreviewVisibility();
+            cloneSvgForInteraction();
+            queueFlagRender();
+          };
+
+          const dot = document.createElement('span');
+          dot.style.cssText = 'width:10px;height:10px;border-radius:50%;flex-shrink:0;background:#e2e8f0;transition:background 0.2s;';
+          dot.dataset.code = code;
+
+          const name = document.createElement('span');
+          name.textContent = STATE_NAMES[code];
+
+          label.appendChild(cb);
+          label.appendChild(dot);
+          label.appendChild(name);
+          checklist.appendChild(label);
+        });
+      }
+
+      function loadFlagImage(code) {
+        if (flagImageCache[code]) return Promise.resolve(flagImageCache[code]);
+        return new Promise(resolve => {
+          const img = new Image();
+          img.onload = () => {
+            flagImageCache[code] = img;
+            resolve(img);
+          };
+          img.onerror = () => {
+            console.error('[FlagMode] failed to load', code, getFlagUrl(code));
+            flagImageCache[code] = null;
+            resolve(null);
+          };
+          img.src = getFlagUrl(code);
+        });
+      }
+
+      function primeFlagImages() {
+        return Promise.all(STATES.map(loadFlagImage));
+      }
+
+      function cloneSvgForInteraction() {
+        if (!baseSvgMarkup) return;
+        container.innerHTML = baseSvgMarkup;
+        const svgEl = container.querySelector('svg');
+        if (!svgEl) return;
+        const showColorLabels = FLAG_MODE_STATE.displayMode === 'color' && FLAG_MODE_STATE.showColorAbbreviations;
+        svgEl.id = 'flagSvg';
+        svgEl.removeAttribute('onclick');
+        svgEl.style.width = '100%';
+        svgEl.style.height = '100%';
+        svgEl.style.position = 'absolute';
+        svgEl.style.inset = '0';
+        svgEl.style.background = '#fff';
+        svgEl.style.pointerEvents = 'auto';
+
+        svgEl.querySelectorAll('path, polygon, polyline, rect').forEach((p) => {
+          const code = p.id || p.getAttribute('data-id');
+          if (!code || !STATE_NAMES[code]) return;
+          p.style.cursor = 'pointer';
+          p.style.pointerEvents = 'auto';
+          p.style.fill = visited.has(code)
+            ? (FLAG_MODE_STATE.displayMode === 'flag' ? '#dbeafe' : getColorFillForState(code))
+            : '#f1f5f9';
+          p.style.stroke = visited.has(code)
+            ? (FLAG_MODE_STATE.displayMode === 'flag'
+              ? 'rgba(37,99,235,0.45)'
+              : (FLAG_MODE_STATE.colorCategoryMode === 'lived' && lived.has(code) ? 'rgba(59,130,246,0.45)' : HIGHLIGHT_STROKE))
+            : 'rgba(0,0,0,0.15)';
+          p.style.strokeWidth = '1';
+          p.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (Date.now() < previewSuppressClickUntil) return;
+            selectPlacementState(code);
+            const cb = checklist.querySelector('input[value="' + code + '"]');
+            if (!cb) return;
+            cb.checked = !cb.checked;
+            cb.dispatchEvent(new Event('change'));
+          });
+          p.addEventListener('pointerup', (event) => {
+            if (previewTransform.scale <= 1) return;
+            const dx = Math.abs((event.clientX || 0) - (previewDrag?.startX ?? event.clientX ?? 0));
+            const dy = Math.abs((event.clientY || 0) - (previewDrag?.startY ?? event.clientY ?? 0));
+            if (dx > 4 || dy > 4) {
+              previewSuppressClickUntil = Date.now() + 250;
+            }
+          });
+        });
+
+        svgEl.querySelectorAll('.state-abbr').forEach(el => el.remove());
+        if (showColorLabels) {
+          STATES.forEach((code) => {
+            if (!visited.has(code)) return;
+            const geo = stateGeometry[code];
+            if (!geo) return;
+            const labelOverride = LABEL_POSITION_OVERRIDES[code] || { x: 0, y: 0 };
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('class', 'state-abbr');
+            text.setAttribute('x', String(geo.centerX + labelOverride.x));
+            text.setAttribute('y', String(geo.centerY + labelOverride.y));
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('dominant-baseline', 'middle');
+            text.setAttribute('paint-order', 'stroke');
+            text.setAttribute('fill', '#ffffff');
+            text.setAttribute('stroke', 'rgba(15,23,42,0.72)');
+            text.setAttribute('stroke-width', '2');
+            text.setAttribute('font-family', 'Inter, system-ui, sans-serif');
+            text.setAttribute('font-weight', '800');
+            text.setAttribute('font-size', String(Math.max(10, Math.min(geo.bbox.width / 2.8, 24))));
+            text.style.pointerEvents = 'none';
+            text.textContent = code;
+            svgEl.appendChild(text);
+          });
+        }
+      }
+
+      function extractGeometry() {
+        if (!sourceSvg) return;
+        const vb = (sourceSvg.getAttribute('viewBox') || '0 0 1000 589').split(/\s+/).map(Number);
+        sourceViewBox = { x: vb[0] || 0, y: vb[1] || 0, width: vb[2] || 1000, height: vb[3] || 589 };
+
+        sourceSvg.querySelectorAll('path, polygon, polyline, rect').forEach((el) => {
+          const code = el.id || el.getAttribute('data-id');
+          if (!code || !STATE_NAMES[code]) return;
+          try {
+            const bbox = el.getBBox();
+            const path2d = buildPath2D({
+              tag: el.tagName.toLowerCase(),
+              path: el.getAttribute('d') || null,
+              points: el.getAttribute('points') || null,
+              x: el.getAttribute('x') || null,
+              y: el.getAttribute('y') || null,
+              width: el.getAttribute('width') || null,
+              height: el.getAttribute('height') || null
+            });
+            const centroid = path2d ? findVisualCenter(path2d, bbox) : null;
+            stateGeometry[code] = {
+              tag: el.tagName.toLowerCase(),
+              path: el.getAttribute('d') || null,
+              points: el.getAttribute('points') || null,
+              x: el.getAttribute('x') || null,
+              y: el.getAttribute('y') || null,
+              width: el.getAttribute('width') || null,
+              height: el.getAttribute('height') || null,
+              bbox,
+              centerX: centroid?.x ?? (bbox.x + bbox.width / 2),
+              centerY: centroid?.y ?? (bbox.y + bbox.height / 2)
+            };
+          } catch (err) {
+            console.warn('[FlagMode] geometry failed for', code, err);
+          }
+        });
+      }
+
+      function buildPath2D(geo) {
+        if (!geo) return null;
+        if (geo.tag === 'path' && geo.path) return new Path2D(geo.path);
+        if ((geo.tag === 'polygon' || geo.tag === 'polyline') && geo.points) {
+          const path = new Path2D();
+          const pts = geo.points.trim().split(/\s+/).map(pair => pair.split(',').map(Number)).filter(pair => pair.length === 2 && pair.every(Number.isFinite));
+          pts.forEach(([x, y], idx) => {
+            if (idx === 0) path.moveTo(x, y); else path.lineTo(x, y);
+          });
+          if (geo.tag === 'polygon') path.closePath();
+          return path;
+        }
+        if (geo.tag === 'rect') {
+          const path = new Path2D();
+          path.rect(Number(geo.x) || 0, Number(geo.y) || 0, Number(geo.width) || 0, Number(geo.height) || 0);
+          return path;
+        }
+        return null;
+      }
+
+      function getStatePath(code) {
+        if (statePathCache[code]) return statePathCache[code];
+        const geo = stateGeometry[code];
+        const path = buildPath2D(geo);
+        if (path) statePathCache[code] = path;
+        return path;
+      }
+
+      function findVisualCenter(path, bbox) {
+        if (!path || !bbox || !bbox.width || !bbox.height) return null;
+        const sampleCanvas = document.createElement('canvas');
+        const pad = 8;
+        const sampleScale = 6;
+        sampleCanvas.width = Math.max(24, Math.ceil(bbox.width * sampleScale) + pad * 2);
+        sampleCanvas.height = Math.max(24, Math.ceil(bbox.height * sampleScale) + pad * 2);
+        const sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
+        if (!sampleCtx) return null;
+
+        sampleCtx.clearRect(0, 0, sampleCanvas.width, sampleCanvas.height);
+        sampleCtx.save();
+        sampleCtx.translate(pad - bbox.x * sampleScale, pad - bbox.y * sampleScale);
+        sampleCtx.scale(sampleScale, sampleScale);
+        sampleCtx.fillStyle = '#000';
+        sampleCtx.fill(path);
+        sampleCtx.restore();
+
+        const data = sampleCtx.getImageData(0, 0, sampleCanvas.width, sampleCanvas.height).data;
+        let sumX = 0;
+        let sumY = 0;
+        let count = 0;
+
+        for (let y = 0; y < sampleCanvas.height; y++) {
+          for (let x = 0; x < sampleCanvas.width; x++) {
+            const alpha = data[(y * sampleCanvas.width + x) * 4 + 3];
+            if (alpha > 10) {
+              sumX += x;
+              sumY += y;
+              count += 1;
+            }
+          }
+        }
+
+        if (!count) return null;
+
+        return {
+          x: ((sumX / count) - pad) / sampleScale + bbox.x,
+          y: ((sumY / count) - pad) / sampleScale + bbox.y
+        };
+      }
+
+      function getColorFillForState(code) {
+        if (!visited.has(code)) return '#f1f5f9';
+        if (FLAG_MODE_STATE.colorCategoryMode === 'lived' && lived.has(code)) return '#93c5fd';
+        return HIGHLIGHT_COLOR;
+      }
+
+      function syncChecklistDots() {
+        STATES.forEach((code) => {
+          const dot = checklist.querySelector('[data-code="' + code + '"]');
+          const label = checklist.querySelector('label[data-code="' + code + '"]');
+          if (dot) {
+            if (!visited.has(code)) {
+              dot.style.background = '#e2e8f0';
+            } else if (FLAG_MODE_STATE.displayMode === 'flag') {
+              dot.style.background = FLAG_BADGE_GRADIENT;
+            } else {
+              dot.style.background = getColorFillForState(code);
+            }
+          }
+          if (label) {
+            if (!visited.has(code)) {
+              label.style.background = 'transparent';
+              label.style.borderColor = 'transparent';
+            } else if (FLAG_MODE_STATE.displayMode === 'flag') {
+              label.style.background = 'rgba(167,243,208,0.35)';
+              label.style.borderColor = 'rgba(5,150,105,0.2)';
+            } else if (FLAG_MODE_STATE.colorCategoryMode === 'lived' && lived.has(code)) {
+              label.style.background = 'rgba(147,197,253,0.28)';
+              label.style.borderColor = 'rgba(59,130,246,0.25)';
+            } else {
+              label.style.background = 'rgba(167,243,208,0.35)';
+              label.style.borderColor = 'rgba(5,150,105,0.2)';
+            }
+          }
+        });
+      }
+
+      function updateFlagCounter() {
+        document.getElementById('flagCounter').textContent = visited.size;
+        const pct = Math.round((visited.size / 50) * 100);
+        document.getElementById('flagProgressLabel').textContent = visited.size + ' / 50 States Visited';
+        document.getElementById('flagLivedLabel').textContent = lived.size + ' States Lived';
+        document.getElementById('flagProgressPct').textContent = pct + '%';
+        document.getElementById('flagProgressFill').style.width = pct + '%';
+        syncChecklistDots();
+      }
+
+      function saveFlagState() {
+        try {
+          localStorage.setItem('flagMapVisited', JSON.stringify([...visited]));
+          localStorage.setItem('flagMapLived', JSON.stringify([...lived]));
+        } catch (e) {}
+      }
+
+      function loadFlagState() {
+        try {
+          const savedVisited = JSON.parse(localStorage.getItem('flagMapVisited') || '[]');
+          savedVisited.forEach(code => visited.add(code));
+          const savedLived = JSON.parse(localStorage.getItem('flagMapLived') || '[]');
+          savedLived.forEach(code => lived.add(code));
+        } catch (e) {}
+        checklist.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          cb.checked = visited.has(cb.value);
+        });
+        updateFlagCounter();
+      }
+
+      function syncPreviewVisibility() {
+        const showCanvas = FLAG_MODE_STATE.displayMode === 'flag';
+        container.style.display = showCanvas ? 'none' : 'block';
+        flagPreviewCanvas.style.display = showCanvas ? 'block' : 'none';
+        previewViewport.style.cursor = previewTransform.scale > 1 ? 'grab' : 'default';
+      }
+
+      async function renderFlagCanvas(targetCanvas, options = {}) {
+        if (!targetCanvas) return;
+        const width = options.width || 2000;
+        const height = options.height || Math.round(width * (sourceViewBox.height / sourceViewBox.width));
+        targetCanvas.width = width;
+        targetCanvas.height = height;
+
+        const ctx = targetCanvas.getContext('2d');
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, width, height);
+
+        const scaleX = width / sourceViewBox.width;
+        const scaleY = height / sourceViewBox.height;
+        const showLabels = options.showLabels ?? FLAG_MODE_STATE.showAbbreviations;
+
+        for (const code of STATES) {
+          const geo = stateGeometry[code];
+          if (!geo) continue;
+          const path = getStatePath(code);
+          if (!path) continue;
+          const isVisited = visited.has(code);
+
+          ctx.save();
+          ctx.scale(scaleX, scaleY);
+          ctx.clip(path);
+
+          if (isVisited && FLAG_MODE_STATE.displayMode === 'flag') {
+            const img = await loadFlagImage(code);
+            if (img) {
+              const bbox = geo.bbox;
+              const override = getFlagPlacement(code);
+              const drawWidth = bbox.width * override.scale;
+              const drawHeight = bbox.height * override.scale;
+              const drawX = bbox.x - ((drawWidth - bbox.width) / 2) + ((override.x || 0) * bbox.width);
+              const drawY = bbox.y - ((drawHeight - bbox.height) / 2) + ((override.y || 0) * bbox.height);
+              const centerX = drawX + drawWidth / 2;
+              const centerY = drawY + drawHeight / 2;
+              ctx.save();
+              ctx.translate(centerX, centerY);
+              ctx.rotate(((override.rotation || 0) * Math.PI) / 180);
+              ctx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+              ctx.restore();
+              ctx.fillStyle = 'rgba(0,0,0,0.08)';
+              ctx.fill(path);
+            } else {
+              ctx.fillStyle = HIGHLIGHT_COLOR;
+              ctx.fill(path);
+            }
+          } else if (isVisited) {
+            ctx.fillStyle = getColorFillForState(code);
+            ctx.fill(path);
+          } else {
+            ctx.fillStyle = '#f1f5f9';
+            ctx.fill(path);
+          }
+          ctx.restore();
+
+          ctx.save();
+          ctx.scale(scaleX, scaleY);
+          ctx.strokeStyle = isVisited ? 'rgba(15,23,42,0.4)' : 'rgba(148,163,184,0.45)';
+          ctx.lineWidth = 1.1;
+          ctx.stroke(path);
+          ctx.restore();
+
+          if (showLabels && isVisited && FLAG_MODE_STATE.displayMode === 'flag') {
+            const labelSize = Math.max(10, Math.min(geo.bbox.width * scaleX / 2.8, 24));
+            const labelOverride = LABEL_POSITION_OVERRIDES[code] || { x: 0, y: 0 };
+            const labelX = (geo.centerX + labelOverride.x) * scaleX;
+            const labelY = (geo.centerY + labelOverride.y) * scaleY;
+            ctx.save();
+            ctx.font = '800 ' + labelSize + 'px Inter, system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.lineWidth = Math.max(2, labelSize * 0.22);
+            ctx.strokeStyle = 'rgba(15,23,42,0.65)';
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeText(code, labelX, labelY);
+            ctx.fillText(code, labelX, labelY);
+            ctx.restore();
+          }
+        }
+
+        if (options.includeFooter) {
+          const footerY = height - 42;
+          ctx.fillStyle = '#1e293b';
+          ctx.font = '700 34px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(visited.size + ' / 50 States Visited', width / 2, footerY);
+          const barW = 420;
+          const barH = 12;
+          const barX = (width - barW) / 2;
+          const barY = height - 24;
+          if (ctx.roundRect) {
+            ctx.fillStyle = '#e2e8f0';
+            ctx.beginPath();
+            ctx.roundRect(barX, barY, barW, barH, 999);
+            ctx.fill();
+            ctx.fillStyle = '#0ea5e9';
+            ctx.beginPath();
+            ctx.roundRect(barX, barY, barW * (visited.size / 50), barH, 999);
+            ctx.fill();
+          }
+        }
+      }
+
+      let renderToken = 0;
+      function queueFlagRender() {
+        const token = ++renderToken;
+        FLAG_MODE_STATE.previewReady = false;
+        renderFlagCanvas(flagPreviewCanvas).then(() => {
+          if (token !== renderToken) return;
+          FLAG_MODE_STATE.previewReady = true;
+          if (FLAG_MODE_STATE.displayMode !== 'flag') cloneSvgForInteraction();
+        });
+      }
+
+      function syncColorCategoryButtons() {
+        const btnVisitedOnly = document.getElementById('btnVisitedOnly');
+        const btnVisitedLived = document.getElementById('btnVisitedLived');
+        if (!btnVisitedOnly || !btnVisitedLived) return;
+        const visitedOnlyActive = FLAG_MODE_STATE.colorCategoryMode === 'visited';
+        btnVisitedOnly.style.background = visitedOnlyActive ? 'var(--accent)' : 'transparent';
+        btnVisitedOnly.style.color = visitedOnlyActive ? '#fff' : 'var(--muted)';
+        btnVisitedLived.style.background = !visitedOnlyActive ? 'var(--accent)' : 'transparent';
+        btnVisitedLived.style.color = !visitedOnlyActive ? '#fff' : 'var(--muted)';
+      }
+
+      window.setColorCategoryMode = function(mode) {
+        FLAG_MODE_STATE.colorCategoryMode = mode;
+        syncColorCategoryButtons();
+        cloneSvgForInteraction();
+        updateFlagCounter();
+        queueFlagRender();
+      };
+
+      window.setFlagDisplayMode = function(mode) {
+        FLAG_MODE_STATE.displayMode = mode;
+        const btnColor = document.getElementById('btnColorMode');
+        const btnFlag = document.getElementById('btnFlagMode');
+        if (mode === 'color') {
+          btnColor.style.background = 'var(--accent)';
+          btnColor.style.color = '#fff';
+          btnFlag.style.background = 'transparent';
+          btnFlag.style.color = 'var(--muted)';
+        } else {
+          btnFlag.style.background = 'var(--accent)';
+          btnFlag.style.color = '#fff';
+          btnColor.style.background = 'transparent';
+          btnColor.style.color = 'var(--muted)';
+        }
+        syncPreviewVisibility();
+        if (colorCategoryPanel) colorCategoryPanel.style.display = mode === 'color' ? 'grid' : 'none';
+        syncColorCategoryButtons();
+        cloneSvgForInteraction();
+        updateFlagCounter();
+        queueFlagRender();
+      };
+
+      window.flagDownload = async function() {
+        await renderFlagCanvas(exportCanvas, {
+          width: DOWNLOAD_EXPORT_WIDTH,
+          includeFooter: true,
+          showLabels: FLAG_MODE_STATE.displayMode === 'flag' ? FLAG_MODE_STATE.showAbbreviations : false
+        });
+        FLAG_MODE_STATE.previewReady = true;
+        const link = document.createElement('a');
+        link.download = 'my-50-state-' + FLAG_MODE_STATE.displayMode + '-map.png';
+        link.href = exportCanvas.toDataURL('image/png');
+        link.click();
+      };
+
+      window.flagSelectAll = function() {
+        STATES.forEach(code => visited.add(code));
+        checklist.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = true; });
+        updateFlagCounter();
+        saveFlagState();
+        syncPreviewVisibility();
+        cloneSvgForInteraction();
+        queueFlagRender();
+      };
+
+      window.flagClearAll = function() {
+        visited.clear();
+        checklist.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+        updateFlagCounter();
+        saveFlagState();
+        syncPreviewVisibility();
+        cloneSvgForInteraction();
+        queueFlagRender();
+      };
+
+      function updatePlacementOverrideFromInputs() {
+        const code = FLAG_MODE_STATE.selectedPlacementState;
+        if (!code) return;
+        flagPlacementOverrides[code] = {
+          scale: parseFloat(placementScale.value),
+          x: parseFloat(placementOffsetX.value),
+          y: parseFloat(placementOffsetY.value),
+          rotation: placementRotation ? parseFloat(placementRotation.value) : 0
+        };
+        syncPlacementPanel();
+        saveFlagPlacementState();
+        cloneSvgForInteraction();
+        queueFlagRender();
+      }
+
+      [placementScale, placementOffsetX, placementOffsetY, placementRotation].forEach(input => {
+        if (!input) return;
+        input.addEventListener('input', updatePlacementOverrideFromInputs);
+      });
+
+      if (placementDetails) {
+        placementDetails.addEventListener('toggle', () => {
+          syncPlacementPanel();
+        });
+      }
+
+      if (previewZoom) {
+        previewZoom.addEventListener('input', () => {
+          previewTransform.scale = parseFloat(previewZoom.value) || 1;
+          if (previewTransform.scale <= 1.01) {
+            previewTransform.x = 0;
+            previewTransform.y = 0;
+          }
+          applyPreviewTransform();
+        });
+      }
+
+      if (previewZoomReset) {
+        previewZoomReset.addEventListener('click', resetPreviewTransform);
+      }
+
+      if (flagAbbrToggle) {
+        flagAbbrToggle.addEventListener('change', () => {
+          FLAG_MODE_STATE.showAbbreviations = !!flagAbbrToggle.checked;
+          queueFlagRender();
+        });
+      }
+
+      if (colorAbbrToggle) {
+        colorAbbrToggle.checked = !!FLAG_MODE_STATE.showColorAbbreviations;
+        colorAbbrToggle.addEventListener('change', () => {
+          FLAG_MODE_STATE.showColorAbbreviations = !!colorAbbrToggle.checked;
+          cloneSvgForInteraction();
+        });
+      }
+
+      if (previewViewport) {
+        previewViewport.addEventListener('wheel', (event) => {
+          if (!previewZoom) return;
+          event.preventDefault();
+          const nextScale = Math.max(1, Math.min(3.5, previewTransform.scale + (event.deltaY < 0 ? 0.12 : -0.12)));
+          previewTransform.scale = nextScale;
+          previewZoom.value = String(nextScale);
+          if (nextScale <= 1.01) {
+            previewTransform.x = 0;
+            previewTransform.y = 0;
+          }
+          applyPreviewTransform();
+        }, { passive: false });
+
+        flagPreviewCanvas.addEventListener('mousemove', (event) => {
+          if (FLAG_MODE_STATE.displayMode !== 'flag') {
+            flagPreviewCanvas.style.cursor = 'default';
+            return;
+          }
+          const code = getCanvasStateAtPoint(event.clientX, event.clientY);
+          flagPreviewCanvas.style.cursor = code ? 'pointer' : (previewTransform.scale > 1 ? 'grab' : 'default');
+        });
+
+        flagPreviewCanvas.addEventListener('mouseleave', () => {
+          flagPreviewCanvas.style.cursor = previewTransform.scale > 1 ? 'grab' : 'default';
+        });
+
+        flagPreviewCanvas.addEventListener('click', (event) => {
+          if (FLAG_MODE_STATE.displayMode !== 'flag') return;
+          if (Date.now() < previewSuppressClickUntil) return;
+          const code = getCanvasStateAtPoint(event.clientX, event.clientY);
+          if (!code) return;
+          selectPlacementState(code);
+          const cb = checklist.querySelector('input[value="' + code + '"]');
+          if (!cb) return;
+          cb.checked = !cb.checked;
+          cb.dispatchEvent(new Event('change'));
+        });
+
+        const beginPreviewDrag = (x, y) => {
+          if (previewTransform.scale <= 1) return false;
+          previewDrag = {
+            startX: x,
+            startY: y,
+            originX: previewTransform.x,
+            originY: previewTransform.y,
+            moved: false
+          };
+          applyPreviewTransform();
+          return true;
+        };
+
+        previewViewport.addEventListener('pointerdown', (event) => {
+          const hitState = event.target && (event.target.closest?.('#flagSvg path, #flagSvg polygon, #flagSvg polyline, #flagSvg rect') || event.target.closest?.('label[data-code]'));
+          if (hitState) return;
+          if (!beginPreviewDrag(event.clientX, event.clientY)) return;
+          previewViewport.setPointerCapture?.(event.pointerId);
+        });
+
+        previewViewport.addEventListener('mousedown', (event) => {
+          if (event.button !== 0) return;
+          const hitState = event.target && event.target.closest?.('#flagSvg path, #flagSvg polygon, #flagSvg polyline, #flagSvg rect');
+          if (hitState) return;
+          beginPreviewDrag(event.clientX, event.clientY);
+        });
+
+        previewViewport.addEventListener('touchstart', (event) => {
+          const touch = event.touches[0];
+          if (!touch) return;
+          beginPreviewDrag(touch.clientX, touch.clientY);
+        }, { passive: true });
+
+        const updatePreviewDrag = (x, y) => {
+          if (!previewDrag) return;
+          const dx = x - previewDrag.startX;
+          const dy = y - previewDrag.startY;
+          if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+            previewDrag.moved = true;
+          }
+          previewTransform.x = previewDrag.originX + dx;
+          previewTransform.y = previewDrag.originY + dy;
+          applyPreviewTransform();
+        };
+
+        previewViewport.addEventListener('pointermove', (event) => {
+          updatePreviewDrag(event.clientX, event.clientY);
+        });
+
+        previewViewport.addEventListener('mousemove', (event) => {
+          updatePreviewDrag(event.clientX, event.clientY);
+        });
+
+        previewViewport.addEventListener('touchmove', (event) => {
+          const touch = event.touches[0];
+          if (!touch) return;
+          updatePreviewDrag(touch.clientX, touch.clientY);
+        }, { passive: true });
+
+        const stopPreviewDrag = (event) => {
+          if (previewDrag && previewDrag.moved) {
+            previewSuppressClickUntil = Date.now() + 250;
+          }
+          if (previewDrag && event && 'pointerId' in event && previewViewport.releasePointerCapture) {
+            try { previewViewport.releasePointerCapture(event.pointerId); } catch (e) {}
+          }
+          previewDrag = null;
+          applyPreviewTransform();
+        };
+
+        previewViewport.addEventListener('pointerup', stopPreviewDrag);
+        previewViewport.addEventListener('pointercancel', stopPreviewDrag);
+        previewViewport.addEventListener('mouseup', stopPreviewDrag);
+        previewViewport.addEventListener('mouseleave', () => {
+          if (!previewDrag) return;
+          previewDrag = null;
+          applyPreviewTransform();
+        });
+        previewViewport.addEventListener('touchend', stopPreviewDrag, { passive: true });
+      }
+
+      if (placementReset) {
+        placementReset.addEventListener('click', () => {
+          const code = FLAG_MODE_STATE.selectedPlacementState;
+          if (!code) return;
+          if (DEFAULT_FLAG_OVERRIDES[code]) {
+            flagPlacementOverrides[code] = { ...DEFAULT_FLAG_PLACEMENT, ...DEFAULT_FLAG_OVERRIDES[code] };
+          } else {
+            delete flagPlacementOverrides[code];
+          }
+          syncPlacementPanel();
+          saveFlagPlacementState();
+          cloneSvgForInteraction();
+          queueFlagRender();
+        });
+      }
+
+      window.flagMapDebug = {
+        get displayMode() { return FLAG_MODE_STATE.displayMode; },
+        get placementOverrides() { return JSON.parse(JSON.stringify(flagPlacementOverrides)); },
+        setPlacement(code, patch) {
+          if (!STATE_NAMES[code]) return;
+          flagPlacementOverrides[code] = { ...getFlagPlacement(code), ...patch };
+          selectPlacementState(code);
+          saveFlagPlacementState();
+          cloneSvgForInteraction();
+          queueFlagRender();
+        }
+      };
+
+      buildChecklist();
+      sourceSvg = document.getElementById('usaSvg');
+      if (sourceSvg) {
+        baseSvgMarkup = sourceSvg.outerHTML;
+        extractGeometry();
+      } else {
+        console.warn('[FlagMode] source usaSvg not found');
+      }
+      loadFlagState();
+      loadFlagPlacementState();
+      cloneSvgForInteraction();
+      syncPreviewVisibility();
+      if (colorCategoryPanel) colorCategoryPanel.style.display = FLAG_MODE_STATE.displayMode === 'color' ? 'grid' : 'none';
+      syncColorCategoryButtons();
+      syncPlacementPanel();
+      resetPreviewTransform();
+      queueFlagRender();
+      primeFlagImages().then(() => {
+        if (FLAG_MODE_STATE.displayMode === 'flag') queueFlagRender();
+      });
+    })();
+
+    // Mode switcher
+    function switchMode(mode) {
+      const photoMode = document.getElementById('photoMapMode');
+      const flagMode = document.getElementById('flagMapMode');
+      const tabPhoto = document.getElementById('tabPhotoMap');
+      const tabFlag = document.getElementById('tabFlagMap');
+
+      if (mode === 'photo') {
+        photoMode.style.display = '';
+        flagMode.style.display = 'none';
+        tabPhoto.className = 'btn';
+        tabPhoto.style.background = 'var(--accent)';
+        tabPhoto.style.color = '#fff';
+        tabFlag.className = 'btn secondary';
+        tabFlag.style.background = '';
+        tabFlag.style.color = '';
+      } else {
+        photoMode.style.display = 'none';
+        flagMode.style.display = '';
+        const liveSvg = document.getElementById('flagMapContainer');
+        if (liveSvg) liveSvg.style.display = mode === 'flag' && FLAG_MODE_STATE.displayMode === 'flag' ? 'none' : 'block';
+        const previewCanvas = document.getElementById('flagPreviewCanvas');
+        if (previewCanvas) previewCanvas.style.display = mode === 'flag' && FLAG_MODE_STATE.displayMode === 'flag' ? 'block' : 'none';
+        tabFlag.className = 'btn';
+        tabFlag.style.background = 'var(--accent)';
+        tabFlag.style.color = '#fff';
+        tabPhoto.className = 'btn secondary';
+        tabPhoto.style.background = '';
+        tabPhoto.style.color = '';
+      }
+    }
+    </script>
+
+  </div><!-- end .wrap -->
+
+  <footer style="text-align:center; padding:30px 20px; color:var(--muted); font-size:13px; margin-top:20px;">
+    <p style="margin-bottom:8px;">
+      <a href="/" style="color:var(--accent); text-decoration:none; margin:0 10px;">Home</a>
+      <a href="/usa-photo-map-maker/" style="color:var(--accent); text-decoration:none; margin:0 10px;">About This Tool</a>
+    </p>
+    <p>&copy; 2025 <a href="/" style="color:var(--accent); text-decoration:none;">visitall50states.com</a></p>
+  </footer>
+
+</body>
+</html>

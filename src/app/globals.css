@@ -2,22 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: #1e293b;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(251, 191, 36, 0.18), transparent 28%),
+    radial-gradient(circle at 100% 10%, rgba(14, 165, 233, 0.16), transparent 24%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 42%, #f8fafc 100%);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -14px, 0) rotate(1.5deg); }
+}
+
+@keyframes driftGlow {
+  0%, 100% { transform: scale(1) translate3d(0,0,0); opacity: 0.55; }
+  50% { transform: scale(1.08) translate3d(8px,-12px,0); opacity: 0.95; }
+}
+
+@keyframes roadShimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@layer components {
+  .site-shell-glow {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .site-shell-glow::before,
+  .site-shell-glow::after {
+    content: "";
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(60px);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .site-shell-glow::before {
+    width: 320px;
+    height: 320px;
+    background: rgba(251, 191, 36, 0.18);
+    top: -60px;
+    left: -40px;
+    animation: driftGlow 12s ease-in-out infinite;
+  }
+
+  .site-shell-glow::after {
+    width: 260px;
+    height: 260px;
+    background: rgba(14, 165, 233, 0.16);
+    right: -40px;
+    bottom: -80px;
+    animation: driftGlow 14s ease-in-out infinite reverse;
+  }
+
+  .pop-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.75rem;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72));
+    box-shadow: 0 16px 50px rgba(15, 23, 42, 0.08);
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+  }
+
+  .pop-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.14);
+    border-color: rgba(251, 191, 36, 0.35);
+  }
+
+  .road-shimmer {
+    background-image: linear-gradient(90deg, rgba(251,191,36,0.18), rgba(255,255,255,0.75), rgba(14,165,233,0.14), rgba(251,191,36,0.18));
+    background-size: 200% 100%;
+    animation: roadShimmer 8s linear infinite;
+  }
+
+  .float-slow {
+    animation: floatSlow 7s ease-in-out infinite;
+  }
 }
 
 @layer utilities {

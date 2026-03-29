@@ -1,0 +1,1630 @@
+{
+  "states": [
+    {
+      "code": "AL",
+      "name": "Alabama",
+      "nickname": "The Yellowhammer State",
+      "capital": "Montgomery",
+      "region": "South",
+      "bestTimeToVisit": "March-May, September-November",
+      "hiddenGems": [
+        "Dismals Canyon — a privately owned natural wonder with bioluminescent creatures called Dismalites",
+        "Ave Maria Grotto in Cullman — 125 miniature reproductions of famous religious buildings",
+        "Coon Dog Cemetery in Cherokee — the only cemetery in the world dedicated to coon dogs",
+        "Noccalula Falls Park in Gadsford — a stunning 90-foot waterfall with a pioneer village"
+      ],
+      "mustSeeSpots": [
+        "Gulf Shores and Orange Beach — Alabama's beautiful Gulf Coast beaches",
+        "U.S. Space & Rocket Center in Huntsville — home of Space Camp",
+        "Civil Rights District in Birmingham — 16th Street Baptist Church and Kelly Ingram Park",
+        "Montgomery Civil Rights Trail — Rosa Parks Museum, Dexter Avenue King Memorial Church"
+      ],
+      "nationalParks": [
+        "Little River Canyon National Preserve",
+        "Horseshoe Bend National Military Park",
+        "Russell Cave National Monument",
+        "Tuskegee Airmen National Historic Site"
+      ],
+      "insiderTips": [
+        "Try white BBQ sauce — a tangy mayo-based sauce unique to northern Alabama",
+        "Visit the Unclaimed Baggage Center in Scottsboro to shop lost airline luggage items",
+        "Drive the Natchez Trace Parkway through the northwestern corner for gorgeous scenery",
+        "Catch a football game at Auburn or Alabama for a true Southern cultural experience"
+      ]
+    },
+    {
+      "code": "AK",
+      "name": "Alaska",
+      "nickname": "The Last Frontier",
+      "capital": "Juneau",
+      "region": "West",
+      "bestTimeToVisit": "June-August",
+      "hiddenGems": [
+        "Hatcher Pass — stunning alpine scenery and the historic Independence Mine",
+        "McCarthy and Kennicott — remote ghost town deep in Wrangell-St. Elias",
+        "Homer Spit — a narrow 4.5-mile strip of land jutting into Kachemak Bay",
+        "Kodiak Island — incredible wildlife viewing away from the cruise ship crowds"
+      ],
+      "mustSeeSpots": [
+        "Denali National Park — home to the highest peak in North America",
+        "Glacier Bay National Park — massive tidewater glaciers and whales",
+        "Kenai Fjords National Park — Exit Glacier and dramatic coastal fjords",
+        "Inside Passage — ferry or cruise through Southeast Alaska's stunning waterways"
+      ],
+      "nationalParks": [
+        "Denali National Park & Preserve",
+        "Glacier Bay National Park & Preserve",
+        "Kenai Fjords National Park",
+        "Wrangell-St. Elias National Park & Preserve",
+        "Katmai National Park & Preserve",
+        "Lake Clark National Park & Preserve",
+        "Gates of the Arctic National Park & Preserve",
+        "Kobuk Valley National Park"
+      ],
+      "insiderTips": [
+        "Book accommodations and tours months in advance — summer fills up fast",
+        "Take the Alaska Railroad from Anchorage to Denali for jaw-dropping views",
+        "The Alaska Marine Highway ferry system is an affordable alternative to cruises",
+        "Visit Fairbanks in winter for Northern Lights viewing from September to April"
+      ]
+    },
+    {
+      "code": "AZ",
+      "name": "Arizona",
+      "nickname": "The Grand Canyon State",
+      "capital": "Phoenix",
+      "region": "West",
+      "bestTimeToVisit": "October-April",
+      "hiddenGems": [
+        "Chiricahua National Monument — stunning rock spires called the Wonderland of Rocks",
+        "Kartchner Caverns State Park — pristine living cave with incredible formations",
+        "Havasu Falls — turquoise waterfalls on the Havasupai Reservation (permit required)",
+        "Bisbee — quirky old mining town turned artist colony near the Mexican border"
+      ],
+      "mustSeeSpots": [
+        "Grand Canyon National Park — one of the seven natural wonders of the world",
+        "Sedona — red rock formations, vortex sites, and world-class hiking",
+        "Monument Valley — iconic Navajo Nation landscape of sandstone buttes",
+        "Antelope Canyon — stunning slot canyon near Page with light beams"
+      ],
+      "nationalParks": [
+        "Grand Canyon National Park",
+        "Petrified Forest National Park",
+        "Saguaro National Park",
+        "Sunset Crater Volcano National Monument",
+        "Organ Pipe Cactus National Monument"
+      ],
+      "insiderTips": [
+        "The Grand Canyon North Rim has a fraction of the crowds and is equally stunning",
+        "Havasu Falls permits sell out in minutes — set alerts for the release date",
+        "Explore the Apache Trail scenic drive east of Phoenix for rugged desert beauty",
+        "Sedona is best visited on weekdays; weekends bring heavy traffic on the main roads"
+      ]
+    },
+    {
+      "code": "AR",
+      "name": "Arkansas",
+      "nickname": "The Natural State",
+      "capital": "Little Rock",
+      "region": "South",
+      "bestTimeToVisit": "April-June, September-November",
+      "hiddenGems": [
+        "Crater of Diamonds State Park — the only place in the US where you can dig for real diamonds",
+        "Thorncrown Chapel in Eureka Springs — stunning glass chapel nestled in the Ozarks",
+        "Blanchard Springs Caverns — one of the most beautiful cave systems in America",
+        "Devil's Den State Park — Lee Creek Valley with rugged Ozark terrain and caves"
+      ],
+      "mustSeeSpots": [
+        "Hot Springs National Park — the only national park in a city, with historic bathhouses",
+        "Buffalo National River — America's first national river, perfect for canoeing",
+        "Eureka Springs — charming Victorian resort town in the Ozark Mountains",
+        "Crystal Bridges Museum of American Art in Bentonville — world-class and free"
+      ],
+      "nationalParks": [
+        "Hot Springs National Park",
+        "Buffalo National River",
+        "Pea Ridge National Military Park",
+        "Fort Smith National Historic Site"
+      ],
+      "insiderTips": [
+        "The Ozark Highlands Trail is one of the best long-distance hikes in the South",
+        "Bentonville has become a foodie destination thanks to Walmart headquarters culture",
+        "Float the Buffalo River in spring when water levels are ideal",
+        "Visit Eureka Springs during the fall foliage season for the best colors"
+      ]
+    },
+    {
+      "code": "CA",
+      "name": "California",
+      "nickname": "The Golden State",
+      "capital": "Sacramento",
+      "region": "West",
+      "bestTimeToVisit": "April-October (varies by region)",
+      "hiddenGems": [
+        "Lava Beds National Monument — over 700 caves in volcanic terrain",
+        "Anza-Borrego Desert State Park — wildflower super blooms in spring",
+        "Glass Beach in Fort Bragg — beach covered in colorful sea glass",
+        "Salvation Mountain near Niland — a vibrant folk art hill in the desert"
+      ],
+      "mustSeeSpots": [
+        "Yosemite National Park — El Capitan, Half Dome, and Yosemite Falls",
+        "Pacific Coast Highway — iconic coastal drive from Big Sur to beyond",
+        "San Francisco — Golden Gate Bridge, Alcatraz, and cable cars",
+        "Joshua Tree National Park — surreal desert landscape of twisted trees and boulders"
+      ],
+      "nationalParks": [
+        "Yosemite National Park",
+        "Joshua Tree National Park",
+        "Death Valley National Park",
+        "Sequoia & Kings Canyon National Parks",
+        "Redwood National and State Parks",
+        "Channel Islands National Park",
+        "Pinnacles National Park",
+        "Lassen Volcanic National Park"
+      ],
+      "insiderTips": [
+        "Visit Yosemite on weekdays or in shoulder season to avoid crushing crowds",
+        "Channel Islands National Park is California's best-kept secret — incredible snorkeling",
+        "Highway 395 along the Eastern Sierra is one of the most scenic drives in the state",
+        "Taco trucks and stands often serve better Mexican food than sit-down restaurants"
+      ]
+    },
+    {
+      "code": "CO",
+      "name": "Colorado",
+      "nickname": "The Centennial State",
+      "capital": "Denver",
+      "region": "West",
+      "bestTimeToVisit": "June-August (summer), December-March (skiing)",
+      "hiddenGems": [
+        "Black Canyon of the Gunnison — a dramatic, sheer-walled gorge often overlooked",
+        "Great Sand Dunes National Park — tallest sand dunes in North America",
+        "Maroon Bells near Aspen — the most photographed peaks in Colorado",
+        "Bishop Castle near Rye — a massive hand-built stone castle open to the public for free"
+      ],
+      "mustSeeSpots": [
+        "Rocky Mountain National Park — Trail Ridge Road and alpine tundra",
+        "Mesa Verde National Park — ancient cliff dwellings of the Ancestral Puebloans",
+        "Garden of the Gods in Colorado Springs — dramatic red rock formations",
+        "Red Rocks Amphitheatre near Denver — iconic outdoor concert venue"
+      ],
+      "nationalParks": [
+        "Rocky Mountain National Park",
+        "Mesa Verde National Park",
+        "Great Sand Dunes National Park & Preserve",
+        "Black Canyon of the Gunnison National Park"
+      ],
+      "insiderTips": [
+        "Drink lots of water — altitude sickness is real, even in Denver at 5,280 feet",
+        "Timed entry reservations are required for Rocky Mountain NP in summer",
+        "The Million Dollar Highway (US-550) is one of the most dramatic drives in America",
+        "Colorado's 14ers (peaks over 14,000 ft) are bucket-list hikes — start with easier ones"
+      ]
+    },
+    {
+      "code": "CT",
+      "name": "Connecticut",
+      "nickname": "The Constitution State",
+      "capital": "Hartford",
+      "region": "Northeast",
+      "bestTimeToVisit": "May-June, September-October",
+      "hiddenGems": [
+        "Gillette Castle State Park — an eccentric medieval-style castle overlooking the Connecticut River",
+        "Devil's Hopyard State Park — Chapman Falls and mysterious pothole formations",
+        "Weir Farm National Historical Park — the only national park dedicated to American painting",
+        "Kent Falls State Park — a 250-foot cascade and covered bridge in the Litchfield Hills"
+      ],
+      "mustSeeSpots": [
+        "Mystic Seaport Museum — a living history maritime museum and charming village",
+        "Yale University in New Haven — stunning campus with free world-class art galleries",
+        "Mark Twain House in Hartford — where Twain wrote his greatest works",
+        "Litchfield Hills — rolling countryside, covered bridges, and quintessential New England towns"
+      ],
+      "nationalParks": [
+        "Weir Farm National Historical Park",
+        "New England National Scenic Trail (shared with MA)"
+      ],
+      "insiderTips": [
+        "New Haven has arguably the best pizza in America — try Frank Pepe's, Sally's, or Modern",
+        "Fall foliage peaks in mid-October in Connecticut — Route 169 is especially scenic",
+        "Explore the Connecticut Wine Trail through the rolling hills of the eastern part of the state",
+        "The Essex Steam Train and Riverboat ride is a great family outing along the Connecticut River"
+      ]
+    },
+    {
+      "code": "DE",
+      "name": "Delaware",
+      "nickname": "The First State",
+      "capital": "Dover",
+      "region": "Northeast",
+      "bestTimeToVisit": "May-September",
+      "hiddenGems": [
+        "Bombay Hook National Wildlife Refuge — incredible bird watching and fall migrations",
+        "Fort Delaware on Pea Patch Island — a Civil War fortress accessible only by ferry",
+        "Winterthur Museum — Henry Francis du Pont's estate with 175 rooms of decorative arts",
+        "The Enchanted Woods at Winterthur — a whimsical fairy-tale garden for families"
+      ],
+      "mustSeeSpots": [
+        "Rehoboth Beach — the nation's summer capital with a classic boardwalk",
+        "Hagley Museum and Library — the original du Pont powder works on the Brandywine",
+        "Historic New Castle — beautifully preserved colonial town on the Delaware River",
+        "Cape Henlopen State Park — where the Delaware Bay meets the Atlantic Ocean"
+      ],
+      "nationalParks": [
+        "First State National Historical Park",
+        "Captain John Smith Chesapeake National Historic Trail"
+      ],
+      "insiderTips": [
+        "Delaware has no sales tax — stock up on shopping in Wilmington or at Tanger Outlets",
+        "Dewey Beach is the livelier nightlife alternative to family-friendly Rehoboth",
+        "Dogfish Head Brewery in Milton offers tours and tastings of their famous craft beers",
+        "The Lewes-Cape May ferry connects Delaware to New Jersey and is a scenic shortcut"
+      ]
+    },
+    {
+      "code": "FL",
+      "name": "Florida",
+      "nickname": "The Sunshine State",
+      "capital": "Tallahassee",
+      "region": "South",
+      "bestTimeToVisit": "November-April",
+      "hiddenGems": [
+        "Dry Tortugas National Park — a remote island fort reachable only by boat or seaplane",
+        "Devil's Den Prehistoric Spring — an underground spring inside a dry cave near Williston",
+        "Cedar Key — a sleepy Old Florida fishing village on the Gulf Coast",
+        "Apalachicola — charming forgotten town famous for the best oysters in the world"
+      ],
+      "mustSeeSpots": [
+        "Everglades National Park — a vast subtropical wilderness of sawgrass and mangroves",
+        "Kennedy Space Center — watch rocket launches and tour NASA facilities",
+        "Key West — the southernmost point in the continental US with a free-spirited vibe",
+        "St. Augustine — the oldest continuously occupied European settlement in the US"
+      ],
+      "nationalParks": [
+        "Everglades National Park",
+        "Dry Tortugas National Park",
+        "Biscayne National Park",
+        "Canaveral National Seashore",
+        "Big Cypress National Preserve"
+      ],
+      "insiderTips": [
+        "The springs of North Florida (Ichetucknee, Rainbow, Ginnie) are magical for swimming and tubing",
+        "Visit theme parks on weekdays and use crowd calendar websites to avoid the worst days",
+        "Skip Miami Beach traffic and explore Wynwood Walls and Little Havana instead",
+        "Sanibel Island is one of the best shelling beaches in the world — go at low tide"
+      ]
+    },
+    {
+      "code": "GA",
+      "name": "Georgia",
+      "nickname": "The Peach State",
+      "capital": "Atlanta",
+      "region": "South",
+      "bestTimeToVisit": "March-May, September-November",
+      "hiddenGems": [
+        "Providence Canyon State Park — Georgia's Little Grand Canyon with colorful eroded bluffs",
+        "Cumberland Island — wild horses roam this pristine barrier island (ferry access only)",
+        "Dahlonega — the site of America's first gold rush, now a charming wine region",
+        "Okefenokee Swamp — 438,000 acres of blackwater swamp with gators and cypress trees"
+      ],
+      "mustSeeSpots": [
+        "Savannah Historic District — gorgeous squares, Spanish moss, and Southern charm",
+        "Martin Luther King Jr. National Historical Park in Atlanta",
+        "Georgia Aquarium in Atlanta — one of the largest aquariums in the world",
+        "Tybee Island — Savannah's laid-back beach with a historic lighthouse"
+      ],
+      "nationalParks": [
+        "Chattahoochee River National Recreation Area",
+        "Kennesaw Mountain National Battlefield Park",
+        "Martin Luther King Jr. National Historical Park",
+        "Fort Pulaski National Monument",
+        "Jimmy Carter National Historical Park"
+      ],
+      "insiderTips": [
+        "Savannah allows open containers downtown — grab a to-go cup on River Street",
+        "The Georgia coast barrier islands are far less crowded than Florida beaches",
+        "Atlanta's BeltLine trail is a must-walk for food, art, and people watching",
+        "Try a meat-and-three restaurant for an authentic Southern comfort food experience"
+      ]
+    },
+    {
+      "code": "HI",
+      "name": "Hawaii",
+      "nickname": "The Aloha State",
+      "capital": "Honolulu",
+      "region": "West",
+      "bestTimeToVisit": "April-June, September-November",
+      "hiddenGems": [
+        "Molokai — the most Hawaiian island, untouched by mass tourism",
+        "Papkolea Green Sand Beach on Big Island — one of only four green sand beaches in the world",
+        "Waimea Canyon on Kauai — the Grand Canyon of the Pacific",
+        "Makapu'u Tide Pools on Oahu — natural ocean pools with sea life"
+      ],
+      "mustSeeSpots": [
+        "Haleakala National Park on Maui — sunrise above the clouds at 10,000 feet",
+        "Hawaii Volcanoes National Park — active volcanism on the Big Island",
+        "Na Pali Coast on Kauai — towering sea cliffs accessible by boat, helicopter, or trail",
+        "Pearl Harbor National Memorial on Oahu — a solemn and powerful historical site"
+      ],
+      "nationalParks": [
+        "Haleakala National Park",
+        "Hawaii Volcanoes National Park",
+        "Pearl Harbor National Memorial",
+        "Pu'uhonua o Honaunau National Historical Park"
+      ],
+      "insiderTips": [
+        "Visit local plate lunch spots instead of tourist restaurants — try loco moco and poke bowls",
+        "Haleakala sunrise reservations fill up weeks in advance — book early",
+        "Respect the aloha spirit and Hawaiian sacred sites — stay on marked trails",
+        "Kauai and Big Island offer the most nature; Oahu and Maui are more developed"
+      ]
+    },
+    {
+      "code": "ID",
+      "name": "Idaho",
+      "nickname": "The Gem State",
+      "capital": "Boise",
+      "region": "West",
+      "bestTimeToVisit": "June-September",
+      "hiddenGems": [
+        "Craters of the Moon National Monument — surreal volcanic landscape resembling the moon",
+        "City of Rocks National Reserve — granite spires popular with rock climbers",
+        "Bruneau Dunes State Park — the tallest single-structured sand dune in North America",
+        "Route of the Hiawatha bike trail — 15 miles through tunnels and over trestles in the Bitterroots"
+      ],
+      "mustSeeSpots": [
+        "Sawtooth National Recreation Area — jagged peaks and pristine alpine lakes",
+        "Shoshone Falls near Twin Falls — the Niagara of the West at 212 feet",
+        "Sun Valley — America's first destination ski resort",
+        "Hells Canyon — the deepest river gorge in North America (deeper than the Grand Canyon)"
+      ],
+      "nationalParks": [
+        "Craters of the Moon National Monument & Preserve",
+        "Yellowstone National Park (small western portion)",
+        "City of Rocks National Reserve",
+        "Hagerman Fossil Beds National Monument"
+      ],
+      "insiderTips": [
+        "Boise's Basque Block has the largest Basque community outside Europe — try the food",
+        "Stanley, Idaho is one of the coldest towns in the US but has incredible hot springs nearby",
+        "The Salmon River is called the River of No Return — world-class whitewater rafting",
+        "Idaho wines from the Snake River Valley AVA are an emerging hidden gem"
+      ]
+    },
+    {
+      "code": "IL",
+      "name": "Illinois",
+      "nickname": "The Prairie State",
+      "capital": "Springfield",
+      "region": "Midwest",
+      "bestTimeToVisit": "May-June, September-October",
+      "hiddenGems": [
+        "Starved Rock State Park — stunning canyons and waterfalls along the Illinois River",
+        "Cahokia Mounds — the largest pre-Columbian settlement north of Mexico (UNESCO site)",
+        "Garden of the Gods in Shawnee National Forest — dramatic sandstone formations",
+        "Galena — a perfectly preserved 1800s Main Street and Ulysses S. Grant's home"
+      ],
+      "mustSeeSpots": [
+        "Chicago — world-class architecture, deep-dish pizza, and the Art Institute",
+        "Route 66 heritage sites — Illinois is where the Mother Road begins",
+        "Abraham Lincoln Presidential Library and Museum in Springfield",
+        "Millennium Park in Chicago — the Bean, Crown Fountain, and Lurie Garden"
+      ],
+      "nationalParks": [
+        "Pullman National Historical Park",
+        "Lincoln Home National Historic Site",
+        "Lewis and Clark National Historic Trail"
+      ],
+      "insiderTips": [
+        "Chicago's neighborhoods each have distinct character — explore beyond the Loop",
+        "The Shawnee National Forest in southern Illinois feels like a different state entirely",
+        "Try Italian beef sandwiches — Chicago's underrated signature food (not just deep-dish)",
+        "Starved Rock is best visited after rain when the waterfalls are flowing strong"
+      ]
+    },
+    {
+      "code": "IN",
+      "name": "Indiana",
+      "nickname": "The Hoosier State",
+      "capital": "Indianapolis",
+      "region": "Midwest",
+      "bestTimeToVisit": "May-October",
+      "hiddenGems": [
+        "Indiana Dunes National Park — 15 miles of Lake Michigan shoreline with diverse ecosystems",
+        "West Baden Springs Hotel — an opulent early 1900s hotel with the world's first large free-span dome",
+        "Marengo Cave — a US National Landmark with spectacular dripstone formations",
+        "Nashville, Indiana — a charming Brown County artist colony surrounded by gorgeous hills"
+      ],
+      "mustSeeSpots": [
+        "Indianapolis Motor Speedway — home of the Indy 500, the greatest spectacle in racing",
+        "Indiana Dunes National Park — stunning beaches and trails on Lake Michigan",
+        "Children's Museum of Indianapolis — the world's largest children's museum",
+        "Brown County State Park — the Little Smokies with beautiful fall foliage"
+      ],
+      "nationalParks": [
+        "Indiana Dunes National Park",
+        "Lincoln Boyhood National Memorial",
+        "George Rogers Clark National Historical Park"
+      ],
+      "insiderTips": [
+        "Attend the Indy 500 at least once — 300,000+ fans create an unmatched atmosphere",
+        "The tenderloin sandwich is Indiana's signature food — try it breaded and pan-fried",
+        "Brown County fall foliage rivals New England but without the crowds",
+        "Columbus, Indiana is an unexpected architectural gem with buildings by world-famous architects"
+      ]
+    },
+    {
+      "code": "IA",
+      "name": "Iowa",
+      "nickname": "The Hawkeye State",
+      "capital": "Des Moines",
+      "region": "Midwest",
+      "bestTimeToVisit": "May-September",
+      "hiddenGems": [
+        "Maquoketa Caves State Park — Iowa's largest collection of caves, all explorable",
+        "Effigy Mounds National Monument — ancient Native American burial mounds shaped like animals",
+        "Pikes Peak State Park — not the Colorado one; stunning Mississippi River bluff views",
+        "The High Trestle Trail Bridge near Madrid — a dramatic half-mile art installation bridge"
+      ],
+      "mustSeeSpots": [
+        "Field of Dreams movie site in Dyersville — the iconic baseball diamond still stands",
+        "Iowa State Fair in Des Moines — one of the most famous state fairs in America",
+        "Bridges of Madison County in Winterset — the covered bridges that inspired the novel",
+        "Amana Colonies — seven German villages preserving communal heritage"
+      ],
+      "nationalParks": [
+        "Effigy Mounds National Monument",
+        "Herbert Hoover National Historic Site"
+      ],
+      "insiderTips": [
+        "RAGBRAI (the annual bike ride across Iowa) is a beloved summer tradition",
+        "Iowa's Loess Hills along the western border are a rare geological formation found only here and in China",
+        "Des Moines has a surprisingly vibrant food and craft beer scene downtown",
+        "The Devonian Fossil Gorge near Iowa City reveals 375-million-year-old ocean floor"
+      ]
+    },
+    {
+      "code": "KS",
+      "name": "Kansas",
+      "nickname": "The Sunflower State",
+      "capital": "Topeka",
+      "region": "Midwest",
+      "bestTimeToVisit": "April-June, September-October",
+      "hiddenGems": [
+        "Tallgrass Prairie National Preserve — one of the last remaining tallgrass prairies on Earth",
+        "Mushroom Rock State Park — unusual mushroom-shaped sandstone formations",
+        "Strataca (Kansas Underground Salt Museum) in Hutchinson — 650 feet below the surface",
+        "Monument Rocks — chalk pyramids rising from the prairie, Kansas's first National Natural Landmark"
+      ],
+      "mustSeeSpots": [
+        "Flint Hills — endless rolling grasslands that are stunningly beautiful at sunset",
+        "Dodge City — the legendary Wild West cattle town with Boot Hill Museum",
+        "Cosmosphere in Hutchinson — a world-class space museum rivaling the Smithsonian",
+        "Oz Museum in Wamego — dedicated to The Wizard of Oz"
+      ],
+      "nationalParks": [
+        "Tallgrass Prairie National Preserve",
+        "Brown v. Board of Education National Historical Park",
+        "Fort Larned National Historic Site",
+        "Fort Scott National Historic Site",
+        "Nicodemus National Historic Site"
+      ],
+      "insiderTips": [
+        "Drive the Flint Hills Scenic Byway in late April when ranchers burn the prairie — it's surreal",
+        "Kansas sunsets over open prairie are some of the most spectacular in the country",
+        "Chase the storms — Kansas is prime tornado alley and storm chasing tours operate here",
+        "Kansas City BBQ is technically in both Kansas and Missouri — try both sides"
+      ]
+    },
+    {
+      "code": "KY",
+      "name": "Kentucky",
+      "nickname": "The Bluegrass State",
+      "capital": "Frankfort",
+      "region": "South",
+      "bestTimeToVisit": "April-June, September-October",
+      "hiddenGems": [
+        "Red River Gorge — world-class rock climbing and stunning natural arches",
+        "Ale-8-One bottling company in Winchester — Kentucky's own ginger-citrus soft drink",
+        "Land Between the Lakes National Recreation Area — 170,000 acres between two major lakes",
+        "Berea — the folk arts capital of Kentucky with incredible Appalachian craftsmanship"
+      ],
+      "mustSeeSpots": [
+        "Mammoth Cave National Park — the world's longest known cave system (400+ miles)",
+        "Louisville — Kentucky Derby at Churchill Downs, Louisville Slugger Museum, bourbon distilleries",
+        "The Kentucky Bourbon Trail — visit iconic distilleries like Maker's Mark and Woodford Reserve",
+        "Cumberland Falls — the Niagara of the South, famous for its rare moonbow"
+      ],
+      "nationalParks": [
+        "Mammoth Cave National Park",
+        "Cumberland Gap National Historical Park",
+        "Abraham Lincoln Birthplace National Historical Park",
+        "Big South Fork National River & Recreation Area"
+      ],
+      "insiderTips": [
+        "Visit Cumberland Falls during a full moon to see the moonbow — one of only two in the Western Hemisphere",
+        "The bourbon trail is best done over multiple days — don't try to rush all distilleries",
+        "Kentucky Hot Brown is a must-try open-faced turkey sandwich invented at The Brown Hotel",
+        "Red River Gorge's Miguel's Pizza is a legendary climber hangout with great pizza and camping"
+      ]
+    },
+    {
+      "code": "LA",
+      "name": "Louisiana",
+      "nickname": "The Pelican State",
+      "capital": "Baton Rouge",
+      "region": "South",
+      "bestTimeToVisit": "February-May, October-November",
+      "hiddenGems": [
+        "Poverty Point World Heritage Site — 3,400-year-old earthworks built by ancient Americans",
+        "Natchitoches — the oldest permanent settlement in the Louisiana Purchase territory",
+        "Atchafalaya Basin — the largest river swamp in the US, best explored by kayak or airboat",
+        "Abita Mystery House in Abita Springs — a wonderfully bizarre folk art museum"
+      ],
+      "mustSeeSpots": [
+        "New Orleans French Quarter — jazz, beignets, and Creole architecture",
+        "Cajun Country (Lafayette area) — Cajun music, food, and bayou culture",
+        "Plantation Road along the Great River Road — antebellum homes and difficult history",
+        "New Orleans City Park — a 1,300-acre oasis with ancient live oaks and a sculpture garden"
+      ],
+      "nationalParks": [
+        "Jean Lafitte National Historical Park & Preserve",
+        "Cane River Creole National Historical Park",
+        "Poverty Point National Monument",
+        "New Orleans Jazz National Historical Park"
+      ],
+      "insiderTips": [
+        "Visit New Orleans outside of Mardi Gras for lower prices but still great music and food",
+        "Eat where locals eat — ask for recommendations in neighborhoods beyond the French Quarter",
+        "A swamp tour is a must — choose a small-boat tour for a more intimate experience",
+        "Boudin and cracklins from gas stations and meat markets in Cajun Country are incredible"
+      ]
+    },
+    {
+      "code": "ME",
+      "name": "Maine",
+      "nickname": "The Pine Tree State",
+      "capital": "Augusta",
+      "region": "Northeast",
+      "bestTimeToVisit": "June-October",
+      "hiddenGems": [
+        "Baxter State Park — home to Mount Katahdin, the northern terminus of the Appalachian Trail",
+        "Monhegan Island — a remote artist colony with dramatic cliffs, reachable by ferry",
+        "Moxie Falls — Maine's tallest waterfall, a short hike near The Forks",
+        "Bold Coast trails in Cutler — rugged coastal hiking on the Downeast coast"
+      ],
+      "mustSeeSpots": [
+        "Acadia National Park — the crown jewel of the East Coast with mountains meeting the sea",
+        "Portland — one of America's best food cities with an incredible waterfront",
+        "Bass Harbor Head Lighthouse — an iconic lighthouse perched on Acadia's cliffs",
+        "Camden and Rockland — charming coastal towns and the schooner capital of Maine"
+      ],
+      "nationalParks": [
+        "Acadia National Park",
+        "Katahdin Woods and Waters National Monument",
+        "Saint Croix Island International Historic Site"
+      ],
+      "insiderTips": [
+        "Eat lobster at a lobster pound on the water, not at a tourist restaurant — much cheaper and fresher",
+        "Acadia's Park Loop Road is best experienced at sunrise with the Cadillac Mountain summit",
+        "The Schoodic Peninsula section of Acadia has almost no crowds compared to Bar Harbor",
+        "Maine blueberries in August are a revelation — pick your own at roadside farms"
+      ]
+    },
+    {
+      "code": "MD",
+      "name": "Maryland",
+      "nickname": "The Old Line State",
+      "capital": "Annapolis",
+      "region": "Northeast",
+      "bestTimeToVisit": "April-June, September-October",
+      "hiddenGems": [
+        "Calvert Cliffs State Park — hunt for Miocene-era shark teeth and fossils on the beach",
+        "Catoctin Mountain Park — the park that contains Camp David (though you can't visit it)",
+        "Smith Island — Maryland's only inhabited island in the Chesapeake Bay, famous for its cake",
+        "Chesapeake & Ohio Canal towpath — 184.5 miles of flat biking and hiking along the Potomac"
+      ],
+      "mustSeeSpots": [
+        "Annapolis — the sailing capital of the US and home to the Naval Academy",
+        "Baltimore Inner Harbor — National Aquarium, Fort McHenry, and Fells Point",
+        "Assateague Island — wild horses roam the beaches of this barrier island",
+        "Antietam National Battlefield — site of the bloodiest single day in American history"
+      ],
+      "nationalParks": [
+        "Assateague Island National Seashore",
+        "Antietam National Battlefield",
+        "Fort McHenry National Monument",
+        "Catoctin Mountain Park",
+        "Chesapeake & Ohio Canal National Historical Park",
+        "Harriet Tubman Underground Railroad National Historical Park"
+      ],
+      "insiderTips": [
+        "Maryland blue crabs are best from May to September — Old Bay seasoning is essential",
+        "Skip the tourist crab spots and find a local crab house where you pick your own",
+        "The Eastern Shore is a world away from DC suburbs — slower pace and beautiful farmland",
+        "Deep Creek Lake in western Maryland is a great four-season mountain getaway"
+      ]
+    },
+    {
+      "code": "MA",
+      "name": "Massachusetts",
+      "nickname": "The Bay State",
+      "capital": "Boston",
+      "region": "Northeast",
+      "bestTimeToVisit": "May-June, September-October",
+      "hiddenGems": [
+        "The Trustees' properties — lesser-known coastal preserves and historic estates across the state",
+        "Halibut Point State Park in Rockport — a former granite quarry with stunning ocean views",
+        "Mount Greylock — the highest point in Massachusetts with panoramic views of five states",
+        "Shelburne Falls — a charming village with a glacial pothole swimming hole and Bridge of Flowers"
+      ],
+      "mustSeeSpots": [
+        "Boston's Freedom Trail — 2.5 miles of revolutionary history through the city",
+        "Cape Cod National Seashore — 40 miles of pristine beaches and sand dunes",
+        "Salem — witch trials history, Peabody Essex Museum, and Halloween festivities",
+        "Martha's Vineyard and Nantucket — iconic New England island getaways"
+      ],
+      "nationalParks": [
+        "Cape Cod National Seashore",
+        "Boston Harbor Islands National Recreation Area",
+        "Minute Man National Historical Park",
+        "Adams National Historical Park",
+        "Salem Maritime National Historic Site",
+        "New Bedford Whaling National Historical Park"
+      ],
+      "insiderTips": [
+        "Walk the entire Freedom Trail rather than taking a tour — it's well-marked and self-guided",
+        "Visit Cape Cod in September when beaches are warm but summer crowds have left",
+        "Skip Faneuil Hall tourist food — head to the North End for authentic Italian",
+        "The Berkshires in western MA offer world-class performing arts at Tanglewood in summer"
+      ]
+    },
+    {
+      "code": "MI",
+      "name": "Michigan",
+      "nickname": "The Great Lakes State",
+      "capital": "Lansing",
+      "region": "Midwest",
+      "bestTimeToVisit": "June-September",
+      "hiddenGems": [
+        "Pictured Rocks National Lakeshore — multicolored sandstone cliffs on Lake Superior",
+        "Tahquamenon Falls — the third-largest waterfall east of the Mississippi",
+        "Sleeping Bear Dunes — voted the most beautiful place in America by Good Morning America",
+        "Isle Royale National Park — the least visited national park in the lower 48, wild and remote"
+      ],
+      "mustSeeSpots": [
+        "Mackinac Island — no cars allowed on this charming Victorian island in Lake Huron",
+        "Sleeping Bear Dunes National Lakeshore — towering sand dunes overlooking Lake Michigan",
+        "Detroit — incredible comeback city with the Motown Museum, DIA, and great food",
+        "Traverse City — the cherry capital with gorgeous vineyards and beaches"
+      ],
+      "nationalParks": [
+        "Isle Royale National Park",
+        "Sleeping Bear Dunes National Lakeshore",
+        "Pictured Rocks National Lakeshore",
+        "Keweenaw National Historical Park",
+        "River Raisin National Battlefield Park"
+      ],
+      "insiderTips": [
+        "The Upper Peninsula (UP) feels like a different state — visit for waterfalls, solitude, and pasties",
+        "Mackinac Island fudge shops are legendary — it's sometimes called Fudge Island",
+        "Michigan's west coast beaches rival Caribbean-clear water on warm summer days",
+        "Detroit-style pizza (thick, crispy, cheese-to-the-edge) is a must-try"
+      ]
+    },
+    {
+      "code": "MN",
+      "name": "Minnesota",
+      "nickname": "The North Star State",
+      "capital": "St. Paul",
+      "region": "Midwest",
+      "bestTimeToVisit": "June-September",
+      "hiddenGems": [
+        "Boundary Waters Canoe Area Wilderness — over a million acres of pristine lakes and portages",
+        "Pipestone National Monument — sacred quartzite quarries used by Native Americans for centuries",
+        "Soudan Underground Mine State Park — descend 2,341 feet into Minnesota's oldest iron mine",
+        "Lanesboro — a charming bluff country town with biking, tubing, and Amish culture"
+      ],
+      "mustSeeSpots": [
+        "Boundary Waters Canoe Area — world-class wilderness canoeing and camping",
+        "Minneapolis — vibrant arts scene, Mill City Museum, and the Chain of Lakes",
+        "North Shore Scenic Drive along Lake Superior — waterfalls, state parks, and Grand Marais",
+        "Voyageurs National Park — a water-based park accessible primarily by boat"
+      ],
+      "nationalParks": [
+        "Voyageurs National Park",
+        "Pipestone National Monument",
+        "Grand Portage National Monument",
+        "Mississippi National River and Recreation Area"
+      ],
+      "insiderTips": [
+        "Boundary Waters permits are limited and competitive — reserve as early as possible",
+        "The North Shore of Lake Superior in fall is Minnesota's best-kept scenic secret",
+        "Minneapolis has more theater seats per capita than anywhere outside NYC",
+        "Try a Juicy Lucy (cheese-stuffed burger) at Matt's Bar or the 5-8 Club in Minneapolis"
+      ]
+    },
+    {
+      "code": "MS",
+      "name": "Mississippi",
+      "nickname": "The Magnolia State",
+      "capital": "Jackson",
+      "region": "South",
+      "bestTimeToVisit": "March-May, October-November",
+      "hiddenGems": [
+        "Windsor Ruins — 23 haunting columns from a Civil War-era mansion in the countryside",
+        "Rowan Oak in Oxford — William Faulkner's home with his outline written on the wall",
+        "Red Bluff (Mississippi's Little Grand Canyon) — eroded red clay bluffs near Foxworth",
+        "Vicksburg National Military Park — one of the most well-preserved Civil War battlefields"
+      ],
+      "mustSeeSpots": [
+        "Natchez Trace Parkway — a 444-mile scenic drive following an ancient trail",
+        "Mississippi Delta — the birthplace of the blues, from Clarksdale to Indianola",
+        "Natchez — gorgeous antebellum mansions along the bluffs of the Mississippi River",
+        "Oxford — the charming university town home to Ole Miss, Faulkner, and great food"
+      ],
+      "nationalParks": [
+        "Natchez Trace Parkway",
+        "Vicksburg National Military Park",
+        "Brices Cross Roads National Battlefield Site",
+        "Medgar and Myrlie Evers Home National Monument"
+      ],
+      "insiderTips": [
+        "Visit Ground Zero Blues Club in Clarksdale for authentic Delta blues in a raw setting",
+        "The tamale trail through the Mississippi Delta serves unique Delta-style hot tamales",
+        "Gulf Islands National Seashore offers beautiful barrier island beaches near Biloxi",
+        "Oxford's Square has become one of the best food scenes in the South"
+      ]
+    },
+    {
+      "code": "MO",
+      "name": "Missouri",
+      "nickname": "The Show-Me State",
+      "capital": "Jefferson City",
+      "region": "Midwest",
+      "bestTimeToVisit": "April-June, September-October",
+      "hiddenGems": [
+        "Ha Ha Tonka State Park — castle ruins perched above a natural spring and karst landscape",
+        "Johnson's Shut-Ins State Park — natural water slides formed by billion-year-old rock",
+        "Meramec Caverns — legendary cave system along Route 66, once used as a hideout by Jesse James",
+        "Hermann — a charming German wine village along the Missouri River"
+      ],
+      "mustSeeSpots": [
+        "Gateway Arch National Park in St. Louis — the tallest man-made monument in the US",
+        "Kansas City BBQ — burnt ends, ribs, and legendary joints like Joe's KC and Q39",
+        "Ozark National Scenic Riverways — crystal-clear spring-fed rivers for floating",
+        "Branson — live entertainment capital of the world in the heart of the Ozarks"
+      ],
+      "nationalParks": [
+        "Gateway Arch National Park",
+        "Ozark National Scenic Riverways",
+        "Wilson's Creek National Battlefield",
+        "Harry S Truman National Historic Site",
+        "George Washington Carver National Monument"
+      ],
+      "insiderTips": [
+        "Kansas City and St. Louis have a fierce BBQ rivalry — try both to decide for yourself",
+        "Float the Current River or Jacks Fork for some of the clearest water in the Midwest",
+        "The Lake of the Ozarks is Missouri's summer playground with 1,150 miles of shoreline",
+        "City Museum in St. Louis is not a museum — it's a massive adult-sized playground and it's extraordinary"
+      ]
+    },
+    {
+      "code": "MT",
+      "name": "Montana",
+      "nickname": "The Treasure State",
+      "capital": "Helena",
+      "region": "West",
+      "bestTimeToVisit": "June-September",
+      "hiddenGems": [
+        "Glacier National Park's Many Glacier area — fewer crowds than Going-to-the-Sun Road",
+        "Makoshika State Park near Glendive — badlands with dinosaur fossils",
+        "Beartooth Highway — called the most beautiful drive in America by Charles Kuralt",
+        "Garnet Ghost Town — one of Montana's best-preserved ghost towns"
+      ],
+      "mustSeeSpots": [
+        "Glacier National Park — Going-to-the-Sun Road and alpine lakes of staggering beauty",
+        "Yellowstone National Park (Montana entrance) — geysers, wildlife, and the Lamar Valley",
+        "Big Sky — world-class skiing with the biggest skiing in America",
+        "Little Bighorn Battlefield National Monument — site of Custer's Last Stand"
+      ],
+      "nationalParks": [
+        "Glacier National Park",
+        "Yellowstone National Park (northern portion)",
+        "Little Bighorn Battlefield National Monument",
+        "Grant-Kohrs Ranch National Historic Site"
+      ],
+      "insiderTips": [
+        "Going-to-the-Sun Road opens late June or early July depending on snow — check before visiting",
+        "The Lamar Valley in Yellowstone is the Serengeti of North America for wildlife watching",
+        "Montana has no sales tax, making it a great place to shop for outdoor gear",
+        "Book Glacier NP accommodations a year in advance — they sell out extremely quickly"
+      ]
+    },
+    {
+      "code": "NE",
+      "name": "Nebraska",
+      "nickname": "The Cornhusker State",
+      "capital": "Lincoln",
+      "region": "Midwest",
+      "bestTimeToVisit": "April-June, September-October",
+      "hiddenGems": [
+        "Toadstool Geologic Park — surreal mushroom-shaped rock formations in the northwest",
+        "Sandhills — the largest sand dune formation in the Western Hemisphere, covered in grass",
+        "Carhenge near Alliance — a replica of Stonehenge made from vintage cars",
+        "Indian Cave State Park — petroglyphs, fall foliage, and Missouri River bluffs"
+      ],
+      "mustSeeSpots": [
+        "Chimney Rock National Historic Site — iconic landmark on the Oregon Trail",
+        "Sandhill Crane migration on the Platte River — 500,000 cranes each March",
+        "Omaha's Old Market — historic district with great restaurants and shops",
+        "Scotts Bluff National Monument — dramatic bluffs that guided pioneers westward"
+      ],
+      "nationalParks": [
+        "Scotts Bluff National Monument",
+        "Chimney Rock National Historic Site",
+        "Homestead National Historical Park",
+        "Agate Fossil Beds National Monument",
+        "Missouri National Recreational River"
+      ],
+      "insiderTips": [
+        "The sandhill crane migration in March is one of the greatest wildlife spectacles on Earth",
+        "Nebraska's Sandhills are eerily beautiful and incredibly remote — bring extra gas",
+        "Omaha has a world-class zoo — the Henry Doorly Zoo consistently ranks among the best",
+        "Husker football games in Lincoln are a cultural experience even for non-fans"
+      ]
+    },
+    {
+      "code": "NV",
+      "name": "Nevada",
+      "nickname": "The Silver State",
+      "capital": "Carson City",
+      "region": "West",
+      "bestTimeToVisit": "March-May, September-November",
+      "hiddenGems": [
+        "Valley of Fire State Park — spectacular red sandstone formations just north of Las Vegas",
+        "International Car Forest of the Last Church near Goldfield — cars planted nose-down in the desert",
+        "Lamoille Canyon in the Ruby Mountains — the Swiss Alps of Nevada",
+        "Fly Geyser near Gerlach — an otherworldly man-made geyser on private land (tours available)"
+      ],
+      "mustSeeSpots": [
+        "Las Vegas Strip — love it or hate it, it's an experience everyone should have once",
+        "Red Rock Canyon National Conservation Area — stunning desert scenery minutes from Vegas",
+        "Great Basin National Park — Lehman Caves and bristlecone pines (the oldest trees on Earth)",
+        "Hoover Dam — an engineering marvel straddling the Nevada-Arizona border"
+      ],
+      "nationalParks": [
+        "Great Basin National Park",
+        "Death Valley National Park (Nevada portion)",
+        "Lake Mead National Recreation Area",
+        "Tule Springs Fossil Beds National Monument"
+      ],
+      "insiderTips": [
+        "Valley of Fire is a fraction of the cost and crowds of nearby national parks — don't skip it",
+        "Great Basin's dark skies make it one of the best stargazing spots in the country",
+        "Virginia City is a well-preserved Old West mining town worth the detour",
+        "Nevada's US-50 is dubbed the Loneliest Road in America — a bucket-list drive"
+      ]
+    },
+    {
+      "code": "NH",
+      "name": "New Hampshire",
+      "nickname": "The Granite State",
+      "capital": "Concord",
+      "region": "Northeast",
+      "bestTimeToVisit": "June-October",
+      "hiddenGems": [
+        "Franconia Notch State Park — the Flume Gorge, a stunning natural granite chasm",
+        "Mount Washington Cog Railway — the world's first mountain-climbing cog railway",
+        "Lost River Gorge in Kinsman Notch — a network of caves, gorges, and boardwalks",
+        "Star Island — a remote island conference center off the coast, open for day visits"
+      ],
+      "mustSeeSpots": [
+        "White Mountains — Mount Washington, Presidential Range, and the Kancamagus Highway",
+        "Kancamagus Highway — one of the best fall foliage drives in America",
+        "Lake Winnipesaukee — a classic New England lake vacation destination",
+        "Portsmouth — a charming coastal city with colonial architecture and great restaurants"
+      ],
+      "nationalParks": [
+        "White Mountain National Forest",
+        "Saint-Gaudens National Historical Park"
+      ],
+      "insiderTips": [
+        "Mount Washington has the worst weather in the world outside polar regions — dress accordingly",
+        "The Kancamagus Highway in peak foliage (early October) is unforgettable but crowded on weekends",
+        "New Hampshire has no state sales or income tax — great for shopping",
+        "Hike the Franconia Ridge Loop for one of the best above-treeline ridge walks in the East"
+      ]
+    },
+    {
+      "code": "NJ",
+      "name": "New Jersey",
+      "nickname": "The Garden State",
+      "capital": "Trenton",
+      "region": "Northeast",
+      "bestTimeToVisit": "May-September",
+      "hiddenGems": [
+        "Pine Barrens — a vast, wild forest covering 22% of New Jersey with unique ecology",
+        "Grounds for Sculpture in Hamilton — an incredible outdoor sculpture park and museum",
+        "High Point State Park — New Jersey's highest point with panoramic views of three states",
+        "Paterson Great Falls National Historical Park — a powerful 77-foot waterfall in a city"
+      ],
+      "mustSeeSpots": [
+        "Cape May — the country's oldest seaside resort with beautiful Victorian architecture",
+        "Jersey Shore boardwalks — Asbury Park, Point Pleasant, and Wildwood",
+        "Liberty State Park — stunning views of the Statue of Liberty and Ellis Island",
+        "Delaware Water Gap National Recreation Area — forested mountains and waterfalls"
+      ],
+      "nationalParks": [
+        "Delaware Water Gap National Recreation Area",
+        "Paterson Great Falls National Historical Park",
+        "Morristown National Historical Park",
+        "Thomas Edison National Historical Park"
+      ],
+      "insiderTips": [
+        "New Jersey diner culture is legendary — most diners are open 24/7 with massive menus",
+        "The Pine Barrens are surprisingly wild and remote — great for kayaking and hiking",
+        "Taylor ham (or pork roll) egg and cheese on a hard roll is the quintessential NJ breakfast",
+        "Island Beach State Park offers pristine beaches without the boardwalk crowds"
+      ]
+    },
+    {
+      "code": "NM",
+      "name": "New Mexico",
+      "nickname": "The Land of Enchantment",
+      "capital": "Santa Fe",
+      "region": "West",
+      "bestTimeToVisit": "September-November",
+      "hiddenGems": [
+        "Kasha-Katuwe Tent Rocks National Monument — otherworldly cone-shaped rock formations",
+        "Bisti/De-Na-Zin Wilderness — surreal badlands with hoodoos and petrified logs",
+        "Meow Wolf in Santa Fe — an immersive, mind-bending art experience inside a building",
+        "City of Rocks State Park — volcanic boulders forming a city of stone in the desert"
+      ],
+      "mustSeeSpots": [
+        "Carlsbad Caverns National Park — a massive underground chamber with spectacular formations",
+        "White Sands National Park — miles of pure white gypsum dunes",
+        "Santa Fe — the oldest state capital, with adobe architecture, art galleries, and green chile",
+        "Taos Pueblo — a UNESCO World Heritage Site and one of the oldest continually inhabited communities in the US"
+      ],
+      "nationalParks": [
+        "Carlsbad Caverns National Park",
+        "White Sands National Park",
+        "Bandelier National Monument",
+        "Chaco Culture National Historical Park",
+        "Gila Cliff Dwellings National Monument",
+        "Petroglyph National Monument"
+      ],
+      "insiderTips": [
+        "Always answer 'Christmas' when asked 'red or green?' — it means both chile sauces on your dish",
+        "Hatch chile season in late August/September is a culinary event — roasting chile is everywhere",
+        "The Albuquerque International Balloon Fiesta in October is one of the world's great spectacles",
+        "Santa Fe's Canyon Road has over 100 art galleries — one of the best art walks in America"
+      ]
+    },
+    {
+      "code": "NY",
+      "name": "New York",
+      "nickname": "The Empire State",
+      "capital": "Albany",
+      "region": "Northeast",
+      "bestTimeToVisit": "April-June, September-November",
+      "hiddenGems": [
+        "Letchworth State Park — the Grand Canyon of the East with three major waterfalls on the Genesee River",
+        "Watkins Glen State Park — a stunning gorge with 19 waterfalls along a mile-long trail",
+        "The Catskills — mountains, waterfalls, and charming towns just 2 hours from NYC",
+        "Boldt Castle on Heart Island in the Thousand Islands — a fairy-tale castle on the St. Lawrence"
+      ],
+      "mustSeeSpots": [
+        "New York City — Central Park, Statue of Liberty, Times Square, Brooklyn Bridge, and world-class museums",
+        "Niagara Falls — the thundering power of one of the world's most famous waterfalls",
+        "Adirondack Park — the largest park in the contiguous US with 46 High Peaks",
+        "Hudson Valley — fall foliage, wineries, farm-to-table dining, and historic estates"
+      ],
+      "nationalParks": [
+        "Statue of Liberty National Monument",
+        "Ellis Island National Museum of Immigration",
+        "Gateway National Recreation Area",
+        "Stonewall National Monument",
+        "African Burial Ground National Monument",
+        "Theodore Roosevelt Birthplace National Historic Site",
+        "Women's Rights National Historical Park in Seneca Falls"
+      ],
+      "insiderTips": [
+        "Upstate New York is a completely different world from NYC — lakes, mountains, and wine country",
+        "The Finger Lakes wine region produces outstanding Rieslings and is far less crowded than Napa",
+        "In NYC, skip Times Square restaurants and explore ethnic food in Queens or the Bronx",
+        "Take the Adirondack Railroad or drive through the Adirondacks in fall for incredible foliage"
+      ]
+    },
+    {
+      "code": "NC",
+      "name": "North Carolina",
+      "nickname": "The Tar Heel State",
+      "capital": "Raleigh",
+      "region": "South",
+      "bestTimeToVisit": "April-June, September-November",
+      "hiddenGems": [
+        "Linville Gorge Wilderness — the Grand Canyon of the East with rugged backcountry hiking",
+        "Dry Falls near Highlands — walk behind a 65-foot waterfall without getting wet",
+        "Ocracoke Island — a remote Outer Banks village accessible only by ferry",
+        "Grandfather Mountain — the Mile High Swinging Bridge with panoramic views"
+      ],
+      "mustSeeSpots": [
+        "Blue Ridge Parkway — America's Favorite Drive winding through the Appalachians",
+        "Great Smoky Mountains National Park — the most visited national park in America",
+        "Outer Banks — Cape Hatteras, wild horses, and the Wright Brothers National Memorial",
+        "Asheville — craft beer capital, Biltmore Estate, and a vibrant arts scene"
+      ],
+      "nationalParks": [
+        "Great Smoky Mountains National Park",
+        "Blue Ridge Parkway",
+        "Cape Hatteras National Seashore",
+        "Cape Lookout National Seashore",
+        "Wright Brothers National Memorial",
+        "Carl Sandburg Home National Historic Site"
+      ],
+      "insiderTips": [
+        "Eastern NC BBQ (whole hog, vinegar-based) and Western/Lexington-style (tomato-based) are both must-tries",
+        "The Blue Ridge Parkway Milepost 300-400 stretch has the most dramatic mountain views",
+        "Asheville's South Slope neighborhood is brewery-crawl heaven",
+        "The Outer Banks are best in September/October — warm water, fewer crowds, great surf"
+      ]
+    },
+    {
+      "code": "ND",
+      "name": "North Dakota",
+      "nickname": "The Peace Garden State",
+      "capital": "Bismarck",
+      "region": "Midwest",
+      "bestTimeToVisit": "June-September",
+      "hiddenGems": [
+        "Enchanted Highway — a 32-mile stretch of massive metal sculptures along a rural road",
+        "Maah Daah Hey Trail — a 144-mile world-class singletrack mountain biking trail",
+        "International Peace Garden — a botanical garden straddling the US-Canada border",
+        "Knife River Indian Villages — earth lodge reconstructions of Hidatsa villages"
+      ],
+      "mustSeeSpots": [
+        "Theodore Roosevelt National Park — the badlands that inspired a president to conserve",
+        "Medora — a charming frontier town at the gateway to the national park",
+        "Fargo — surprisingly vibrant downtown with great food and craft beer",
+        "Lewis and Clark Interpretive Center in Washburn — near the expedition's winter camp"
+      ],
+      "nationalParks": [
+        "Theodore Roosevelt National Park (North and South Units)",
+        "Knife River Indian Villages National Historic Site",
+        "Fort Union Trading Post National Historic Site"
+      ],
+      "insiderTips": [
+        "Theodore Roosevelt NP is severely underrated — bison, wild horses, and stunning badlands with few crowds",
+        "The Medora Musical is a beloved nightly outdoor show in summer",
+        "Drive between the North and South Units of TR National Park for big sky prairie scenery",
+        "Knoephla soup (a German-Russian dumpling soup) is North Dakota's signature comfort food"
+      ]
+    },
+    {
+      "code": "OH",
+      "name": "Ohio",
+      "nickname": "The Buckeye State",
+      "capital": "Columbus",
+      "region": "Midwest",
+      "bestTimeToVisit": "May-October",
+      "hiddenGems": [
+        "Hocking Hills State Park — Old Man's Cave, Ash Cave, and Cedar Falls in stunning gorges",
+        "Serpent Mound — the largest effigy mound in the world, shaped like an uncoiling serpent",
+        "Cuyahoga Valley National Park — waterfalls and the scenic railroad between Cleveland and Akron",
+        "Yellow Springs — a quirky progressive village with Glen Helen Nature Preserve"
+      ],
+      "mustSeeSpots": [
+        "Rock and Roll Hall of Fame in Cleveland — the history of American music",
+        "Cuyahoga Valley National Park — Ohio's only national park with Brandywine Falls",
+        "Amish Country in Holmes County — rolling farms, handmade goods, and incredible food",
+        "Cincinnati — Over-the-Rhine historic neighborhood, Cincinnati chili, and great parks"
+      ],
+      "nationalParks": [
+        "Cuyahoga Valley National Park",
+        "Hopewell Culture National Historical Park",
+        "Perry's Victory and International Peace Memorial",
+        "James A. Garfield National Historic Site",
+        "Charles Young Buffalo Soldiers National Monument"
+      ],
+      "insiderTips": [
+        "Hocking Hills is best visited on weekdays — weekends are extremely crowded",
+        "Cincinnati chili is its own thing (served over spaghetti) — approach it with an open mind",
+        "The Lake Erie Islands (Put-in-Bay, Kelleys Island) are Ohio's summer party and nature destinations",
+        "Columbus has quietly become one of the best food cities in the Midwest"
+      ]
+    },
+    {
+      "code": "OK",
+      "name": "Oklahoma",
+      "nickname": "The Sooner State",
+      "capital": "Oklahoma City",
+      "region": "South",
+      "bestTimeToVisit": "April-June, September-October",
+      "hiddenGems": [
+        "Wichita Mountains Wildlife Refuge — bison, longhorn cattle, and granite peaks in the prairie",
+        "Turner Falls Park — Oklahoma's largest waterfall with a natural swimming pool",
+        "Tallgrass Prairie Preserve — the largest protected remnant of tallgrass prairie on Earth",
+        "The Blue Whale of Catoosa — a quirky Route 66 roadside attraction"
+      ],
+      "mustSeeSpots": [
+        "Oklahoma City National Memorial — a powerful tribute to the 1995 bombing",
+        "Route 66 through Oklahoma — the state has more drivable miles of the Mother Road than any other",
+        "Philbrook Museum of Art in Tulsa — world-class art in a stunning Italian Renaissance villa",
+        "Chickasaw National Recreation Area — freshwater and mineral springs in the Arbuckle Mountains"
+      ],
+      "nationalParks": [
+        "Chickasaw National Recreation Area",
+        "Washita Battlefield National Historic Site",
+        "Oklahoma City National Memorial"
+      ],
+      "insiderTips": [
+        "Oklahoma has 39 tribal nations — explore Native American cultural centers and powwows",
+        "Tulsa's Gathering Place is one of the best public parks in America — and it's free",
+        "Oklahoma onion burgers are a regional delicacy — try them at Sid's Diner in El Reno",
+        "The Ouachita National Forest in southeastern Oklahoma has surprisingly lush mountain scenery"
+      ]
+    },
+    {
+      "code": "OR",
+      "name": "Oregon",
+      "nickname": "The Beaver State",
+      "capital": "Salem",
+      "region": "West",
+      "bestTimeToVisit": "June-September",
+      "hiddenGems": [
+        "Alvord Desert — a vast dry lakebed in southeastern Oregon that feels like another planet",
+        "Samuel H. Boardman Scenic Corridor — the most dramatic stretch of the Oregon Coast",
+        "Painted Hills — one of Oregon's Seven Wonders with colorful striped hills",
+        "Steens Mountain — a massive fault-block mountain rising a mile above the Alvord Desert"
+      ],
+      "mustSeeSpots": [
+        "Crater Lake National Park — the deepest lake in the US with impossibly blue water",
+        "Columbia River Gorge — Multnomah Falls and dozens of other waterfalls",
+        "Oregon Coast — Cape Perpetua, Cannon Beach's Haystack Rock, and Thor's Well",
+        "Portland — food carts, Powell's Books, and craft beer culture"
+      ],
+      "nationalParks": [
+        "Crater Lake National Park",
+        "John Day Fossil Beds National Monument",
+        "Oregon Caves National Monument & Preserve",
+        "Lewis and Clark National Historical Park",
+        "Newberry National Volcanic Monument"
+      ],
+      "insiderTips": [
+        "Oregon has no sales tax — great for shopping",
+        "The Oregon Coast is beautiful year-round but winter storms bring dramatic wave watching",
+        "Smith Rock State Park near Bend is the birthplace of American sport climbing",
+        "Central Oregon (Bend area) has 300 days of sunshine compared to rainy Portland"
+      ]
+    },
+    {
+      "code": "PA",
+      "name": "Pennsylvania",
+      "nickname": "The Keystone State",
+      "capital": "Harrisburg",
+      "region": "Northeast",
+      "bestTimeToVisit": "April-June, September-November",
+      "hiddenGems": [
+        "Ricketts Glen State Park — 21 named waterfalls along a single hiking trail",
+        "Fallingwater — Frank Lloyd Wright's masterpiece built over a waterfall in the Laurel Highlands",
+        "Pine Creek Gorge (Pennsylvania Grand Canyon) — 47 miles of dramatic gorge scenery",
+        "Centralia — a ghost town above an underground coal fire that's been burning since 1962"
+      ],
+      "mustSeeSpots": [
+        "Philadelphia — Independence Hall, Liberty Bell, and the best cheesesteaks",
+        "Gettysburg National Military Park — the turning point of the Civil War",
+        "Pittsburgh — a reinvented steel city with great food, bridges, and The Andy Warhol Museum",
+        "Pennsylvania Dutch Country — Amish farms, covered bridges, and shoofly pie"
+      ],
+      "nationalParks": [
+        "Independence National Historical Park",
+        "Gettysburg National Military Park",
+        "Valley Forge National Historical Park",
+        "Delaware Water Gap National Recreation Area (shared with NJ)",
+        "Flight 93 National Memorial",
+        "Steamtown National Historic Site"
+      ],
+      "insiderTips": [
+        "The Philly cheesesteak debate (Pat's vs. Geno's) is for tourists — locals have their own favorites",
+        "The Laurel Highlands have some of the best outdoor recreation in the East",
+        "Driving through Lancaster County on back roads reveals stunning Amish farmland",
+        "Pittsburgh's incline railways offer the best views of the city's dramatic three-river confluence"
+      ]
+    },
+    {
+      "code": "RI",
+      "name": "Rhode Island",
+      "nickname": "The Ocean State",
+      "capital": "Providence",
+      "region": "Northeast",
+      "bestTimeToVisit": "May-October",
+      "hiddenGems": [
+        "Block Island — a car-free-friendly island with stunning Mohegan Bluffs and Southeast Light",
+        "Beavertail State Park in Jamestown — dramatic rocky coastline and one of America's oldest lighthouses",
+        "Federal Hill in Providence — an incredible Italian neighborhood with outstanding restaurants",
+        "Cliff Walk in Newport — 3.5 miles of oceanside trail past Gilded Age mansions"
+      ],
+      "mustSeeSpots": [
+        "Newport Mansions — The Breakers, Marble House, and other Gilded Age palaces",
+        "Providence — a revitalized creative city with WaterFire, RISD Museum, and great dining",
+        "Block Island — a charming New England island with beaches and bluffs",
+        "Narragansett Bay — sailing, beaches, and the quintessential Rhode Island coast"
+      ],
+      "nationalParks": [
+        "Roger Williams National Memorial",
+        "Blackstone River Valley National Historical Park"
+      ],
+      "insiderTips": [
+        "Rhode Island is tiny — you can drive across the whole state in under an hour",
+        "Del's Frozen Lemonade and coffee milk are quintessential Rhode Island treats",
+        "Newport's International Tennis Hall of Fame is worth a visit even for non-tennis fans",
+        "WaterFire in Providence (bonfires lit on the river) happens select evenings May through November"
+      ]
+    },
+    {
+      "code": "SC",
+      "name": "South Carolina",
+      "nickname": "The Palmetto State",
+      "capital": "Columbia",
+      "region": "South",
+      "bestTimeToVisit": "March-May, September-November",
+      "hiddenGems": [
+        "Congaree National Park — the largest intact expanse of old-growth bottomland forest in the US",
+        "Hunting Island State Park — a semi-tropical barrier island with an accessible lighthouse",
+        "Falls Park on the Reedy in Greenville — a stunning urban waterfall park",
+        "Daufuskie Island — a Gullah heritage island accessible only by boat"
+      ],
+      "mustSeeSpots": [
+        "Charleston — one of America's most charming cities with historic architecture and incredible food",
+        "Myrtle Beach — the classic South Carolina beach vacation destination",
+        "Beaufort and the Lowcountry — Spanish moss, Gullah culture, and barrier islands",
+        "Greenville — a revitalized downtown with falls, a swinging bridge, and great restaurants"
+      ],
+      "nationalParks": [
+        "Congaree National Park",
+        "Fort Sumter and Fort Moultrie National Historical Park",
+        "Kings Mountain National Military Park",
+        "Cowpens National Battlefield",
+        "Charles Pinckney National Historic Site"
+      ],
+      "insiderTips": [
+        "Charleston's food scene is world-class — Husk, FIG, and countless incredible restaurants",
+        "Lowcountry boils (shrimp, corn, sausage, potatoes) are a quintessential local experience",
+        "Edisto Island is a quieter, less commercial alternative to Myrtle Beach",
+        "Sullivan's Island near Charleston has beautiful beaches without the tourist-trap feel"
+      ]
+    },
+    {
+      "code": "SD",
+      "name": "South Dakota",
+      "nickname": "The Mount Rushmore State",
+      "capital": "Pierre",
+      "region": "Midwest",
+      "bestTimeToVisit": "May-September",
+      "hiddenGems": [
+        "Wind Cave National Park — one of the longest caves in the world with rare boxwork formations",
+        "Custer State Park — the best wildlife loop drive in the US with bison, pronghorn, and burros",
+        "Spearfish Canyon Scenic Byway — waterfalls, limestone cliffs, and gorgeous fall colors",
+        "Minuteman Missile National Historic Site — a Cold War-era missile silo open for tours"
+      ],
+      "mustSeeSpots": [
+        "Mount Rushmore National Memorial — the iconic presidential sculpture in the Black Hills",
+        "Badlands National Park — dramatic eroded buttes and the richest fossil beds in the world",
+        "Crazy Horse Memorial — the world's largest mountain carving in progress",
+        "Deadwood — the legendary Wild West town, now a National Historic Landmark"
+      ],
+      "nationalParks": [
+        "Badlands National Park",
+        "Wind Cave National Park",
+        "Mount Rushmore National Memorial",
+        "Jewel Cave National Monument",
+        "Minuteman Missile National Historic Site"
+      ],
+      "insiderTips": [
+        "Visit the Badlands at sunrise or sunset when the colors are most dramatic",
+        "Custer State Park's Wildlife Loop is best done early morning — bison often block the road",
+        "Wall Drug in Wall is a tourist trap but a fun one — and the water is free",
+        "The Black Hills have way more to offer than just Mount Rushmore — plan multiple days"
+      ]
+    },
+    {
+      "code": "TN",
+      "name": "Tennessee",
+      "nickname": "The Volunteer State",
+      "capital": "Nashville",
+      "region": "South",
+      "bestTimeToVisit": "April-June, September-November",
+      "hiddenGems": [
+        "Fall Creek Falls State Park — the tallest waterfall in the eastern US at 256 feet",
+        "Lynchburg — home of Jack Daniel's Distillery in a charming dry-county town",
+        "Rugby — a restored Victorian English village in the Cumberland Plateau",
+        "Reelfoot Lake — a natural lake created by the 1811 earthquake, famous for bald eagle watching"
+      ],
+      "mustSeeSpots": [
+        "Great Smoky Mountains National Park — the most visited national park in America",
+        "Nashville — live music on Broadway, the Grand Ole Opry, and hot chicken",
+        "Memphis — Graceland, Beale Street, and the National Civil Rights Museum at the Lorraine Motel",
+        "Dollywood in Pigeon Forge — Dolly Parton's beloved Smoky Mountain theme park"
+      ],
+      "nationalParks": [
+        "Great Smoky Mountains National Park",
+        "Shiloh National Military Park",
+        "Stones River National Battlefield",
+        "Big South Fork National River & Recreation Area",
+        "Natchez Trace Parkway (Tennessee portion)"
+      ],
+      "insiderTips": [
+        "Nashville hot chicken is a must — start at Prince's, the original, then explore others",
+        "The Smokies are most crowded in October — visit in spring for wildflowers with fewer people",
+        "Memphis BBQ (dry-rubbed ribs) is legendary — Central BBQ and Payne's are local favorites",
+        "Cades Cove in the Smokies is best visited before 9am to avoid traffic jams"
+      ]
+    },
+    {
+      "code": "TX",
+      "name": "Texas",
+      "nickname": "The Lone Star State",
+      "capital": "Austin",
+      "region": "South",
+      "bestTimeToVisit": "October-April (varies by region)",
+      "hiddenGems": [
+        "Palo Duro Canyon — the second-largest canyon in the US, often called the Grand Canyon of Texas",
+        "Marfa — a tiny West Texas art town with mysterious lights and minimalist installations",
+        "Enchanted Rock — a massive pink granite dome sacred to Native Americans near Fredericksburg",
+        "Hamilton Pool Preserve — a stunning natural grotto pool near Austin"
+      ],
+      "mustSeeSpots": [
+        "Big Bend National Park — dramatic desert wilderness along the Rio Grande",
+        "San Antonio River Walk — a charming below-street-level walkway along the river",
+        "The Alamo — the most famous site in Texas, in the heart of San Antonio",
+        "Austin — the live music capital of the world with 6th Street and incredible BBQ"
+      ],
+      "nationalParks": [
+        "Big Bend National Park",
+        "Guadalupe Mountains National Park",
+        "Padre Island National Seashore",
+        "San Antonio Missions National Historical Park",
+        "Big Thicket National Preserve"
+      ],
+      "insiderTips": [
+        "Texas BBQ is a religion — Franklin Barbecue in Austin, Snow's in Lexington, Goldee's in Fort Worth",
+        "Big Bend is extremely remote — fill up on gas and bring supplies before entering",
+        "Breakfast tacos are a daily ritual in Texas — find a local taqueria for the real deal",
+        "The Texas Hill Country (Fredericksburg, Wimberley, Dripping Springs) is beautiful in spring with wildflowers"
+      ]
+    },
+    {
+      "code": "UT",
+      "name": "Utah",
+      "nickname": "The Beehive State",
+      "capital": "Salt Lake City",
+      "region": "West",
+      "bestTimeToVisit": "March-May, September-November",
+      "hiddenGems": [
+        "Goblin Valley State Park — thousands of mushroom-shaped sandstone formations",
+        "Bonneville Salt Flats — a surreal white expanse perfect for land speed records and photography",
+        "Escalante Petrified Forest State Park — petrified wood and a reservoir in red rock country",
+        "Dead Horse Point State Park — views that rival the Grand Canyon overlooking the Colorado River"
+      ],
+      "mustSeeSpots": [
+        "The Mighty Five National Parks — Zion, Bryce Canyon, Capitol Reef, Canyonlands, Arches",
+        "Zion National Park — the Narrows and Angels Landing are bucket-list hikes",
+        "Monument Valley — iconic buttes on the Utah-Arizona border (Navajo Nation)",
+        "Park City — world-class skiing and the Sundance Film Festival"
+      ],
+      "nationalParks": [
+        "Zion National Park",
+        "Bryce Canyon National Park",
+        "Arches National Park",
+        "Canyonlands National Park",
+        "Capitol Reef National Park",
+        "Cedar Breaks National Monument",
+        "Natural Bridges National Monument",
+        "Rainbow Bridge National Monument"
+      ],
+      "insiderTips": [
+        "Capitol Reef is the least visited of the Mighty Five and has free fruit picking in the Fruita orchards",
+        "Angels Landing now requires a permit — enter the lottery in advance",
+        "Utah's scenic byways (Highway 12, Highway 24) are as stunning as the national parks themselves",
+        "Visit Arches at dawn or dusk — midday crowds and heat can be overwhelming"
+      ]
+    },
+    {
+      "code": "VT",
+      "name": "Vermont",
+      "nickname": "The Green Mountain State",
+      "capital": "Montpelier",
+      "region": "Northeast",
+      "bestTimeToVisit": "June-October",
+      "hiddenGems": [
+        "Stowe Pinnacle Trail — a moderate hike with panoramic views of the Green Mountains",
+        "Quechee Gorge — Vermont's Little Grand Canyon, 165 feet deep",
+        "Rock of Ages granite quarry in Barre — the world's largest deep-hole granite quarry",
+        "Kingdom Trails in East Burke — one of the best mountain biking trail networks in the world"
+      ],
+      "mustSeeSpots": [
+        "Stowe — a picturesque ski town with covered bridges and mountain scenery",
+        "Ben & Jerry's Factory in Waterbury — take the factory tour and visit the Flavor Graveyard",
+        "Woodstock — one of the prettiest small towns in America with a covered bridge and Billings Farm",
+        "Green Mountain National Forest — hiking, camping, and the Long Trail (America's oldest long-distance trail)"
+      ],
+      "nationalParks": [
+        "Marsh-Billings-Rockefeller National Historical Park",
+        "Appalachian National Scenic Trail (Vermont section)"
+      ],
+      "insiderTips": [
+        "Fall foliage in Vermont peaks late September to mid-October — Route 100 is the classic drive",
+        "Vermont has more covered bridges per square mile than any other state",
+        "Visit a sugarhouse during maple season (March-April) to see syrup being made and taste it fresh",
+        "Vermont's smallest state capital (Montpelier) has no McDonald's or chain fast food"
+      ]
+    },
+    {
+      "code": "VA",
+      "name": "Virginia",
+      "nickname": "The Old Dominion",
+      "capital": "Richmond",
+      "region": "South",
+      "bestTimeToVisit": "April-June, September-November",
+      "hiddenGems": [
+        "Natural Bridge State Park — a 215-foot natural stone arch once owned by Thomas Jefferson",
+        "Chincoteague Island — wild ponies, pristine beaches, and a charming fishing village",
+        "Luray Caverns — the largest caverns in the eastern US with a stalactite organ",
+        "Virginia Creeper Trail — a 34-mile rail trail descending through gorgeous mountain scenery"
+      ],
+      "mustSeeSpots": [
+        "Shenandoah National Park — Skyline Drive, fall foliage, and Appalachian Trail access",
+        "Colonial Williamsburg — a living-history museum of colonial America",
+        "Arlington National Cemetery — a solemn tribute to America's fallen",
+        "Monticello and the University of Virginia — Thomas Jefferson's architectural legacy"
+      ],
+      "nationalParks": [
+        "Shenandoah National Park",
+        "Arlington House, The Robert E. Lee Memorial",
+        "Manassas National Battlefield Park",
+        "Colonial National Historical Park (Yorktown/Jamestown)",
+        "Appomattox Court House National Historical Park",
+        "Wolf Trap National Park for the Performing Arts"
+      ],
+      "insiderTips": [
+        "Skyline Drive and the Blue Ridge Parkway connect for one continuous mountain drive",
+        "Virginia's wine country (Charlottesville, Loudoun County) has over 300 wineries",
+        "Virginia Beach has a great boardwalk, but the Eastern Shore is where you find solitude",
+        "Smith Mountain Lake is Virginia's best-kept secret for lakeside vacationing"
+      ]
+    },
+    {
+      "code": "WA",
+      "name": "Washington",
+      "nickname": "The Evergreen State",
+      "capital": "Olympia",
+      "region": "West",
+      "bestTimeToVisit": "June-September",
+      "hiddenGems": [
+        "Palouse Falls — a dramatic 198-foot waterfall in the desert of eastern Washington",
+        "North Cascades National Park — the least visited national park in the lower 48 (besides Isle Royale)",
+        "San Juan Islands — orcas, kayaking, and charming island towns reachable by ferry",
+        "Leavenworth — a Bavarian-themed village nestled in the Cascades"
+      ],
+      "mustSeeSpots": [
+        "Olympic National Park — rainforest, mountains, and rugged Pacific coastline in one park",
+        "Mount Rainier National Park — the iconic volcanic peak with wildflower meadows",
+        "Seattle — Pike Place Market, Space Needle, and world-class coffee culture",
+        "North Cascades — jagged peaks, turquoise lakes, and over 300 glaciers"
+      ],
+      "nationalParks": [
+        "Olympic National Park",
+        "Mount Rainier National Park",
+        "North Cascades National Park",
+        "San Juan Island National Historical Park",
+        "Mount St. Helens National Volcanic Monument",
+        "Ebey's Landing National Historical Reserve"
+      ],
+      "insiderTips": [
+        "Olympic National Park has three distinct ecosystems — budget at least 2-3 days",
+        "The San Juan Islands are best visited by taking the Washington State Ferry from Anacortes",
+        "Eastern Washington's wine regions (Walla Walla, Yakima) produce world-class wines",
+        "Hike the Hoh Rain Forest's Hall of Mosses trail — it feels like Jurassic Park"
+      ]
+    },
+    {
+      "code": "WV",
+      "name": "West Virginia",
+      "nickname": "The Mountain State",
+      "capital": "Charleston",
+      "region": "South",
+      "bestTimeToVisit": "May-October",
+      "hiddenGems": [
+        "New River Gorge National Park — America's newest national park with incredible bridge views and rafting",
+        "Seneca Rocks — dramatic 900-foot rock formation popular with climbers",
+        "Cass Scenic Railroad State Park — ride a steam locomotive up the mountain",
+        "Blackwater Falls State Park — a stunning 57-foot waterfall and canyon"
+      ],
+      "mustSeeSpots": [
+        "New River Gorge National Park & Preserve — whitewater rafting, hiking, and the iconic bridge",
+        "Harpers Ferry National Historical Park — where the Potomac and Shenandoah rivers meet",
+        "Dolly Sods Wilderness — a highland bog that feels more like Canada than Appalachia",
+        "Greenbrier Resort in White Sulphur Springs — a historic luxury resort with a secret Cold War bunker"
+      ],
+      "nationalParks": [
+        "New River Gorge National Park & Preserve",
+        "Harpers Ferry National Historical Park",
+        "Gauley River National Recreation Area",
+        "Bluestone National Scenic River"
+      ],
+      "insiderTips": [
+        "Bridge Day in October is the only day you can legally BASE jump off the New River Gorge Bridge",
+        "The Gauley River in fall is considered some of the best whitewater rafting in the world",
+        "West Virginia's back roads through the mountains are some of the best motorcycle routes in the East",
+        "Almost Heaven is the state's tourism slogan — and the mountain scenery truly earns it"
+      ]
+    },
+    {
+      "code": "WI",
+      "name": "Wisconsin",
+      "nickname": "The Badger State",
+      "capital": "Madison",
+      "region": "Midwest",
+      "bestTimeToVisit": "June-September",
+      "hiddenGems": [
+        "Apostle Islands National Lakeshore — sea caves, lighthouses, and pristine islands on Lake Superior",
+        "Devil's Lake State Park — dramatic quartzite bluffs surrounding a pristine glacial lake",
+        "Cave of the Mounds — a national natural landmark near Blue Mounds",
+        "Stockholm and the Great River Road — charming small towns along the Mississippi"
+      ],
+      "mustSeeSpots": [
+        "Apostle Islands — sea kayaking through ice caves and visiting historic lighthouses",
+        "Door County — the Cape Cod of the Midwest with cherry orchards, fish boils, and lighthouses",
+        "Madison — a vibrant college town on an isthmus between two lakes",
+        "Milwaukee — Harley-Davidson Museum, craft beer, and a revitalized lakefront"
+      ],
+      "nationalParks": [
+        "Apostle Islands National Lakeshore",
+        "Ice Age National Scenic Trail",
+        "Saint Croix National Scenic Riverway"
+      ],
+      "insiderTips": [
+        "A Door County fish boil is a must — the dramatic boilover is part of the show",
+        "Wisconsin supper clubs are a unique dining tradition — go for the Friday night fish fry",
+        "The Apostle Islands ice caves are only accessible in winter when the lake freezes — check conditions",
+        "Wisconsin cheese curds should squeak when you bite them — that means they're fresh"
+      ]
+    },
+    {
+      "code": "WY",
+      "name": "Wyoming",
+      "nickname": "The Cowboy State",
+      "capital": "Cheyenne",
+      "region": "West",
+      "bestTimeToVisit": "June-September",
+      "hiddenGems": [
+        "Medicine Wheel National Historic Landmark — a sacred Native American stone circle at 10,000 feet",
+        "Thermopolis Hot Springs — the world's largest mineral hot spring, and the state bathhouse is free",
+        "Wind River Range — remote and rugged mountains with the best backcountry in Wyoming",
+        "Bighorn Canyon National Recreation Area — dramatic canyon and wild horses"
+      ],
+      "mustSeeSpots": [
+        "Yellowstone National Park — Old Faithful, Grand Prismatic Spring, and abundant wildlife",
+        "Grand Teton National Park — the most dramatic mountain skyline in the US",
+        "Devils Tower National Monument — America's first national monument, a striking volcanic neck",
+        "Jackson Hole — a world-class ski and outdoor recreation town at the base of the Tetons"
+      ],
+      "nationalParks": [
+        "Yellowstone National Park",
+        "Grand Teton National Park",
+        "Devils Tower National Monument",
+        "Fossil Butte National Monument",
+        "Fort Laramie National Historic Site",
+        "Bighorn Canyon National Recreation Area"
+      ],
+      "insiderTips": [
+        "Yellowstone is best experienced by entering from less popular entrances (East or Northeast)",
+        "The Lamar Valley at dawn is the best wildlife watching in the entire national park system",
+        "Wyoming is the least populated state — you can find genuine solitude here",
+        "Visit Grand Teton before Yellowstone — many people rush past the Tetons and miss the best views"
+      ]
+    }
+  ]
+}
