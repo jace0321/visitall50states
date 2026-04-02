@@ -3555,6 +3555,7 @@ function blankOutSvg() {
         if (flagImageCache[code]) return Promise.resolve(flagImageCache[code]);
         return new Promise(resolve => {
           const img = new Image();
+          img.crossOrigin = 'anonymous';
           img.onload = () => {
             flagImageCache[code] = img;
             resolve(img);
@@ -3990,16 +3991,28 @@ function blankOutSvg() {
       };
 
       window.flagDownload = async function() {
-        await renderFlagCanvas(exportCanvas, {
-          width: DOWNLOAD_EXPORT_WIDTH,
-          includeFooter: true,
-          showLabels: FLAG_MODE_STATE.displayMode === 'flag' ? FLAG_MODE_STATE.showAbbreviations : false
-        });
-        FLAG_MODE_STATE.previewReady = true;
-        const link = document.createElement('a');
-        link.download = 'my-50-state-' + FLAG_MODE_STATE.displayMode + '-map.png';
-        link.href = exportCanvas.toDataURL('image/png');
-        link.click();
+        // Use a smaller export size on mobile to avoid canvas memory limits
+        const isMobile = window.innerWidth < 768;
+        const exportWidth = isMobile ? 2400 : DOWNLOAD_EXPORT_WIDTH;
+
+        try {
+          await renderFlagCanvas(exportCanvas, {
+            width: exportWidth,
+            includeFooter: true,
+            showLabels: FLAG_MODE_STATE.displayMode === 'flag' ? FLAG_MODE_STATE.showAbbreviations : false
+          });
+          FLAG_MODE_STATE.previewReady = true;
+          const dataUrl = exportCanvas.toDataURL('image/png');
+          const link = document.createElement('a');
+          link.download = 'my-50-state-' + FLAG_MODE_STATE.displayMode + '-map.png';
+          link.href = dataUrl;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } catch (err) {
+          console.error('[FlagMode] Download failed:', err);
+          alert('Download failed. Try using a different browser, or take a screenshot of your map above.');
+        }
       };
 
       window.flagSelectAll = function() {
