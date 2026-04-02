@@ -29,6 +29,9 @@ export const metadata: Metadata = {
       "The ultimate community for families and road trippers chasing all 50 states.",
     images: ["/hero-highway.jpg"],
   },
+  verification: {
+    google: "5Sqj9a3jl12mQD3TtXXIB5N7Sp_VVjZyCxQ8a5TjDp0",
+  },
   robots: {
     index: true,
     follow: true,
