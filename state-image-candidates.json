@@ -1,0 +1,122 @@
+[
+  {
+    "state": "California",
+    "stateCode": "CA",
+    "imagePageUrl": "https://commons.wikimedia.org/wiki/File:Golden_Gate_Bridge_(CA).jpeg",
+    "directImageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Golden_Gate_Bridge_%28CA%29.jpeg",
+    "photographer": "Salim Virji",
+    "sourceName": "Wikimedia Commons",
+    "creditUrl": "https://www.flickr.com/photos/salim/402618628/",
+    "creditText": "Salim Virji",
+    "license": "CC BY-SA 2.0",
+    "alt": "Golden Gate Bridge rising above San Francisco Bay at sunset."
+  },
+  {
+    "state": "Texas",
+    "stateCode": "TX",
+    "imagePageUrl": "https://commons.wikimedia.org/wiki/File:Austin_skyline.JPG",
+    "directImageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Austin_skyline.JPG",
+    "photographer": "Sahmeditor",
+    "sourceName": "Wikimedia Commons",
+    "creditUrl": "https://commons.wikimedia.org/wiki/User:Sahmeditor",
+    "creditText": "Sahmeditor",
+    "license": "CC BY-SA 3.0",
+    "alt": "Austin skyline seen from across the river under a clear sky."
+  },
+  {
+    "state": "Florida",
+    "stateCode": "FL",
+    "imagePageUrl": "https://commons.wikimedia.org/wiki/File:Miami_skyline_from_Miami_Beach_2006_by_Averette101.jpg",
+    "directImageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/95/Miami_skyline_from_Miami_Beach_2006_by_Averette101.jpg",
+    "photographer": "Marc Averette",
+    "sourceName": "Wikimedia Commons",
+    "creditUrl": "https://commons.wikimedia.org/wiki/User:Marc_Averette",
+    "creditText": "Marc Averette",
+    "license": "Public domain",
+    "alt": "Miami skyline viewed from Miami Beach with blue water in the foreground."
+  },
+  {
+    "state": "New York",
+    "stateCode": "NY",
+    "imagePageUrl": "https://commons.wikimedia.org/wiki/File:New_York_City_skyline.jpg",
+    "directImageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/84/New_York_City_skyline.jpg",
+    "photographer": "William Warby",
+    "sourceName": "Wikimedia Commons",
+    "creditUrl": "https://www.flickr.com/photos/26782864@N00/2230729988",
+    "creditText": "William Warby",
+    "license": "CC BY 2.0",
+    "alt": "Manhattan skyline seen from Ellis Island on a bright day."
+  },
+  {
+    "state": "Arizona",
+    "stateCode": "AZ",
+    "imagePageUrl": "https://commons.wikimedia.org/wiki/File:Monument_Valley.jpg",
+    "directImageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Monument_Valley.jpg",
+    "photographer": "Jon Sullivan",
+    "sourceName": "Wikimedia Commons",
+    "creditUrl": "http://www.pdphoto.org/PictureDetail.php?mat=&pg=5496",
+    "creditText": "Jon Sullivan",
+    "license": "Public domain",
+    "alt": "Monument Valley buttes rising from the Arizona desert."
+  },
+  {
+    "state": "Colorado",
+    "stateCode": "CO",
+    "imagePageUrl": "https://commons.wikimedia.org/wiki/File:Maroon_Bells_(11553)a.jpg",
+    "directImageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/53/Maroon_Bells_%2811553%29a.jpg",
+    "photographer": "Rhododendrites",
+    "sourceName": "Wikimedia Commons",
+    "creditUrl": "https://commons.wikimedia.org/wiki/User:Rhododendrites",
+    "creditText": "Rhododendrites",
+    "license": "CC BY-SA 4.0",
+    "alt": "Maroon Bells and Maroon Lake beneath a blue Colorado sky."
+  },
+  {
+    "state": "Tennessee",
+    "stateCode": "TN",
+    "imagePageUrl": "https://commons.wikimedia.org/wiki/File:Nashville_skyline.jpg",
+    "directImageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/37/Nashville_skyline.jpg",
+    "photographer": "Travlin Braden",
+    "sourceName": "Wikimedia Commons",
+    "creditUrl": "https://commons.wikimedia.org/wiki/File:Nashville_skyline.jpg",
+    "creditText": "Travlin Braden",
+    "license": "CC BY-SA 4.0",
+    "alt": "Downtown Nashville skyline viewed from the Shelby Street Pedestrian Bridge."
+  },
+  {
+    "state": "Utah",
+    "stateCode": "UT",
+    "imagePageUrl": "https://commons.wikimedia.org/wiki/File:Delicate_Arch_in_Arches_NP_1.jpg",
+    "directImageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/07/Delicate_Arch_in_Arches_NP_1.jpg",
+    "photographer": "Jon Zander",
+    "sourceName": "Wikimedia Commons",
+    "creditUrl": "https://commons.wikimedia.org/wiki/User:Digon3",
+    "creditText": "Jon Zander",
+    "license": "CC BY-SA 3.0",
+    "alt": "Delicate Arch framed against Utah desert rock and sky."
+  },
+  {
+    "state": "Alaska",
+    "stateCode": "AK",
+    "imagePageUrl": "https://commons.wikimedia.org/wiki/File:Denali_Mt_McKinley.jpg",
+    "directImageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8b/Denali_Mt_McKinley.jpg",
+    "photographer": "National Park Service",
+    "sourceName": "National Park Service / Wikimedia Commons",
+    "creditUrl": "https://commons.wikimedia.org/wiki/File:Denali_Mt_McKinley.jpg",
+    "creditText": "National Park Service",
+    "license": "Public domain",
+    "alt": "Denali rising above the Alaska landscape."
+  },
+  {
+    "state": "Hawaii",
+    "stateCode": "HI",
+    "imagePageUrl": "https://commons.wikimedia.org/wiki/File:Na_Pali_Coast,_Kauai,_Hawaii.jpg",
+    "directImageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8d/Na_Pali_Coast%2C_Kauai%2C_Hawaii.jpg",
+    "photographer": "Jeff Kubina",
+    "sourceName": "Wikimedia Commons",
+    "creditUrl": "https://www.flickr.com/photos/95118988@N00/2553382929/",
+    "creditText": "Jeff Kubina",
+    "license": "CC BY-SA 2.0",
+    "alt": "Rugged green cliffs of the Na Pali Coast on Kauai."
+  }
+]
