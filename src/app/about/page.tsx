@@ -9,12 +9,12 @@ const WHAT_IT_BECAME = [
     body: "A better way to keep the trips, the photos, and the stories from disappearing into a camera roll.",
   },
   {
-    title: "A tool for families",
-    body: "Something other people could use too — not just to track states, but to actually see their journey take shape.",
+    title: "A tool for road trippers",
+    body: "Something anyone could use — not just to track states, but to actually see their journey take shape.",
   },
   {
-    title: "A bigger mission",
-    body: "A place for road trippers, parents, and memory-makers who know the miles matter because of who you share them with.",
+    title: "A growing community",
+    body: "A place for road trippers, families, and memory-makers who know the miles matter because of the people and moments behind them.",
   },
 ];
 
@@ -27,7 +27,8 @@ const VALUES = [
 export const metadata: Metadata = {
   title: "About — Why Visit All 50 States Exists",
   description:
-    "Visit All 50 States started as a way for one dad to track where he and his boys had been together — and hold onto the memories that mattered most.",
+    "Visit All 50 States started as a personal road trip project and grew into a tool for anyone chasing the 50-state mission. Here's how it happened.",
+  alternates: { canonical: "https://visitall50states.com/about" },
 };
 
 export default function AboutPage() {
@@ -42,10 +43,10 @@ export default function AboutPage() {
               Why this exists
             </p>
             <h1 className="text-5xl font-black tracking-tight mb-6 leading-tight sm:text-6xl">
-              This started as a way to remember the miles that mattered.
+              It started as a road trip project. It became something bigger.
             </h1>
             <p className="mx-auto max-w-3xl text-xl leading-relaxed text-white/68">
-              Not a startup idea. Not a brand strategy. Just a simple way to track where my boys and I had been together — and hold onto the memories I didn&apos;t want to lose.
+              One dad. Three boys. A mission to hit all 50 states — and a need for a better way to track it. That&apos;s where this started.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               {VALUES.map((value) => (
@@ -64,16 +65,16 @@ export default function AboutPage() {
           <section className="grid items-start gap-8 md:grid-cols-[1.1fr_0.9fr]">
             <div className="space-y-5 text-lg leading-relaxed text-asphalt/75">
               <h2 className="text-3xl font-black tracking-tight text-asphalt">
-                It started small.
+                How it started.
               </h2>
               <p>
-                Travel With Earps started as a simple way to track where my kids and I had been together — and to hold onto the memories that mattered most.
+                It started as a personal thing — a way to track the states we&apos;d hit and hold onto the memories that come with them. Road trips with the kids, long hauls across states we&apos;d never seen, trying to find something worth showing them in every corner of the country.
               </p>
               <p>
-                Road trips have a way of sneaking up on you like that. At first it&apos;s just a drive, a state sign, a few photos, another memory on the phone. Then one day you realize those moments have become part of your family story.
+                A regular map wasn&apos;t enough. Marking a state off and moving on felt like leaving the story behind. What I wanted was something that let you tie the trip to your actual photos — to relive it, not just record it.
               </p>
               <p>
-                A regular map wasn&apos;t enough. I didn&apos;t just want to mark a state off and move on. I wanted something that let us relive the trip — the pictures, the places, the feeling of being there together.
+                I couldn&apos;t find that anywhere, so I built it.
               </p>
             </div>
 
@@ -82,10 +83,10 @@ export default function AboutPage() {
                 The core idea
               </p>
               <blockquote className="text-2xl font-black leading-tight tracking-tight text-asphalt">
-                I wanted a map that didn&apos;t just show states we&apos;d visited, but let us relive each place through our own photos.
+                A map that doesn&apos;t just show where you&apos;ve been — it shows what it looked like when you got there.
               </blockquote>
               <p className="mt-5 leading-relaxed text-asphalt/65">
-                I couldn&apos;t find anything that did that the way I imagined, so I built it.
+                Your photos. Your states. Your story, in one place.
               </p>
             </div>
           </section>
@@ -93,10 +94,10 @@ export default function AboutPage() {
           <section className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl md:p-10">
             <div className="max-w-3xl mb-8">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-amber-deep">
-                What Visit All 50 States became
+                What it became
               </p>
               <h2 className="text-3xl font-black tracking-tight text-asphalt">
-                A cleaner home for the memories behind the miles.
+                A tool for anyone chasing the 50-state mission.
               </h2>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
@@ -111,6 +112,19 @@ export default function AboutPage() {
             </div>
           </section>
 
+          {/* Community nod */}
+          <section className="rounded-[2rem] border border-amber-brand/20 bg-amber-brand/5 p-8 md:p-10">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-amber-deep">
+              Built with the community in mind
+            </p>
+            <h2 className="text-3xl font-black tracking-tight text-asphalt mb-5">
+              The 50-state community already exists. This is built for them.
+            </h2>
+            <p className="text-lg leading-relaxed text-asphalt/70 max-w-3xl">
+              There are tens of thousands of people already chasing the 50-state mission — in Facebook groups, Reddit threads, road trip forums, and family travel blogs. They&apos;re tracking progress on spreadsheets, pinning paper maps, and sharing photos across a dozen different apps. This site is built to give that community one place that actually fits what they&apos;re doing.
+            </p>
+          </section>
+
           <section className="grid gap-6 md:grid-cols-[0.95fr_1.05fr]">
             <div className="rounded-[2rem] border border-slate-200 bg-night p-8 text-white shadow-xl">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-amber-brand">
@@ -120,7 +134,7 @@ export default function AboutPage() {
                 More than a checklist. More like a keepsake.
               </h2>
               <p className="mt-5 leading-relaxed text-white/70">
-                Visit All 50 States is for people who want more than a list of states visited. It&apos;s for families building a story together, road trippers chasing the next line on the map, and anyone who knows a place matters more when it becomes part of your life.
+                Visit All 50 States is for road trippers, families, solo adventurers, and anyone who knows a place matters more when it becomes part of your life. It&apos;s for the people who want more than a list — they want something to look back on.
               </p>
             </div>
 
@@ -129,7 +143,7 @@ export default function AboutPage() {
                 {[
                   {
                     title: "Track progress",
-                    body: "See the mission take shape instead of letting the dream stay abstract.",
+                    body: "See the mission take shape instead of letting the goal stay abstract.",
                   },
                   {
                     title: "Save the photos",
@@ -156,10 +170,10 @@ export default function AboutPage() {
               What matters most
             </h2>
             <p>
-              The goal isn&apos;t to make travel feel like homework. It&apos;s to give the good stuff a place to live — the state-line photos, the worn-out backseat naps, the weird roadside stops, the unexpected favorite places.
+              The goal isn&apos;t to make travel feel like homework. It&apos;s to give the good stuff a place to live — the state-line moments, the worn-out backseat naps, the weird roadside stops, the unexpected favorites.
             </p>
             <p>
-              If this site does its job well, it makes your progress feel real and your memories feel worth keeping. That&apos;s the whole point.
+              If this site does its job, it makes your progress feel real and your memories feel worth keeping.
             </p>
             <p className="text-xl font-semibold text-amber-deep">
               The goal isn&apos;t just to visit all 50. It&apos;s to remember what each one meant.
@@ -167,7 +181,7 @@ export default function AboutPage() {
           </section>
 
           <section className="rounded-[2rem] border border-slate-200 bg-white px-8 py-10 text-center shadow-sm">
-            <p className="text-sm text-asphalt/50 mb-6">Ready to start your own version of the story?</p>
+            <p className="text-sm text-asphalt/50 mb-6">Ready to build your map?</p>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/map-maker"

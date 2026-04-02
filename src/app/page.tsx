@@ -7,23 +7,23 @@ import EmailSignup from "@/components/EmailSignup";
 import VisitedStatesExperience from "@/components/VisitedStatesExperience";
 
 const HERO_PILLARS = [
-  "Built for families, road trippers, and memory-keepers",
-  "Design a custom photo map in minutes",
-  "Track the states that shaped your story",
+  "Track every state you've hit",
+  "Build a photo map in minutes",
+  "Download something worth keeping",
 ];
 
 const ROAD_VALUES = [
   {
-    title: "A cleaner starting line",
-    body: "Know exactly where to begin, what to save, and how your map comes together without digging through a clunky flow.",
+    title: "Your map, your way",
+    body: "Start with the states you've already earned. Watch the mission take shape the moment you begin.",
   },
   {
     title: "More feeling, less filler",
-    body: "The site leans into the emotional part of the mission — the states, photos, and miles that actually meant something.",
+    body: "Upload your own photos, drop them into the map, and turn a road trip into something you can actually show off.",
   },
   {
-    title: "A map worth showing off",
-    body: "Everything is built to feel a little more collectible, personal, and wall-worthy from the first click.",
+    title: "Built to last on a wall",
+    body: "Everything is designed to feel personal and print-worthy — from the first click to the final download.",
   },
 ];
 
@@ -50,7 +50,7 @@ export default function HomePage() {
                 The journey of a lifetime, one state at a time.
               </h1>
               <p className="mt-6 max-w-2xl text-lg font-medium leading-relaxed text-white/78 sm:text-xl">
-                A more meaningful way to track the miles, photos, and moments that turn a road trip into family history.
+                Track where you&apos;ve been, drop in your photos, and build a map that tells your story — not someone else&apos;s.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
@@ -82,20 +82,20 @@ export default function HomePage() {
 
             <div className="float-slow rounded-[2rem] border border-white/12 bg-white/10 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.28)] backdrop-blur-md">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/55">
-                Road-trip mission
+                Your 50-state mission
               </p>
               <h2 className="mt-4 text-3xl font-black leading-tight text-white sm:text-4xl">
-                One family. One map. A story that keeps getting bigger.
+                Your map. Your photos. Your story.
               </h2>
               <p className="mt-4 text-base leading-relaxed text-white/72">
-                Visit All 50 is about more than filling in a map. It&apos;s about saving the proof that you were there together — the coastlines, diners, detours, and state-line cheers.
+                Visit All 50 is about more than filling in a map. It&apos;s about saving proof that you were there — the coastlines, diners, detours, and state-line moments that make the miles mean something.
               </p>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
                 {[
                   { value: "50", label: "States in the mission" },
                   { value: "1", label: "Photo map maker" },
-                  { value: "∞", label: "Memories worth keeping" },
+                  { value: "∞", label: "Miles worth keeping" },
                 ].map((item) => (
                   <div
                     key={item.label}
@@ -152,17 +152,17 @@ export default function HomePage() {
             Why 50 states hits different
           </p>
           <h2 className="text-4xl font-black tracking-tight text-asphalt sm:text-5xl mb-8">
-            Because the map becomes part of the family story.
+            Because the map becomes part of your story.
           </h2>
           <div className="space-y-6 text-left text-lg leading-relaxed text-asphalt/72 sm:text-center">
             <p>
-              There&apos;s something different about pulling onto a two-lane highway in the middle of Kansas at golden hour. Or standing on a rocky Maine coast at sunrise with your kids, watching lobster boats head out. Or that first time your family crosses a state line and everybody cheers.
+              There&apos;s something different about pulling onto a two-lane highway in the middle of Kansas at golden hour. Or standing on a rocky Maine coast at sunrise, watching lobster boats head out. Or that moment you cross a state line and it actually feels like something.
             </p>
             <p>
               This isn&apos;t about checking boxes. It&apos;s about the stories, the roadside diners, the impulse detours, and the feeling of watching the country change around you one state at a time.
             </p>
             <p className="text-xl font-semibold text-amber-deep">
-              We started this as a family project. Now we&apos;re building it for anyone who wants the miles to mean more.
+              Your miles deserve more than a camera roll. This is where they live.
             </p>
           </div>
         </div>
@@ -172,10 +172,10 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl">
           <div className="mx-auto max-w-3xl text-center mb-16">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-brand mb-4">
-              How the experience works
+              How it works
             </p>
             <h2 className="text-4xl font-black tracking-tight sm:text-5xl">
-              A better flow from first idea to finished map.
+              From first state to finished map in minutes.
             </h2>
           </div>
 
@@ -183,18 +183,18 @@ export default function HomePage() {
             {[
               {
                 step: "01",
-                title: "Mark the states that matter",
-                desc: "Start with the states you&apos;ve already earned and see the mission take shape right away.",
+                title: "Mark the states you've hit",
+                desc: "Start with where you've already been and watch your progress come to life on the map.",
               },
               {
                 step: "02",
-                title: "Drop in the photos",
-                desc: "Turn each stop into something personal by pairing the map with the images you actually want to keep.",
+                title: "Drop in your photos",
+                desc: "Pair each state with a photo from the trip — the one that actually captures what it felt like to be there.",
               },
               {
                 step: "03",
-                title: "Download something worth sharing",
-                desc: "Leave with a cleaner, more display-worthy map you can post, print, or put on the wall.",
+                title: "Download something worth keeping",
+                desc: "Walk away with a personal, print-worthy map you can post, frame, or put on the wall.",
               },
             ].map((item) => (
               <div
@@ -238,9 +238,9 @@ export default function HomePage() {
               },
               {
                 quote:
-                  "This site turned our road trips from vacations into a mission. Now the kids are begging to visit every state. Best problem ever.",
+                  "This site turned our road trips from vacations into a mission. Now everyone&apos;s asking what state is next. Best problem ever.",
                 name: "Sarah & Tom",
-                from: "Family of 5, 28 states",
+                from: "28 states and still going",
               },
             ].map((t) => (
               <div
