@@ -5,9 +5,17 @@ import Footer from "@/components/Footer";
 import { getAllStates, getStateSlug } from "@/lib/states";
 
 export const metadata: Metadata = {
-  title: "All 50 States — Guides, Tips & Hidden Gems",
+  title: "All 50 States Travel Guides — Road Trip Tips, Hidden Gems & Must-See Spots",
   description:
-    "Explore all 50 US states with insider tips, must-see spots, hidden gems, and national parks. Your ultimate road trip planning guide.",
+    "Explore all 50 US states with insider tips, must-see spots, hidden gems, and national parks. The ultimate road trip planning guide for families and adventure travelers.",
+  alternates: { canonical: "https://visitall50states.com/states" },
+  openGraph: {
+    title: "All 50 States Travel Guides — Road Trip Tips, Hidden Gems & Must-See Spots",
+    description:
+      "Explore all 50 US states with insider tips, must-see spots, hidden gems, and national parks.",
+    url: "https://visitall50states.com/states",
+    type: "website",
+  },
 };
 
 const REGION_COLORS: Record<string, string> = {

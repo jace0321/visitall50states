@@ -19,9 +19,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const state = getStateBySlug(params.slug);
   if (!state) return {};
 
+  const slug = getStateSlug(state);
+  const url = `https://visitall50states.com/states/${slug}`;
+  const title = `${state.name} Travel Guide — Best Places to Visit, Hidden Gems & Road Trip Tips`;
+  const description = `Planning a trip to ${state.name}? Discover must-see spots, hidden gems, ${state.nationalParks.length} national parks, and insider road trip tips for ${state.name} (${state.nickname}).`;
+
   return {
-    title: `${state.name} — ${state.nickname} | Travel Guide`,
-    description: `Explore ${state.name}: must-see spots, hidden gems, ${state.nationalParks.length} national parks, and insider tips. Plan your ${state.name} road trip today.`,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
   };
 }
 
@@ -29,8 +46,41 @@ export default function StatePage({ params }: PageProps) {
   const state = getStateBySlug(params.slug);
   if (!state) notFound();
 
+  const allStates = getAllStates();
+  const currentIndex = allStates.findIndex((s) => s.code === state.code);
+  const prevState = currentIndex > 0 ? allStates[currentIndex - 1] : null;
+  const nextState = currentIndex < allStates.length - 1 ? allStates[currentIndex + 1] : null;
+
+  const slug = getStateSlug(state);
+  const url = `https://visitall50states.com/states/${slug}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TouristDestination",
+    name: `${state.name} Travel Guide`,
+    description: `Must-see spots, hidden gems, national parks, and insider tips for visiting ${state.name}.`,
+    url,
+    touristType: ["Family", "Road tripper", "Adventure traveler"],
+    containsPlace: state.nationalParks.map((park) => ({
+      "@type": "LandmarksOrHistoricalBuildings",
+      name: park,
+    })),
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://visitall50states.com" },
+        { "@type": "ListItem", position: 2, name: "States", item: "https://visitall50states.com/states" },
+        { "@type": "ListItem", position: 3, name: state.name, item: url },
+      ],
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <main className="pt-20 bg-cloud min-h-screen">
         {/* Hero Banner */}
@@ -162,6 +212,36 @@ export default function StatePage({ params }: PageProps) {
               Add {state.name} to Your Map
             </Link>
           </section>
+
+          {/* Prev / Next state navigation */}
+          {(prevState || nextState) && (
+            <nav className="flex items-center justify-between gap-4 pt-8 border-t border-gray-200">
+              {prevState ? (
+                <Link
+                  href={`/states/${getStateSlug(prevState)}`}
+                  className="group flex items-center gap-3 text-asphalt/60 hover:text-asphalt transition-colors"
+                >
+                  <span className="text-2xl">←</span>
+                  <span>
+                    <span className="block text-xs uppercase tracking-wide text-asphalt/40 group-hover:text-asphalt/60">Previous</span>
+                    <span className="font-bold">{prevState.name}</span>
+                  </span>
+                </Link>
+              ) : <div />}
+              {nextState ? (
+                <Link
+                  href={`/states/${getStateSlug(nextState)}`}
+                  className="group flex items-center gap-3 text-right text-asphalt/60 hover:text-asphalt transition-colors"
+                >
+                  <span>
+                    <span className="block text-xs uppercase tracking-wide text-asphalt/40 group-hover:text-asphalt/60">Next</span>
+                    <span className="font-bold">{nextState.name}</span>
+                  </span>
+                  <span className="text-2xl">→</span>
+                </Link>
+              ) : <div />}
+            </nav>
+          )}
         </div>
       </main>
       <Footer />

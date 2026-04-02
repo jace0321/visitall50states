@@ -7,8 +7,11 @@ export const metadata: Metadata = {
     template: "%s | Visit All 50 States",
   },
   description:
-    "The ultimate community for families and road trippers chasing all 50 states. Free photo map maker, state guides, insider tips, and more.",
+    "The ultimate community for families and road trippers chasing all 50 states. Free photo map maker, state travel guides, insider tips, and more.",
   metadataBase: new URL("https://visitall50states.com"),
+  alternates: {
+    canonical: "https://visitall50states.com",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -16,12 +19,12 @@ export const metadata: Metadata = {
     siteName: "Visit All 50 States",
     title: "Visit All 50 States — Chase Every State, Make Every Memory",
     description:
-      "The ultimate community for families and road trippers chasing all 50 states. Free photo map maker, state guides, insider tips, and more.",
-    images: [{ url: "/hero-highway.jpg", width: 1920, height: 1080 }],
+      "The ultimate community for families and road trippers chasing all 50 states. Free photo map maker, state travel guides, insider tips, and more.",
+    images: [{ url: "/hero-highway.jpg", width: 1920, height: 1080, alt: "Open road highway — Visit All 50 States" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Visit All 50 States",
+    title: "Visit All 50 States — Chase Every State, Make Every Memory",
     description:
       "The ultimate community for families and road trippers chasing all 50 states.",
     images: ["/hero-highway.jpg"],
@@ -29,6 +32,12 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
