@@ -3468,14 +3468,13 @@ function blankOutSvg() {
         const rect = flagPreviewCanvas.getBoundingClientRect();
         if (!rect.width || !rect.height) return null;
 
+        // getBoundingClientRect already accounts for the CSS transform (pan + scale),
+        // so just map directly from screen coords into SVG space.
         const stageX = clientX - rect.left;
         const stageY = clientY - rect.top;
 
-        const localX = (stageX - previewTransform.x) / previewTransform.scale;
-        const localY = (stageY - previewTransform.y) / previewTransform.scale;
-
-        const svgX = (localX / rect.width) * sourceViewBox.width;
-        const svgY = (localY / rect.height) * sourceViewBox.height;
+        const svgX = (stageX / rect.width) * sourceViewBox.width;
+        const svgY = (stageY / rect.height) * sourceViewBox.height;
 
         const hitCanvas = document.createElement('canvas');
         hitCanvas.width = 1;
