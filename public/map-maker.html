@@ -52,7 +52,7 @@
       width:min(99vw, 2400px);
       max-width:none;
       margin:0 auto;
-      padding:16px 6px 80px;
+      padding:16px 10px 80px;
     }
     header{ text-align:center; margin-bottom:24px; }
     h1{
@@ -86,8 +86,228 @@
       padding:20px;
     }
     @media (max-width: 600px){
-      .card{ padding: 12px; }
-      .mapWrap{ min-height: 420px; border-radius:14px; }
+      body{
+        overflow-x:hidden;
+      }
+      .wrap{
+        width:100%;
+        padding:10px 8px calc(84px + env(safe-area-inset-bottom));
+      }
+      header{
+        margin-bottom:10px;
+      }
+      h1{
+        font-size:clamp(1.8rem, 8vw, 2.25rem);
+        line-height:1.05;
+      }
+      .sub{
+        font-size:0.95rem;
+        line-height:1.38;
+        max-width:34rem;
+        margin:0 auto;
+      }
+      #modeTabs{
+        gap:6px !important;
+        margin-top:12px !important;
+      }
+      #modeTabs .btn{
+        flex:1 1 calc(33.333% - 4px);
+        width:auto;
+        min-height:42px;
+        padding:10px 10px;
+        font-size:13px;
+        border-radius:10px;
+      }
+      #openMobileMap{
+        margin:10px auto 0 !important;
+        padding:12px 14px !important;
+        font-size:15px !important;
+        border-radius:10px !important;
+      }
+      .mobile-state-actions{
+        display:block;
+      }
+      .grid{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+      }
+      .grid > :first-child{
+        order:2;
+      }
+      .grid > :last-child{
+        order:1;
+      }
+      .card{
+        padding:12px;
+        border-radius:14px;
+      }
+      .desktop-map-card{
+        padding:6px;
+      }
+      .mapWrap{
+        width:100%;
+        min-height:clamp(260px, 38vh, 330px);
+        border-radius:12px;
+      }
+      .row{
+        gap:6px;
+      }
+      .btn,
+      .fileBtn{
+        min-height:44px;
+        justify-content:center;
+      }
+      .btn{
+        flex:1 1 100%;
+        width:100%;
+        padding:12px 14px;
+      }
+      .fileBtn{
+        width:100%;
+        padding:12px 14px;
+      }
+      .stateLine{
+        font-size:1.05rem;
+        line-height:1.3;
+        word-break:break-word;
+        margin-bottom:8px;
+      }
+      .section-title{
+        margin:12px 0 6px;
+      }
+      .hint,
+      .tiny{
+        line-height:1.5;
+      }
+      .zoom-controls{
+        top:8px;
+        right:8px;
+        gap:6px;
+      }
+      .zoom-controls button{
+        width:40px;
+        height:40px;
+      }
+      #photoMapMode .card:first-child .section-title:nth-of-type(2),
+      #photoMapMode .card:first-child .hint:first-of-type{
+        display:none;
+      }
+      #photoMapMode .card:first-child .section-title:nth-of-type(3){
+        margin-top:6px;
+      }
+    }
+
+    @media (max-width: 900px) and (orientation: landscape){
+      .wrap{
+        padding:8px 8px 20px;
+      }
+      header{
+        margin-bottom:8px;
+      }
+      .sub{
+        font-size:0.9rem;
+      }
+      #modeTabs{
+        gap:6px !important;
+        margin-top:10px !important;
+      }
+      #modeTabs .btn{
+        min-height:38px;
+        padding:8px 10px;
+        font-size:12px;
+      }
+      #openMobileMap{
+        margin:8px auto 0 !important;
+        padding:10px 12px !important;
+        font-size:14px !important;
+      }
+      .grid{
+        gap:8px;
+      }
+      .desktop-map-card{
+        padding:4px;
+      }
+      .mapWrap{
+        min-height:clamp(220px, 62vh, 320px);
+      }
+      .card{
+        padding:10px;
+      }
+    }
+
+    @media (max-width: 768px){
+      #flagModeLayout{
+        display:flex !important;
+        flex-direction:column;
+        gap:10px !important;
+      }
+      #flagModeLayout > .card:first-child{
+        max-height:none !important;
+        overflow:visible !important;
+        padding:10px !important;
+      }
+      #flagModeLayout > .card:last-child{
+        padding:8px !important;
+      }
+      #flagModeToggle{
+        margin-bottom:8px !important;
+      }
+      #flagModeToggle button{
+        padding:8px 10px !important;
+        font-size:12px !important;
+      }
+      #colorCategoryPanel{
+        gap:6px !important;
+        margin-bottom:8px !important;
+      }
+      #colorCategoryPanel .tiny{
+        margin-top:4px;
+      }
+      #flagChecklist{
+        grid-template-columns:1fr 1fr !important;
+        gap:3px !important;
+      }
+      #flagChecklist label{
+        font-size:12px !important;
+        padding:6px 4px !important;
+      }
+      #flagPlacementDetails{
+        margin-top:10px !important;
+      }
+      .mobile-map-modal__header{
+        padding:8px 12px !important;
+        padding-top: calc(8px + env(safe-area-inset-top)) !important;
+      }
+      .mobile-map-modal__title{
+        font-size:15px !important;
+      }
+      .mobile-map-modal__close{
+        width:38px !important;
+        height:38px !important;
+        font-size:20px !important;
+      }
+      .mobile-map-modal__body{
+        padding-bottom:72px !important;
+      }
+      .mobile-map-modal__controls{
+        padding:8px 10px !important;
+        padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+      }
+      .mobile-map-modal__btn{
+        min-height:42px !important;
+        padding:10px 14px !important;
+        font-size:14px !important;
+      }
+      .mobile-map-modal__zoom{
+        bottom:74px !important;
+        right:10px !important;
+      }
+      .mobile-map-modal__zoom button{
+        width:42px !important;
+        height:42px !important;
+        font-size:20px !important;
+      }
     }
 
     /* ===== MAP AREA ===== */
@@ -154,6 +374,40 @@
       pointer-events:none;
       image-rendering: high-quality;
       image-rendering: -webkit-optimize-contrast;
+    }
+    .mobile-state-actions{
+      display:none;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      box-shadow: var(--shadow-lg);
+      padding:10px;
+      margin-bottom:10px;
+    }
+    .mobile-state-actions__label{
+      font-size:14px;
+      font-weight:700;
+      color:var(--text);
+      margin-bottom:8px;
+      word-break:break-word;
+    }
+    .mobile-state-actions__row{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+    .mobile-state-actions__primary{
+      flex:1 1 100%;
+      width:100%;
+      min-height:44px;
+      justify-content:center;
+      margin:0;
+    }
+    .mobile-state-actions__secondary{
+      flex:1 1 calc(50% - 3px);
+      min-width:0;
+      padding:10px 12px;
+      min-height:40px;
     }
     .mapWrap svg image {
       image-rendering: optimizeQuality;
@@ -354,7 +608,14 @@
     .opacity-label { color: #fff; font-size: 13px; font-weight: 500; }
     .desktop-only { display: inline; }
     @media (max-width: 600px) {
-      .edit-controls { flex-wrap: wrap; justify-content: center; padding: 14px; gap: 8px; }
+      .edit-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 14px;
+        gap: 8px;
+        width:min(100% - 24px, 520px);
+        bottom: calc(12px + env(safe-area-inset-bottom));
+      }
       .edit-controls .hint { width: 100%; text-align: center; margin: 8px 0 0; }
       .desktop-only { display: none; }
       .edit-tool-btn { width: 44px; height: 44px; font-size: 22px; }
@@ -482,6 +743,38 @@
       .fs-btn { padding: 12px 30px; font-size: 14px; }
       .fs-hint { font-size: 11px; }
     }
+    @media (max-width: 600px) {
+      .fs-modal__header {
+        padding: calc(12px + env(safe-area-inset-top)) 14px 12px;
+        font-size: 16px;
+      }
+      .fs-state-shape {
+        width: min(94vw, 520px);
+        height: min(54vh, 420px);
+      }
+      .fs-modal__controls {
+        padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
+      }
+      .fs-btn-row {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .fs-tool-btn {
+        width: 46px;
+        height: 46px;
+        font-size: 22px;
+      }
+      .fs-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 14px 18px;
+        font-size: 15px;
+      }
+      .fs-hint {
+        font-size: 12px;
+        line-height: 1.4;
+      }
+    }
 
     .zoom-controls button{
       width:36px;
@@ -561,6 +854,7 @@
       position: relative;
       overflow: hidden;
       background: #111;
+      padding-bottom: 92px;
     }
     .mobile-map-modal__inner {
       position: absolute;
@@ -632,8 +926,8 @@
         right: 0;
         padding: 8px 12px;
         padding-bottom: calc(8px + env(safe-area-inset-bottom));
-        background: transparent !important;
-        z-index: 20;
+        background: rgba(0,0,0,0.82) !important;
+        z-index: 25;
       }
       .mobile-map-modal__btn {
         padding: 10px 20px;
@@ -655,20 +949,26 @@
     .mobile-map-modal__controls {
       display: flex;
       gap: 12px;
-      padding: 16px;
-      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+      padding: 12px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
       background: rgba(0,0,0,0.95);
       justify-content: center;
       flex-shrink: 0;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 25;
     }
     .mobile-map-modal__btn {
-      padding: 14px 28px;
+      padding: 14px 20px;
       border: none;
       border-radius: 12px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      min-width: 140px;
+      min-width: 0;
+      width: 100%;
     }
     .mobile-map-modal__btn--photo {
       background: var(--accent);
@@ -707,8 +1007,41 @@
     /* Keep modal visible when active, even in landscape */
     .mobile-map-modal.active { display: flex !important; }
     @media (max-width: 768px) {
-      #openMobileMap { display: block !important; }
+      #openMobileMap {
+        display: block !important;
+        max-width: none !important;
+      }
       .desktop-map-card { display: none; }
+    }
+    @media (max-width: 768px) {
+      .mobile-map-modal__header {
+        padding-left: calc(16px + env(safe-area-inset-left));
+        padding-right: calc(16px + env(safe-area-inset-right));
+      }
+      .mobile-map-modal__title {
+        font-size: 16px;
+        line-height: 1.2;
+      }
+      .mobile-map-modal__controls {
+        flex-wrap: wrap;
+        padding-left: calc(12px + env(safe-area-inset-left));
+        padding-right: calc(12px + env(safe-area-inset-right));
+      }
+      .mobile-map-modal__btn {
+        width: 100%;
+        min-width: 0;
+        padding: 15px 18px;
+        font-size: 15px;
+      }
+      .mobile-map-modal__zoom {
+        right: calc(12px + env(safe-area-inset-right));
+        bottom: calc(94px + env(safe-area-inset-bottom));
+      }
+      .mobile-map-modal__zoom button {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+      }
     }
   </style>
 </head>
@@ -747,14 +1080,15 @@
       <h1>Make Your Own 50-State Photo Map</h1>
       <p class="sub">Tap a state, choose a photo, and fill it in. Track your journey across all 50.</p>
       <!-- Mode tabs -->
-      <div id="modeTabs" style="display:flex;gap:8px;justify-content:center;margin-top:16px;">
+      <div id="modeTabs" style="display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap;">
         <button class="btn" id="tabPhotoMap" onclick="switchMode('photo')" style="background:var(--accent);color:#fff;">Photo Map</button>
         <button class="btn secondary" id="tabFlagMap" onclick="switchMode('flag')">Flag Map</button>
+        <button class="btn secondary" id="tabColorMap" onclick="switchMode('color')">Color Map</button>
       </div>
       <!-- Mobile: Big button to open fullscreen map -->
       <button id="openMobileMap" type="button" style="
-        margin: 16px auto;
-        padding: 18px 32px;
+        margin: 16px auto 0;
+        padding: 18px 20px;
         font-size: 18px;
         font-weight: 600;
         background: var(--accent);
@@ -814,8 +1148,21 @@
 
     <!-- ===== PHOTO MAP MODE ===== -->
     <div id="photoMapMode">
+    <div class="mobile-state-actions mobile-only" id="mobileStateActions" style="display:none;">
+      <div class="mobile-state-actions__label" id="mobileStateLabel">Tap a state to begin</div>
+      <div class="mobile-state-actions__row">
+        <label class="fileBtn mobile-state-actions__primary" for="fileInput" id="mobileChoosePhoto">
+          Choose Photo
+        </label>
+        <button class="btn secondary mobile-state-actions__secondary" id="mobileEditBtn" type="button" style="display:none;">Edit</button>
+        <button class="btn secondary mobile-state-actions__secondary" id="mobileClearBtn" type="button" style="display:none;">Clear</button>
+      </div>
+      <div class="mobile-state-actions__row" style="margin-top:6px;">
+        <button class="btn success mobile-state-actions__primary" id="mobileDownloadBtn" type="button">Download Map</button>
+      </div>
+    </div>
     <div class="grid">
-      <div class="card">
+      <div class="card desktop-map-card">
         <div class="section-title">Selected State</div>
         <div class="stateLine" id="selectedState">Tap a state to begin</div>
 
@@ -934,6 +1281,13 @@
 
   const fileInput = document.getElementById("fileInput");
   const selectedStateEl = document.getElementById("selectedState");
+  const mobileStateActions = document.getElementById("mobileStateActions");
+  const mobileStateLabel = document.getElementById("mobileStateLabel");
+  const mobileEditBtn = document.getElementById("mobileEditBtn");
+  const mobileClearBtn = document.getElementById("mobileClearBtn");
+  const mobileDownloadBtn = document.getElementById("mobileDownloadBtn");
+  const PHOTO_DB_NAME = "visitall50states-photo-map";
+  const PHOTO_DB_STORE = "photo-map-state";
 
   /* ---------- Auto-save to localStorage ---------- */
   function saveToLocalStorage() {
@@ -959,22 +1313,26 @@
     }
   }
 
-  function loadFromLocalStorage() {
+  async function loadFromLocalStorage() {
     try {
       const saved = localStorage.getItem("photoMapProgress");
+      const dbPhotoState = await loadAllPhotoStateDb();
       if (saved) {
         const obj = JSON.parse(saved);
         Object.entries(obj).forEach(([stateId, savedValue]) => {
           const dataUrl = typeof savedValue === "string" ? savedValue : savedValue && savedValue.image;
           const photoData = typeof savedValue === "object" && savedValue ? savedValue.photoData : null;
-          if (typeof dataUrl === "string" && dataUrl.startsWith("data:image/")) {
-            legacyStateImages[stateId] = dataUrl;
-            originalImages[stateId] = dataUrl;
+          const dbState = dbPhotoState[stateId] || null;
+          const effectiveImage = (dbState && dbState.image) || dataUrl;
+          const effectivePhotoData = (dbState && dbState.photoData) || photoData;
+          if (typeof effectiveImage === "string" && effectiveImage.startsWith("data:image/")) {
+            legacyStateImages[stateId] = effectiveImage;
+            originalImages[stateId] = effectiveImage;
           }
-          if (photoData && typeof photoData === "object") {
+          if (effectivePhotoData && typeof effectivePhotoData === "object") {
             statePhotoData[stateId] = {
-              ...photoData,
-              sourceImage: photoData.sourceImage || dataUrl || null
+              ...effectivePhotoData,
+              sourceImage: effectivePhotoData.sourceImage || effectiveImage || null
             };
             if (statePhotoData[stateId].sourceImage) {
               originalImages[stateId] = statePhotoData[stateId].sourceImage;
@@ -1011,6 +1369,20 @@
 
   const editBtn = document.getElementById("editBtn");
 
+  function updateMobileStateActions(id, name) {
+    if (!mobileStateActions || !mobileStateLabel || !mobileEditBtn || !mobileClearBtn) return;
+    mobileStateActions.style.display = window.innerWidth <= 600 ? 'block' : 'none';
+    if (!id) {
+      mobileStateLabel.textContent = 'Tap a state to begin';
+      mobileEditBtn.style.display = 'none';
+      mobileClearBtn.style.display = 'none';
+      return;
+    }
+    mobileStateLabel.textContent = `${name} (${id})`;
+    mobileEditBtn.style.display = originalImages[id] ? 'inline-block' : 'none';
+    mobileClearBtn.style.display = 'inline-block';
+  }
+
   function selectState(el) {
     const id = getStateId(el);
     if (!id) return;
@@ -1024,6 +1396,7 @@
 
     // Show Edit button if state has a photo
     editBtn.style.display = originalImages[id] ? "inline-block" : "none";
+    updateMobileStateActions(id, nm);
   }
 
   function findStateElement(start) {
@@ -1074,11 +1447,13 @@ function blankOutSvg() {
     delete legacyStateImages[stateId];
     delete statePhotoData[stateId];
     delete originalImages[stateId];
+    deletePhotoStateDb(stateId);
     queuePhotoRender();
 
     // Hide edit button if clearing the currently selected state
     if (stateId === selectedId) {
       editBtn.style.display = "none";
+      updateMobileStateActions(stateId, stateId);
     }
 
     // Auto-save to localStorage
@@ -1091,6 +1466,9 @@ function blankOutSvg() {
     Object.keys(statePhotoData).forEach(key => delete statePhotoData[key]);
     Object.keys(legacyStateImages).forEach(key => delete legacyStateImages[key]);
     localStorage.removeItem("photoMapProgress");
+    if (window.indexedDB) {
+      indexedDB.deleteDatabase(PHOTO_DB_NAME);
+    }
     queuePhotoRender();
   }
 
@@ -1394,6 +1772,81 @@ function blankOutSvg() {
     } catch (e) {
       console.warn('Could not compress image for storage:', e);
       return src;
+    }
+  }
+
+  function openPhotoDb() {
+    return new Promise((resolve, reject) => {
+      if (!window.indexedDB) {
+        reject(new Error('IndexedDB unavailable'));
+        return;
+      }
+      const request = indexedDB.open(PHOTO_DB_NAME, 1);
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains(PHOTO_DB_STORE)) {
+          db.createObjectStore(PHOTO_DB_STORE);
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error || new Error('Failed to open IndexedDB'));
+    });
+  }
+
+  async function savePhotoStateDb(stateId, payload) {
+    try {
+      const db = await openPhotoDb();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(PHOTO_DB_STORE, 'readwrite');
+        tx.objectStore(PHOTO_DB_STORE).put(payload, stateId);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error || new Error('Failed to save photo state'));
+      });
+      db.close();
+    } catch (e) {
+      console.warn('Could not save photo state to IndexedDB:', e);
+    }
+  }
+
+  async function loadAllPhotoStateDb() {
+    try {
+      const db = await openPhotoDb();
+      const entries = await new Promise((resolve, reject) => {
+        const tx = db.transaction(PHOTO_DB_STORE, 'readonly');
+        const req = tx.objectStore(PHOTO_DB_STORE).getAllKeys();
+        req.onsuccess = async () => {
+          const keys = req.result || [];
+          const tx2 = db.transaction(PHOTO_DB_STORE, 'readonly');
+          const store = tx2.objectStore(PHOTO_DB_STORE);
+          const pairs = await Promise.all(keys.map((key) => new Promise((res, rej) => {
+            const getReq = store.get(key);
+            getReq.onsuccess = () => res([key, getReq.result]);
+            getReq.onerror = () => rej(getReq.error || new Error('Failed to read photo state'));
+          })));
+          resolve(pairs);
+        };
+        req.onerror = () => reject(req.error || new Error('Failed to enumerate photo state keys'));
+      });
+      db.close();
+      return Object.fromEntries(entries);
+    } catch (e) {
+      console.warn('Could not load photo state from IndexedDB:', e);
+      return {};
+    }
+  }
+
+  async function deletePhotoStateDb(stateId) {
+    try {
+      const db = await openPhotoDb();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(PHOTO_DB_STORE, 'readwrite');
+        tx.objectStore(PHOTO_DB_STORE).delete(stateId);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error || new Error('Failed to delete photo state'));
+      });
+      db.close();
+    } catch (e) {
+      console.warn('Could not delete photo state from IndexedDB:', e);
     }
   }
 
@@ -2117,6 +2570,11 @@ function blankOutSvg() {
       console.warn('Could not create legacy fallback image for', fsState.stateId, e);
     }
 
+    await savePhotoStateDb(fsState.stateId, {
+      image: legacyStateImages[fsState.stateId] || null,
+      photoData: statePhotoData[fsState.stateId] || null
+    });
+
     queuePhotoRender();
     saveToLocalStorage();
     closeFsEditor();
@@ -2357,9 +2815,29 @@ function blankOutSvg() {
     }
   });
 
+  if (mobileEditBtn) {
+    mobileEditBtn.addEventListener("click", () => {
+      if (selectedId && originalImages[selectedId]) {
+        openFullscreenEditor(selectedId, originalImages[selectedId]);
+      }
+    });
+  }
+
   document.getElementById("clearBtn").addEventListener("click", () => {
     if (selectedId) clearStateImage(selectedId);
   });
+
+  if (mobileClearBtn) {
+    mobileClearBtn.addEventListener("click", () => {
+      if (selectedId) clearStateImage(selectedId);
+    });
+  }
+
+  if (mobileDownloadBtn) {
+    mobileDownloadBtn.addEventListener("click", () => {
+      document.getElementById("downloadBtn")?.click();
+    });
+  }
 
   document.getElementById("clearAllBtn").addEventListener("click", clearAll);
 
@@ -2433,23 +2911,10 @@ function blankOutSvg() {
 
   // Open mobile map modal
   openMobileMapBtn.addEventListener('click', () => {
-    // Check if page is zoomed
-    if (window.visualViewport && window.visualViewport.scale > 1.05) {
-      alert('Please zoom out to 100% before selecting a state. Double-tap or pinch out on the page first.');
-      return;
-    }
-
     mobileMapModal.classList.add('active');
     document.body.classList.add('modal-open');
     document.documentElement.classList.add('modal-open');
     window.scrollTo(0, 0);
-
-    // Lock viewport to prevent zoom on rotation
-    const viewport = document.querySelector('meta[name="viewport"]');
-    if (viewport) {
-      viewport._mapModalOriginal = viewport.content;
-      viewport.content = 'width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no';
-    }
 
     // Clone the SVG
     mobileSvgWrap.innerHTML = '';
@@ -2529,28 +2994,27 @@ function blankOutSvg() {
     }
   }
 
-  // Close mobile modal
-  mobileMapClose.addEventListener('click', () => {
+  function closeMobileModal() {
     mobileMapModal.classList.remove('active');
     document.body.classList.remove('modal-open');
     document.documentElement.classList.remove('modal-open');
     restoreViewport();
-  });
+  }
+
+  // Close mobile modal
+  mobileMapClose.addEventListener('click', closeMobileModal);
 
   // Add photo button - trigger file input
   mobileAddPhoto.addEventListener('click', () => {
     if (!mobileSelectedState) return;
-    mobileMapModal.classList.remove('active');
-    document.body.classList.remove('modal-open');
-    document.documentElement.classList.remove('modal-open');
-    restoreViewport();
+    closeMobileModal();
     fileInput.click();
   });
 
   // Mobile zoom controls
   function updateMobileTransform() {
     if (mobileSvgClone) {
-      mobileSvgClone.style.transform = `scale(${mobileZoom}) translate(${mobilePan.x}px, ${mobilePan.y}px)`;
+      mobileSvgClone.style.transform = `translate(${mobilePan.x}px, ${mobilePan.y}px) scale(${mobileZoom})`;
       mobileSvgClone.style.transformOrigin = 'center center';
     }
   }
@@ -2659,7 +3123,7 @@ function blankOutSvg() {
     <!-- ===== FLAG MAP MODE ===== -->
     <div id="flagMapMode" style="display:none;">
       <div id="flagModeLayout" style="display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:18px;align-items:start;">
-        <div class="card" style="max-height:80vh;overflow-y:auto;">
+        <div class="card flag-controls-card" style="max-height:80vh;overflow-y:auto;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <h3 style="margin:0;font-family:'Outfit',sans-serif;font-size:1.2rem;">
               <span id="flagCounter" style="color:var(--accent);">0</span> / 50 States Visited
@@ -2738,7 +3202,7 @@ function blankOutSvg() {
           </div>
         </div>
 
-        <div style="position:relative;">
+        <div class="flag-map-card" style="position:relative;">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
             <div>
               <div style="font-weight:700;color:var(--text);">Map preview</div>
@@ -2788,14 +3252,39 @@ function blankOutSvg() {
 
         @media (max-width: 900px) {
           #flagModeLayout {
-            grid-template-columns: 1fr !important;
+            display: flex !important;
+            flex-direction: column !important;
+          }
+          .flag-map-card {
+            order: 1 !important;
+          }
+          .flag-controls-card {
+            order: 2 !important;
+            max-height: none !important;
+            overflow: visible !important;
           }
           #flagPreviewViewport {
             min-height: 420px;
             border-radius: 14px;
           }
           #flagChecklist {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .flag-map-card {
+            order: 1 !important;
+          }
+          .flag-controls-card {
+            order: 2 !important;
+          }
+          #flagPreviewViewport {
+            min-height: clamp(240px, 42vw, 360px) !important;
+            border-radius: 12px !important;
+          }
+          #flagProgressBar {
+            margin-top: 10px !important;
           }
         }
       </style>
@@ -3643,23 +4132,29 @@ function blankOutSvg() {
         };
 
         previewViewport.addEventListener('pointerdown', (event) => {
-          const hitState = event.target && (event.target.closest?.('#flagSvg path, #flagSvg polygon, #flagSvg polyline, #flagSvg rect') || event.target.closest?.('label[data-code]'));
-          if (hitState) return;
+          // Allow drag from anywhere in the viewport (label clicks won't drag — they stay short taps)
           if (!beginPreviewDrag(event.clientX, event.clientY)) return;
           previewViewport.setPointerCapture?.(event.pointerId);
         });
 
         previewViewport.addEventListener('mousedown', (event) => {
           if (event.button !== 0) return;
-          const hitState = event.target && event.target.closest?.('#flagSvg path, #flagSvg polygon, #flagSvg polyline, #flagSvg rect');
-          if (hitState) return;
           beginPreviewDrag(event.clientX, event.clientY);
         });
 
+        // Pinch-to-zoom and pan for touch
+        let previewPinchStartDist = 0;
+        let previewPinchStartScale = 1;
         previewViewport.addEventListener('touchstart', (event) => {
-          const touch = event.touches[0];
-          if (!touch) return;
-          beginPreviewDrag(touch.clientX, touch.clientY);
+          if (event.touches.length === 2) {
+            const dx = event.touches[0].clientX - event.touches[1].clientX;
+            const dy = event.touches[0].clientY - event.touches[1].clientY;
+            previewPinchStartDist = Math.hypot(dx, dy);
+            previewPinchStartScale = previewTransform.scale;
+            previewDrag = null; // cancel single-finger drag
+          } else if (event.touches.length === 1) {
+            beginPreviewDrag(event.touches[0].clientX, event.touches[0].clientY);
+          }
         }, { passive: true });
 
         const updatePreviewDrag = (x, y) => {
@@ -3683,10 +4178,21 @@ function blankOutSvg() {
         });
 
         previewViewport.addEventListener('touchmove', (event) => {
-          const touch = event.touches[0];
-          if (!touch) return;
-          updatePreviewDrag(touch.clientX, touch.clientY);
-        }, { passive: true });
+          if (event.touches.length === 2 && previewPinchStartDist > 0) {
+            event.preventDefault();
+            const dx = event.touches[0].clientX - event.touches[1].clientX;
+            const dy = event.touches[0].clientY - event.touches[1].clientY;
+            const dist = Math.hypot(dx, dy);
+            const nextScale = Math.max(1, Math.min(3.5, previewPinchStartScale * (dist / previewPinchStartDist)));
+            previewTransform.scale = nextScale;
+            if (previewZoom) previewZoom.value = String(nextScale);
+            if (nextScale <= 1.01) { previewTransform.x = 0; previewTransform.y = 0; }
+            applyPreviewTransform();
+          } else if (event.touches.length === 1 && previewDrag) {
+            event.preventDefault();
+            updatePreviewDrag(event.touches[0].clientX, event.touches[0].clientY);
+          }
+        }, { passive: false });
 
         const stopPreviewDrag = (event) => {
           if (previewDrag && previewDrag.moved) {
@@ -3707,7 +4213,10 @@ function blankOutSvg() {
           previewDrag = null;
           applyPreviewTransform();
         });
-        previewViewport.addEventListener('touchend', stopPreviewDrag, { passive: true });
+        previewViewport.addEventListener('touchend', (event) => {
+          previewPinchStartDist = 0;
+          stopPreviewDrag(event);
+        }, { passive: true });
       }
 
       if (placementReset) {
@@ -3767,29 +4276,39 @@ function blankOutSvg() {
       const flagMode = document.getElementById('flagMapMode');
       const tabPhoto = document.getElementById('tabPhotoMap');
       const tabFlag = document.getElementById('tabFlagMap');
+      const tabColor = document.getElementById('tabColorMap');
+
+      const setActiveTab = (active) => {
+        [[tabPhoto, 'photo'], [tabFlag, 'flag'], [tabColor, 'color']].forEach(([tab, key]) => {
+          if (!tab) return;
+          if (key === active) {
+            tab.className = 'btn';
+            tab.style.background = 'var(--accent)';
+            tab.style.color = '#fff';
+          } else {
+            tab.className = 'btn secondary';
+            tab.style.background = '';
+            tab.style.color = '';
+          }
+        });
+      };
 
       if (mode === 'photo') {
         photoMode.style.display = '';
         flagMode.style.display = 'none';
-        tabPhoto.className = 'btn';
-        tabPhoto.style.background = 'var(--accent)';
-        tabPhoto.style.color = '#fff';
-        tabFlag.className = 'btn secondary';
-        tabFlag.style.background = '';
-        tabFlag.style.color = '';
+        setActiveTab('photo');
+        return;
+      }
+
+      photoMode.style.display = 'none';
+      flagMode.style.display = '';
+
+      if (mode === 'flag') {
+        setFlagDisplayMode('flag');
+        setActiveTab('flag');
       } else {
-        photoMode.style.display = 'none';
-        flagMode.style.display = '';
-        const liveSvg = document.getElementById('flagMapContainer');
-        if (liveSvg) liveSvg.style.display = mode === 'flag' && FLAG_MODE_STATE.displayMode === 'flag' ? 'none' : 'block';
-        const previewCanvas = document.getElementById('flagPreviewCanvas');
-        if (previewCanvas) previewCanvas.style.display = mode === 'flag' && FLAG_MODE_STATE.displayMode === 'flag' ? 'block' : 'none';
-        tabFlag.className = 'btn';
-        tabFlag.style.background = 'var(--accent)';
-        tabFlag.style.color = '#fff';
-        tabPhoto.className = 'btn secondary';
-        tabPhoto.style.background = '';
-        tabPhoto.style.color = '';
+        setFlagDisplayMode('color');
+        setActiveTab('color');
       }
     }
     </script>

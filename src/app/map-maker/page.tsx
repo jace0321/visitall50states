@@ -20,11 +20,11 @@ export default function MapMakerPage() {
     <>
       <Header />
       <main className="min-h-screen bg-cloud pt-20">
-        <div className="mx-auto w-full max-w-[2200px] px-2 py-6 sm:px-3 xl:px-4">
+        <div className="mx-auto w-full max-w-[2200px] px-1 py-2 sm:px-3 sm:py-6 xl:px-4">
           <MapMakerEmbed />
         </div>
 
-        <section className="px-3 pb-12 pt-2 xl:px-4">
+        <section className="px-3 pb-12 pt-1 sm:pt-2 xl:px-4">
           <div className="mx-auto w-full max-w-[1800px] rounded-[2rem] border border-slate-200 bg-white/85 p-6 shadow-sm backdrop-blur-sm">
             <div className="grid gap-6 lg:grid-cols-[auto_1fr] lg:items-start">
               <div>
