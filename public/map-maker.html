@@ -1175,10 +1175,14 @@
           <button class="btn secondary" id="clearBtn" type="button">Clear</button>
         </div>
 
-        <input id="fileInput" type="file" accept="image/*" />
+        <input id="fileInput" type="file" accept="image/*,.heic,.heif" />
+
+        <p id="pickPhotoStatus" class="tiny" style="min-height:1.35em;margin:8px 0 0;color:var(--muted);"></p>
 
         <div class="section-title">How It Works</div>
         <div class="hint">
+          <span style="display:block;margin-bottom:6px;font-size:12px;color:var(--muted);"><strong style="color:var(--text);">Accepted photos:</strong> JPEG, PNG, WebP, GIF, and iPhone HEIC or HEIF. HEIC/HEIF is converted on our server to JPEG before editing; a few rare iPhone variants may not convert — export as JPEG or use our tool below.</span>
+          <span style="display:block;margin-bottom:10px;font-size:12px;color:var(--muted);">HEIC won&apos;t convert? Try our <a href="/heic-to-jpeg" style="color:var(--accent);font-weight:600;">free HEIC → JPEG page</a> first, then upload the JPEG here.</span>
           <strong>1.</strong> Tap any state on the map<br/>
           <strong>2.</strong> Choose a photo from your device<br/>
           <strong>3.</strong> Drag to position, scroll to zoom, shift+drag to rotate<br/>
@@ -1280,6 +1284,194 @@
   const photoRenderCanvas = document.getElementById("photoRenderCanvas");
 
   const fileInput = document.getElementById("fileInput");
+  // Browsers do not fire "change" if the user picks the same file again; clearing
+  // on each open keeps Add Photo working for every state when reusing one image.
+  fileInput.addEventListener("click", function () {
+    this.value = "";
+  });
+
+  /** iPhone HEIC/HEIF is not decoded by Image() or createImageBitmap on many desktops — route to server conversion. */
+  function isHeicLike(file) {
+    if (!file) return false;
+    var n = (file.name || "").toLowerCase();
+    if (n.endsWith(".heic") || n.endsWith(".heif")) return true;
+    var t = (file.type || "").toLowerCase();
+    return t === "image/heic" || t === "image/heif";
+  }
+
+  /**
+   * Windows / iCloud often supply HEIC bytes with empty type and no extension (e.g. "IMG_1234").
+   * Scan the first chunk of the file for any ISO BMFF "ftyp" box and read the major brand (4 bytes after "ftyp").
+   * Some exports put a small box before ftyp; a fixed offset sniff misses those.
+   */
+  var HEIC_FTYP_BRANDS = /^(heic|heix|hevc|hevx|mif1|msf1|heim|heis|heif)$/i;
+
+  function detectHeicFromFtypBuffer(buf) {
+    if (!buf || buf.length < 12) return false;
+    var len = buf.length;
+    for (var i = 0; i <= len - 8; i++) {
+      if (buf[i] !== 102 || buf[i + 1] !== 116 || buf[i + 2] !== 121 || buf[i + 3] !== 112) continue;
+      var brand = String.fromCharCode(buf[i + 4], buf[i + 5], buf[i + 6], buf[i + 7]);
+      if (HEIC_FTYP_BRANDS.test(brand)) return true;
+    }
+    return false;
+  }
+
+  function sniffHeicFromFile(file) {
+    return new Promise(function (resolve) {
+      if (!file || file.size < 12) {
+        resolve(false);
+        return;
+      }
+      var r = new FileReader();
+      r.onload = function () {
+        resolve(detectHeicFromFtypBuffer(new Uint8Array(r.result)));
+      };
+      r.onerror = function () {
+        resolve(false);
+      };
+      r.readAsArrayBuffer(file.slice(0, Math.min(16384, file.size)));
+    });
+  }
+
+  function shouldConvertHeic(file) {
+    var type = String(file && file.type || "").toLowerCase();
+    var name = String(file && file.name || "").toLowerCase();
+
+    // Never send browser-readable raster formats through the HEIC server path.
+    if (
+      type === "image/jpeg" ||
+      type === "image/jpg" ||
+      type === "image/png" ||
+      type === "image/webp" ||
+      type === "image/gif" ||
+      type === "image/bmp" ||
+      type === "image/avif"
+    ) {
+      return Promise.resolve(false);
+    }
+
+    // Explicit HEIC/HEIF extension or MIME should always convert.
+    if (
+      name.endsWith(".heic") ||
+      name.endsWith(".heif") ||
+      type === "image/heic" ||
+      type === "image/heif"
+    ) {
+      return Promise.resolve(true);
+    }
+
+    // Only sniff when MIME is absent or generic/unknown.
+    if (!type || type === "application/octet-stream") {
+      return sniffHeicFromFile(file);
+    }
+
+    return Promise.resolve(false);
+  }
+
+  function readFileAsDataUrl(file) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve(r.result); };
+      r.onerror = function () { reject(new Error("Could not read file")); };
+      r.readAsDataURL(file);
+    });
+  }
+
+  var HEIC_CONVERT_FAILURE_MESSAGE =
+    "This HEIC photo variant isn't supported yet. Please export/share it as JPEG from Photos, or switch iPhone Camera → Formats → Most Compatible.";
+
+  function convertImageServerSide(file) {
+    var form = new FormData();
+    form.append("file", file, file.name || "photo.heic");
+    return fetch("/api/heic-convert", {
+      method: "POST",
+      body: form
+    }).then(function (res) {
+      if (!res.ok) {
+        return res.json().catch(function () { return {}; }).then(function (body) {
+          var msg = body && body.error ? body.error : HEIC_CONVERT_FAILURE_MESSAGE;
+          throw new Error(msg);
+        });
+      }
+      return res.blob();
+    }).then(function (blob) {
+      var baseName = (file.name || "photo").replace(/\.[^.]+$/, "") || "photo";
+      return new File([blob], baseName + ".jpg", { type: "image/jpeg" });
+    });
+  }
+
+  var MAX_NORMALIZED_EDGE = 2800;
+
+  function downscaleImageFileIfNeeded(file) {
+    if (!file || !file.type || !file.type.startsWith("image/")) return Promise.resolve(file);
+    if (typeof createImageBitmap !== "function") return Promise.resolve(file);
+    return createImageBitmap(file)
+      .then(function (bmp) {
+        var w = bmp.width;
+        var h = bmp.height;
+        var max = Math.max(w, h);
+        if (!max || max <= MAX_NORMALIZED_EDGE) {
+          bmp.close();
+          return file;
+        }
+        var scale = MAX_NORMALIZED_EDGE / max;
+        var cw = Math.max(1, Math.round(w * scale));
+        var ch = Math.max(1, Math.round(h * scale));
+        var canvas = document.createElement("canvas");
+        canvas.width = cw;
+        canvas.height = ch;
+        var ctx = canvas.getContext("2d");
+        if (!ctx) {
+          bmp.close();
+          return file;
+        }
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(bmp, 0, 0, cw, ch);
+        bmp.close();
+        return new Promise(function (resolve, reject) {
+          canvas.toBlob(
+            function (b) {
+              if (!b) {
+                reject(new Error("Could not compress image."));
+                return;
+              }
+              var name = (file.name || "photo").replace(/\.(heic|heif)$/i, ".jpg");
+              if (!/\.(jpe?g|png|webp)$/i.test(name)) name = name.replace(/\.[^.]+$/, "") + ".jpg";
+              resolve(new File([b], name, { type: "image/jpeg" }));
+            },
+            "image/jpeg",
+            0.88
+          );
+        });
+      })
+      .catch(function () {
+        return file;
+      });
+  }
+
+  /**
+   * Single pipeline: HEIC → JPEG file, then optional downscale. Editor only sees raster images.
+   */
+  function normalizePickedImageFile(file) {
+    return shouldConvertHeic(file).then(function (needsHeic) {
+      if (needsHeic) {
+        // HEIC/HEIF → server /api/heic-convert only (no browser decoder).
+        return convertImageServerSide(file).then(function (jpegFile) {
+          return downscaleImageFileIfNeeded(jpegFile);
+        });
+      }
+      return downscaleImageFileIfNeeded(file);
+    });
+  }
+
+  function fileToEditorDataUrl(file) {
+    return normalizePickedImageFile(file).then(function (normalized) {
+      return readFileAsDataUrl(normalized);
+    });
+  }
+
   const selectedStateEl = document.getElementById("selectedState");
   const mobileStateActions = document.getElementById("mobileStateActions");
   const mobileStateLabel = document.getElementById("mobileStateLabel");
@@ -1944,6 +2136,98 @@ function blankOutSvg() {
     });
   }
 
+  /** Renders one state’s placed photo to a canvas (legacy JPEG fallback for localStorage). */
+  async function renderPhotoDataToStateCanvas(photoData, stateId, outputScale) {
+    const geometry = getStateGeometry(stateId, svg);
+    if (!geometry || !photoData?.sourceImage) return null;
+    const bbox = geometry.bbox;
+    const { width, height } = getStateCanvasSize(bbox.width, bbox.height, outputScale || 1);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = PHOTO_MAP_BASE_FILL;
+    ctx.fillRect(0, 0, width, height);
+    const sx = width / bbox.width;
+    const sy = height / bbox.height;
+    ctx.save();
+    ctx.scale(sx, sy);
+    ctx.translate(-bbox.x, -bbox.y);
+    await drawStatePhotoToContext(ctx, photoData, geometry);
+    ctx.restore();
+    return canvas;
+  }
+
+  /**
+   * JPEG blob of the photo as placed in the state outline (for traveler journal sync).
+   * Uses the same geometry as the on-map preview.
+   */
+  async function exportStatePhotoJpegBlob(stateId) {
+    const geometry = getStateGeometry(stateId, svg);
+    if (!geometry) return null;
+    const photoData = statePhotoData[stateId];
+    const legacy = legacyStateImages[stateId];
+    if (!photoData?.sourceImage && !legacy) return null;
+
+    const bbox = geometry.bbox;
+    const maxEdge = 1600;
+    let w = maxEdge;
+    let h = Math.round(maxEdge * (bbox.height / Math.max(bbox.width, 1e-6)));
+    if (bbox.height > bbox.width) {
+      h = maxEdge;
+      w = Math.round(maxEdge * (bbox.width / Math.max(bbox.height, 1e-6)));
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, w);
+    canvas.height = Math.max(1, h);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = PHOTO_MAP_BASE_FILL;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const sx = canvas.width / bbox.width;
+    const sy = canvas.height / bbox.height;
+    ctx.save();
+    ctx.scale(sx, sy);
+    ctx.translate(-bbox.x, -bbox.y);
+    try {
+      if (photoData?.sourceImage) {
+        await drawStatePhotoToContext(ctx, photoData, geometry);
+      } else if (legacy) {
+        const legacyImg = await loadPhotoImage(legacy);
+        ctx.save();
+        ctx.clip(geometry.path);
+        ctx.drawImage(legacyImg, bbox.x, bbox.y, bbox.width, bbox.height);
+        ctx.restore();
+      }
+    } catch (e) {
+      console.warn("exportStatePhotoJpegBlob failed", stateId, e);
+      ctx.restore();
+      return null;
+    }
+    ctx.restore();
+    return new Promise(function (resolve) {
+      canvas.toBlob(function (b) { resolve(b || null); }, "image/jpeg", 0.9);
+    });
+  }
+
+  async function collectPhotoBlobsForTravelerSync() {
+    var seen = {};
+    Object.keys(statePhotoData).forEach(function (k) { seen[k] = true; });
+    Object.keys(legacyStateImages).forEach(function (k) { seen[k] = true; });
+    var items = [];
+    for (var stateId in seen) {
+      if (!seen.hasOwnProperty(stateId)) continue;
+      var blob = await exportStatePhotoJpegBlob(stateId);
+      if (blob) {
+        items.push({ stateCode: String(stateId).trim().toUpperCase(), blob: blob });
+      }
+    }
+    return items;
+  }
+
+  window.__visitall50_collectPhotoBlobsForTravelerSync = collectPhotoBlobsForTravelerSync;
+
   async function renderPhotoMapToCanvas(targetCanvas, options = {}) {
     if (!targetCanvas) return;
     const { vbX, vbY, vbWidth, vbHeight } = getViewBoxMetrics(svg);
@@ -2335,6 +2619,7 @@ function blankOutSvg() {
     active: false,
     stateId: null,
     imageUrl: null,
+    tempObjectUrl: null,
     x: 0,
     y: 0,
     scale: 1,
@@ -2376,13 +2661,70 @@ function blankOutSvg() {
     renderFsPhoto();
   });
 
-  function openFullscreenEditor(stateId, imageDataUrl) {
-    const stateEl = svg.querySelector(`#${CSS.escape(stateId)}`) ||
-                    svg.querySelector(`[data-id="${stateId}"]`);
-    if (!stateEl) return;
+  function findStateElementById(stateId) {
+    const raw = String(stateId || "").trim();
+    if (!raw) return null;
+    const candidates = [raw, raw.toUpperCase(), raw.toLowerCase()];
 
-    // Store original image for re-editing
-    originalImages[stateId] = imageDataUrl;
+    for (const candidate of candidates) {
+      try {
+        const byId = svg.querySelector(`#${CSS.escape(candidate)}`);
+        if (byId) return byId;
+      } catch (e) {}
+
+      try {
+        const byDataId = svg.querySelector(`[data-id="${candidate}"]`);
+        if (byDataId) return byDataId;
+      } catch (e) {}
+    }
+
+    const allStateEls = svg.querySelectorAll('path, polygon, polyline, rect');
+    for (const el of allStateEls) {
+      const elId = (el.id || '').trim();
+      const dataId = (el.getAttribute('data-id') || '').trim();
+      if (!elId && !dataId) continue;
+      if (candidates.some(candidate => candidate === elId || candidate === dataId || candidate.toUpperCase() === elId.toUpperCase() || candidate.toUpperCase() === dataId.toUpperCase())) {
+        return el;
+      }
+    }
+
+    return null;
+  }
+
+  function getStateBBoxSafe(stateEl) {
+    if (!stateEl) return null;
+    try {
+      const bbox = stateEl.getBBox();
+      if (bbox && Number.isFinite(bbox.width) && Number.isFinite(bbox.height) && bbox.width > 0 && bbox.height > 0) {
+        return bbox;
+      }
+    } catch (e) {
+      console.warn("getStateBBoxSafe: native getBBox failed", e);
+    }
+
+    const geometryStateId = getStateId(stateEl);
+    if (geometryStateId) {
+      const geometry = getStateGeometry(geometryStateId, svg);
+      if (geometry && geometry.bbox && geometry.bbox.width > 0 && geometry.bbox.height > 0) {
+        return geometry.bbox;
+      }
+    }
+
+    return null;
+  }
+
+  function openFullscreenEditor(stateId, imageDataUrl, sourceFile) {
+    if (fsState.tempObjectUrl) {
+      try { URL.revokeObjectURL(fsState.tempObjectUrl); } catch (e) {}
+      fsState.tempObjectUrl = null;
+    }
+    const idKey = String(stateId || "").trim();
+    const stateEl = findStateElementById(idKey);
+    if (!stateEl) {
+      console.warn("openFullscreenEditor: missing state shape for", stateId);
+      alert("Could not open the photo editor for this state. Click the state on the map again, then choose a photo.");
+      return;
+    }
 
     // Clone state shape into modal
     fsStateShape.innerHTML = "";
@@ -2393,7 +2735,12 @@ function blankOutSvg() {
     clonedPath.removeAttribute("style");
 
     // Get the bounding box of the state to set viewBox
-    const bbox = stateEl.getBBox();
+    const bbox = getStateBBoxSafe(stateEl);
+    if (!bbox) {
+      console.warn("openFullscreenEditor: could not resolve bbox for", stateId, stateEl);
+      alert("Could not measure this state's outline. Try another state or refresh the page.");
+      return;
+    }
     const padding = Math.max(bbox.width, bbox.height) * 0.1;
     fsStateShape.setAttribute("viewBox",
       `${bbox.x - padding} ${bbox.y - padding} ${bbox.width + padding*2} ${bbox.height + padding*2}`
@@ -2405,32 +2752,30 @@ function blankOutSvg() {
     fsState.padding = padding;
 
     // Get state name
-    const stateName = stateEl.getAttribute("data-name") || stateId.toUpperCase();
+    const stateName = stateEl.getAttribute("data-name") || idKey;
     fsStateName.textContent = `Position photo for ${stateName}`;
 
-    // Setup state
-    fsState.active = true;
-    fsState.stateId = stateId;
-    fsState.imageUrl = imageDataUrl;
-    fsState.rotation = 0;
-    fsState.flipX = 1;
-    fsState.x = 0;
-    fsState.y = 0;
-    fsState.opacity = 100;
-    fsOpacitySlider.value = 100;
-    fsOpacityVal.textContent = "100";
-    fsState.feather = 0;
-    fsFeatherSlider.value = 0;
-    fsFeatherVal.textContent = "0";
-    fsState.bgColor = null;
-    fsBgTransparentBtn.textContent = "None (active)";
+    function showEditor(displayUrl, imgWidth, imgHeight) {
+      originalImages[idKey] = displayUrl;
+      fsState.active = true;
+      fsState.stateId = idKey;
+      fsState.imageUrl = displayUrl;
+      fsState.rotation = 0;
+      fsState.flipX = 1;
+      fsState.x = 0;
+      fsState.y = 0;
+      fsState.opacity = 100;
+      fsOpacitySlider.value = 100;
+      fsOpacityVal.textContent = "100";
+      fsState.feather = 0;
+      fsFeatherSlider.value = 0;
+      fsFeatherVal.textContent = "0";
+      fsState.bgColor = null;
+      fsBgTransparentBtn.textContent = "None (active)";
 
-    // Load image
-    const img = new Image();
-    img.onload = () => {
-      fsState.imgWidth = img.width;
-      fsState.imgHeight = img.height;
-      fsPhoto.src = imageDataUrl;
+      fsState.imgWidth = imgWidth;
+      fsState.imgHeight = imgHeight;
+      fsPhoto.src = displayUrl;
 
       // Show modal FIRST so getBoundingClientRect works
       fsModal.classList.remove("hidden");
@@ -2439,6 +2784,7 @@ function blankOutSvg() {
       // Check if page is zoomed and warn user
       if (window.visualViewport && window.visualViewport.scale > 1.05) {
         alert('Please zoom out to 100% before editing. Double-tap or pinch out on the page first.');
+        delete originalImages[idKey];
         closeFsEditor();
         return;
       }
@@ -2452,25 +2798,114 @@ function blankOutSvg() {
 
       // Wait for layout, then calculate scale and render
       requestAnimationFrame(() => {
-        // Use the actual rendered SVG content box so each state fills the editor as much as possible
         const shapeRect = fsStateShape.getBoundingClientRect();
         fsState.shapeW = shapeRect.width;
         fsState.shapeH = shapeRect.height;
 
         const paddingRatio = 0.92;
         const fitScale = Math.min(
-          (shapeRect.width * paddingRatio) / img.width,
-          (shapeRect.height * paddingRatio) / img.height
+          (shapeRect.width * paddingRatio) / imgWidth,
+          (shapeRect.height * paddingRatio) / imgHeight
         );
         fsState.scale = fitScale;
         renderFsPhoto();
       });
+    }
+
+    // Prefer the normalized File/Blob itself over a data URL. This is the most reliable path for HEIC→JPEG conversions.
+    if (sourceFile && typeof createImageBitmap === "function") {
+      createImageBitmap(sourceFile)
+        .then(function (bmp) {
+          const w = bmp.width;
+          const h = bmp.height;
+          const c = document.createElement("canvas");
+          c.width = w;
+          c.height = h;
+          const ctx = c.getContext("2d");
+          if (!ctx) throw new Error("Could not create preview canvas");
+          ctx.drawImage(bmp, 0, 0);
+          bmp.close();
+          c.toBlob(function (blob) {
+            if (!blob) {
+              try {
+                const pngUrl = c.toDataURL("image/png");
+                showEditor(pngUrl, w, h);
+              } catch (e) {
+                console.warn("openFullscreenEditor: bitmap preview fallback failed", e);
+              }
+              return;
+            }
+            const objectUrl = URL.createObjectURL(blob);
+            fsState.tempObjectUrl = objectUrl;
+            showEditor(objectUrl, w, h);
+          }, "image/png");
+        })
+        .catch(async function (bitmapErr) {
+          console.warn("openFullscreenEditor: createImageBitmap primary decode failed", bitmapErr);
+
+          if (sourceFile) {
+            try {
+              const objectUrl = URL.createObjectURL(sourceFile);
+              fsState.tempObjectUrl = objectUrl;
+              const ok = await new Promise(function (resolve) {
+                const im = new Image();
+                im.onload = function () {
+                  showEditor(objectUrl, im.width, im.height);
+                  resolve(true);
+                };
+                im.onerror = function () { resolve(false); };
+                im.src = objectUrl;
+              });
+              if (ok) return;
+            } catch (objectErr) {
+              console.warn("openFullscreenEditor: object URL decode failed", objectErr);
+            }
+          }
+
+          const img = new Image();
+          img.onload = function () { showEditor(imageDataUrl, img.width, img.height); };
+          img.onerror = async function () {
+            console.warn("openFullscreenEditor: image decode failed");
+            alert("Could not open this photo. Try a JPEG or PNG, or export from Photos as JPEG.");
+          };
+          img.src = imageDataUrl;
+        });
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => showEditor(imageDataUrl, img.width, img.height);
+    img.onerror = async () => {
+      if (sourceFile) {
+        try {
+          const objectUrl = URL.createObjectURL(sourceFile);
+          fsState.tempObjectUrl = objectUrl;
+          const ok = await new Promise(function (resolve) {
+            const im = new Image();
+            im.onload = function () {
+              showEditor(objectUrl, im.width, im.height);
+              resolve(true);
+            };
+            im.onerror = function () { resolve(false); };
+            im.src = objectUrl;
+          });
+          if (ok) return;
+        } catch (objectErr) {
+          console.warn("openFullscreenEditor: object URL decode fallback failed", objectErr);
+        }
+      }
+      console.warn("openFullscreenEditor: image decode failed");
+      alert("Could not open this photo. Try a JPEG or PNG, or export from Photos as JPEG.");
     };
     img.src = imageDataUrl;
   }
 
   function closeFsEditor() {
     fsState.active = false;
+    if (fsState.tempObjectUrl) {
+      try { URL.revokeObjectURL(fsState.tempObjectUrl); } catch (e) {}
+      fsState.tempObjectUrl = null;
+    }
     fsModal.classList.add("hidden");
     document.body.style.overflow = "";
 
@@ -2791,7 +3226,18 @@ function blankOutSvg() {
     }
   }, { passive: false });
 
-  fileInput.addEventListener("change", () => {
+  function mapPhotoPrepareError(err) {
+    var m = err && err.message ? String(err.message) : "";
+    if (m.indexOf("Couldn't reach the server") === 0) return m;
+    if (m.indexOf("This HEIC") === 0) return m;
+    if (/Failed to fetch|NetworkError/i.test(m)) {
+      return "Couldn't reach the server to convert this photo. Check your connection, or export as JPEG from Photos and try again.";
+    }
+    if (/too large/i.test(m)) return m;
+    return "Could not open this photo. Try a JPEG, PNG, or WebP, or export from Photos as JPEG.";
+  }
+
+  fileInput.addEventListener("change", function () {
     const file = fileInput.files && fileInput.files[0];
     if (!file) return;
 
@@ -2801,12 +3247,28 @@ function blankOutSvg() {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      openFullscreenEditor(selectedId, reader.result);
-      fileInput.value = "";
-    };
-    reader.readAsDataURL(file);
+    var statusEl = document.getElementById("pickPhotoStatus");
+    shouldConvertHeic(file).then(function (heic) {
+      if (statusEl) statusEl.textContent = heic ? "Converting HEIC photo on server…" : "Preparing photo…";
+    });
+
+    normalizePickedImageFile(file)
+      .then(function (normalized) {
+        return readFileAsDataUrl(normalized).then(function (dataUrl) {
+          return { dataUrl: dataUrl, normalized: normalized };
+        });
+      })
+      .then(function (o) {
+        if (statusEl) statusEl.textContent = "";
+        openFullscreenEditor(selectedId, o.dataUrl, o.normalized);
+        fileInput.value = "";
+      })
+      .catch(function (err) {
+        console.warn("Could not prepare photo", err);
+        if (statusEl) statusEl.textContent = "";
+        alert(mapPhotoPrepareError(err));
+        fileInput.value = "";
+      });
   });
 
   document.getElementById("editBtn").addEventListener("click", () => {
@@ -4324,6 +4786,159 @@ function blankOutSvg() {
       }
     }
     </script>
+
+  <!-- Parent page (Next.js map-maker route) can request a summary for account sync — no image data leaves the iframe -->
+  <!-- Merges localStorage + IndexedDB keys so states saved only in IDB (e.g. large photos) still sync -->
+  <script>
+  (function () {
+    var PHOTO_DB_NAME = "visitall50states-photo-map";
+    var PHOTO_DB_STORE = "photo-map-state";
+
+    function photoKeysFromLocalStorage() {
+      var photoKeys = [];
+      try {
+        var raw = localStorage.getItem("photoMapProgress");
+        if (raw) {
+          var obj = JSON.parse(raw);
+          photoKeys = Object.keys(obj || {});
+        }
+      } catch (e) {}
+      return photoKeys;
+    }
+
+    function photoKeysFromIndexedDb() {
+      return new Promise(function (resolve) {
+        if (!window.indexedDB) {
+          resolve([]);
+          return;
+        }
+        var req = indexedDB.open(PHOTO_DB_NAME, 1);
+        req.onupgradeneeded = function () {
+          var db = req.result;
+          if (!db.objectStoreNames.contains(PHOTO_DB_STORE)) {
+            db.createObjectStore(PHOTO_DB_STORE);
+          }
+        };
+        req.onerror = function () {
+          resolve([]);
+        };
+        req.onsuccess = function () {
+          var db = req.result;
+          try {
+            if (!db.objectStoreNames.contains(PHOTO_DB_STORE)) {
+              db.close();
+              resolve([]);
+              return;
+            }
+            var tx = db.transaction(PHOTO_DB_STORE, "readonly");
+            var kr = tx.objectStore(PHOTO_DB_STORE).getAllKeys();
+            kr.onsuccess = function () {
+              try {
+                db.close();
+              } catch (e) {}
+              resolve(kr.result || []);
+            };
+            kr.onerror = function () {
+              try {
+                db.close();
+              } catch (e2) {}
+              resolve([]);
+            };
+          } catch (e) {
+            try {
+              db.close();
+            } catch (e3) {}
+            resolve([]);
+          }
+        };
+      });
+    }
+
+    function buildSummary(photoKeys) {
+      var flagVisited = [];
+      var flagLived = [];
+      try {
+        flagVisited = JSON.parse(localStorage.getItem("flagMapVisited") || "[]");
+        flagLived = JSON.parse(localStorage.getItem("flagMapLived") || "[]");
+      } catch (e2) {}
+      var codes = {};
+      function rememberCode(key) {
+        var u = String(key == null ? "" : key).trim().toUpperCase();
+        if (u) codes[u] = true;
+      }
+      photoKeys.forEach(rememberCode);
+      flagVisited.forEach(rememberCode);
+      flagLived.forEach(rememberCode);
+      var stateCodes = Object.keys(codes);
+      return {
+        stateCodes: stateCodes,
+        photoStateCodes: photoKeys,
+        flagVisitedCodes: flagVisited,
+        flagLivedCodes: flagLived,
+      };
+    }
+
+    window.addEventListener("message", function (event) {
+      if (event.origin !== window.location.origin) return;
+      if (!event.data || !event.source) return;
+
+      if (event.data.type === "VISITALL50_MAP_MAKER_REQUEST_PHOTO_EXPORT") {
+        var exportFn = window.__visitall50_collectPhotoBlobsForTravelerSync;
+        if (typeof exportFn !== "function") {
+          event.source.postMessage(
+            { type: "VISITALL50_MAP_MAKER_PHOTO_EXPORT_ERROR", message: "Map maker is still loading — try again in a moment." },
+            event.origin
+          );
+          return;
+        }
+        exportFn()
+          .then(function (items) {
+            event.source.postMessage({ type: "VISITALL50_MAP_MAKER_PHOTO_EXPORT", items: items || [] }, event.origin);
+          })
+          .catch(function (err) {
+            event.source.postMessage(
+              {
+                type: "VISITALL50_MAP_MAKER_PHOTO_EXPORT_ERROR",
+                message: err && err.message ? String(err.message) : String(err),
+              },
+              event.origin
+            );
+          });
+        return;
+      }
+
+      if (event.data.type !== "VISITALL50_MAP_MAKER_REQUEST_SUMMARY") return;
+
+      var lsKeys = photoKeysFromLocalStorage();
+      photoKeysFromIndexedDb()
+        .then(function (idbKeys) {
+          var merged = {};
+          lsKeys.forEach(function (k) {
+            merged[k] = true;
+          });
+          (idbKeys || []).forEach(function (k) {
+            merged[k] = true;
+          });
+          var photoKeys = Object.keys(merged);
+          var summary = buildSummary(photoKeys);
+          var payload = { type: "VISITALL50_MAP_MAKER_SUMMARY" };
+          Object.keys(summary).forEach(function (k) {
+            payload[k] = summary[k];
+          });
+          event.source.postMessage(payload, event.origin);
+        })
+        .catch(function (err) {
+          event.source.postMessage(
+            {
+              type: "VISITALL50_MAP_MAKER_SUMMARY_ERROR",
+              message: err && err.message ? String(err.message) : String(err),
+            },
+            event.origin
+          );
+        });
+    });
+  })();
+  </script>
 
   </div><!-- end .wrap -->
 

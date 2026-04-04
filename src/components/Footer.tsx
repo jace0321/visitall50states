@@ -6,6 +6,7 @@ const FOOTER_LINKS = [
     links: [
       { href: "/states", label: "All 50 States" },
       { href: "/map-maker", label: "Photo Map Maker" },
+      { href: "/heic-to-jpeg", label: "HEIC → JPEG (free)" },
       { href: "/about", label: "About Us" },
     ],
   },

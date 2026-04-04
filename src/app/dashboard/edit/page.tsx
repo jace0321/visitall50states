@@ -1,16 +1,14 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import DashboardProfileEditor from "./DashboardProfileEditor";
 
 export default function DashboardEditPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-cloud pt-20">
-        <div className="mx-auto max-w-4xl px-6 py-12">
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
-            <h1 className="text-3xl font-black text-asphalt">Edit profile</h1>
-            <p className="mt-3 text-asphalt/65">Scaffold placeholder for profile settings, bio, journey summary, travel style, and visibility.</p>
-          </div>
+      <main className="min-h-screen bg-[linear-gradient(180deg,#edf2f7_0%,#f7f4ee_46%,#f8fafc_100%)] pt-20 text-asphalt">
+        <div className="mx-auto max-w-6xl space-y-8 px-6 py-12 lg:py-14">
+          <DashboardProfileEditor />
         </div>
       </main>
       <Footer />

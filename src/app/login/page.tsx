@@ -2,9 +2,17 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 
+function safeInternalPath(raw: string | null): string | null {
+  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return null;
+  if (raw.includes("://")) return null;
+  return raw;
+}
+
 export default function LoginPage() {
+  const router = useRouter();
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
@@ -42,7 +50,12 @@ export default function LoginPage() {
 
         if (signInError) throw signInError;
 
-        setMessage("You’re in. Head back home and start saving your map.");
+        const next = safeInternalPath(
+          typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("next") : null
+        );
+        router.push(next ?? "/dashboard");
+        router.refresh();
+        return;
       }
 
       setPassword("");

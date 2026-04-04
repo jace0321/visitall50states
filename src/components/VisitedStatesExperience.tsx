@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Session } from "@supabase/supabase-js";
 import { STATE_NAMES } from "@/lib/states";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
+import { saveUsersMapStates } from "@/lib/users-maps-save";
 
 const STORAGE_KEY = "visitall50states:visited";
 const HERO_STATES = ["Texas", "Arizona", "Colorado", "Tennessee", "Florida", "Montana"];
@@ -137,13 +138,7 @@ export default function VisitedStatesExperience() {
       setSyncStatus("saving");
       setSyncMessage("Saving your map...");
 
-      const { error } = await supabase.from("users_maps").upsert(
-        {
-          user_id: session.user.id,
-          states_visited: visitedStates,
-        },
-        { onConflict: "user_id" }
-      );
+      const { error } = await saveUsersMapStates(supabase, session.user.id, visitedStates);
 
       if (error) {
         setSyncStatus("error");

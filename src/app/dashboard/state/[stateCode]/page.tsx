@@ -1,22 +1,14 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import StateEntryEditor from "./StateEntryEditor";
 
 export default function DashboardStateEditorPage({ params }: { params: { stateCode: string } }) {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-cloud pt-20">
-        <div className="mx-auto max-w-5xl px-6 py-12">
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
-            <h1 className="text-3xl font-black text-asphalt">Edit state entry: {params.stateCode}</h1>
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <div className="rounded-2xl bg-cloud p-4">Status / title / summary</div>
-              <div className="rounded-2xl bg-cloud p-4">Date / rating / trip type</div>
-              <div className="rounded-2xl bg-cloud p-4 md:col-span-2">Story / favorite memory / hidden gem / best stop / best food</div>
-              <div className="rounded-2xl bg-cloud p-4">Checklist: capital, capitol building, parks</div>
-              <div className="rounded-2xl bg-cloud p-4">Photos + captions + visibility</div>
-            </div>
-          </div>
+      <main className="min-h-screen bg-[linear-gradient(180deg,#edf2f7_0%,#f7f4ee_46%,#f8fafc_100%)] pt-20 text-asphalt">
+        <div className="mx-auto max-w-6xl space-y-8 px-6 py-12 lg:py-14">
+          <StateEntryEditor stateCode={params.stateCode} />
         </div>
       </main>
       <Footer />

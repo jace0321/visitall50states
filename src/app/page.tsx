@@ -226,19 +226,19 @@ export default function HomePage() {
             {[
               {
                 quote:
-                  "We printed our map and hung it in the living room. The kids point to it every day and talk about where we&apos;re going next.",
+                  "We printed our map and hung it in the living room. The kids point to it every day and talk about where we're going next.",
                 name: "The Martinez Family",
                 from: "32 states and counting",
               },
               {
                 quote:
-                  "I never thought I&apos;d care about visiting North Dakota. Then I drove through Theodore Roosevelt National Park and it became one of my favorite memories.",
+                  "I never thought I'd care about visiting North Dakota. Then I drove through Theodore Roosevelt National Park and it became one of my favorite memories.",
                 name: "Jake R.",
                 from: "Solo road tripper, 47 states",
               },
               {
                 quote:
-                  "This site turned our road trips from vacations into a mission. Now everyone&apos;s asking what state is next. Best problem ever.",
+                  "This site turned our road trips from vacations into a mission. Now everyone's asking what state is next. Best problem ever.",
                 name: "Sarah & Tom",
                 from: "28 states and still going",
               },

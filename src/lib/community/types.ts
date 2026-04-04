@@ -25,6 +25,10 @@ export interface TravelerProfile {
   completionPercent: number;
   badges: TravelerBadge[];
   featuredState?: string;
+  currentRouteLabel?: string;
+  routeHighlights?: string[];
+  northStar?: string;
+  nextTargets?: string[];
 }
 
 export interface TravelerBadge {
@@ -39,9 +43,29 @@ export interface TravelerMapState {
   name: string;
   status: EntryStatus;
   hasStory?: boolean;
+  storySlug?: string;
+  /** Hero image from journal media when present (fills state shape on profile map). */
+  previewImageUrl?: string;
+}
+
+export interface TravelerStateMediaItem {
+  id: string;
+  mediaKind: "photo" | "video";
+  url: string;
+  /** Poster image URL for video (map thumbnail + journal tiles). */
+  posterUrl?: string | null;
+  caption: string;
+  altText: string;
+  sortOrder: number;
+  isFeatured: boolean;
+  width?: number | null;
+  height?: number | null;
+  durationSeconds?: number | null;
 }
 
 export interface TravelerStateEntry {
+  /** Present when loaded from Supabase (used by dashboard; safe to ignore on public pages). */
+  entryId?: string;
   stateCode: string;
   stateName: string;
   status: EntryStatus;
@@ -58,5 +82,30 @@ export interface TravelerStateEntry {
   familyFriendly: boolean;
   worthDetour: boolean;
   photos: { url: string; caption: string }[];
+  /** Structured media from `traveler_state_media` when present. */
+  structuredMedia?: TravelerStateMediaItem[];
   comments: { author: string; body: string }[];
+}
+
+export interface TravelerSpotlightCard {
+  username: string;
+  displayName: string;
+  homeState: string;
+  statesVisited: number;
+  completionPercent: number;
+  routeLabel: string;
+  featuredState: string;
+  featuredStoryTitle: string;
+  deck: string;
+}
+
+export interface CommunityStoryPreview {
+  username: string;
+  displayName: string;
+  stateName: string;
+  stateSlug: string;
+  title: string;
+  summary: string;
+  routeLabel: string;
+  photoUrl: string;
 }
