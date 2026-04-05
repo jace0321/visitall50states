@@ -102,17 +102,17 @@ export default function AuthButton() {
       </button>
 
       {menuOpen && (
-        <div className="absolute right-0 mt-3 w-72 overflow-hidden rounded-3xl border border-white/12 bg-[linear-gradient(180deg,rgba(2,6,23,0.97),rgba(9,14,28,0.95))] p-3 shadow-[0_24px_60px_rgba(0,0,0,0.34)] backdrop-blur-2xl">
-          <div className="rounded-2xl border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),rgba(251,191,36,0.06))] px-4 py-3">
-            <p className="text-[11px] uppercase tracking-[0.18em] text-white/52">Signed in as</p>
-            <p className="mt-2 text-sm font-semibold text-white break-all">{session.user.email}</p>
+        <div className="absolute right-0 z-50 mt-3 w-72 overflow-hidden rounded-3xl border border-white/20 bg-[linear-gradient(180deg,#020617,#0f172a)] p-3 shadow-[0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
+          <div className="rounded-2xl border border-white/15 bg-slate-900/90 px-4 py-3">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-300">Signed in as</p>
+            <p className="mt-2 text-sm font-semibold text-zinc-50 break-all">{session.user.email}</p>
           </div>
           <div className="mt-3 grid gap-2">
             {travelerUsername ? (
               <Link
                 href={`/travelers/${travelerUsername}`}
                 onClick={() => setMenuOpen(false)}
-                className="rounded-2xl border border-amber-300/35 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-100 transition hover:border-amber-200/50 hover:bg-amber-400/15"
+                className="rounded-2xl border border-amber-400/40 bg-amber-500/15 px-4 py-3 text-sm font-semibold text-amber-50 transition hover:border-amber-300/60 hover:bg-amber-500/25"
               >
                 My traveler map
               </Link>
@@ -120,21 +120,21 @@ export default function AuthButton() {
             <Link
               href="/dashboard"
               onClick={() => setMenuOpen(false)}
-              className="rounded-2xl border border-white/10 px-4 py-3 text-sm text-white/84 transition hover:border-white/20 hover:bg-white/6 hover:text-white"
+              className="rounded-2xl border border-white/15 bg-slate-800/80 px-4 py-3 text-sm font-semibold text-zinc-100 transition hover:border-white/25 hover:bg-slate-700/90"
             >
               Dashboard
             </Link>
             <Link
-              href="/login"
+              href="/dashboard/settings"
               onClick={() => setMenuOpen(false)}
-              className="rounded-2xl border border-white/10 px-4 py-3 text-sm text-white/84 transition hover:border-white/20 hover:bg-white/6 hover:text-white"
+              className="rounded-2xl border border-white/15 bg-slate-800/80 px-4 py-3 text-sm font-semibold text-zinc-100 transition hover:border-white/25 hover:bg-slate-700/90"
             >
               Account settings
             </Link>
             <button
               type="button"
               onClick={handleSignOut}
-              className="rounded-2xl border border-white/10 px-4 py-3 text-left text-sm text-white/84 transition hover:border-white/20 hover:bg-white/6 hover:text-white"
+              className="rounded-2xl border border-white/15 bg-slate-800/80 px-4 py-3 text-left text-sm font-semibold text-zinc-100 transition hover:border-white/25 hover:bg-slate-700/90"
             >
               Sign out
             </button>

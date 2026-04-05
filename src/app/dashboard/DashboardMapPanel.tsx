@@ -79,7 +79,13 @@ export default function DashboardMapPanel() {
               ← Back to dashboard
             </Link>
           </div>
-          <TravelerMap username={profile.username} states={mapStates} featuredState={profile.featuredState} mapMakerHref="/map-maker" />
+          <TravelerMap
+            username={profile.username}
+            states={mapStates}
+            featuredState={profile.featuredState}
+            mapMakerHref="/map-maker"
+            mapContext="dashboard"
+          />
         </div>
       </main>
       <Footer />
