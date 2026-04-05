@@ -1,153 +1,218 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getCommunityStoryPreviews, getTravelerSpotlightCards } from "@/lib/community/data";
 
 export const metadata: Metadata = {
-  title: "Traveler Community",
-  description: "Browse public 50-state traveler pages, map-first profiles, and state-by-state road stories.",
+  title: "Travelers",
+  description:
+    "Meet families and road trippers chasing all 50 states. Open a traveler page for their live U.S. map, then tap any state for photos, videos, and stories from the road.",
 };
 
 export default async function TravelersPage() {
   const travelerSpotlightCards = await getTravelerSpotlightCards();
   const communityStoryPreviews = await getCommunityStoryPreviews();
+  const travelerCount = travelerSpotlightCards.length;
 
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-[linear-gradient(180deg,#edf2f7_0%,#f8f4eb_45%,#f8fafc_100%)] pt-20 text-asphalt">
-        <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
-          <section className="relative overflow-hidden rounded-[2.8rem] border border-white/60 bg-[#07111f] px-6 py-8 text-white shadow-[0_34px_120px_rgba(15,23,42,0.28)] sm:px-8 lg:px-10 lg:py-10">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.16),transparent_26%),radial-gradient(circle_at_78%_16%,rgba(125,211,252,0.16),transparent_22%),linear-gradient(135deg,rgba(255,255,255,0.05),transparent_42%)]" />
-            <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(19rem,0.85fr)] lg:items-end">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-white/48">Community atlas</p>
-                <h1 className="mt-5 max-w-4xl text-4xl font-black leading-[0.94] tracking-[-0.05em] sm:text-5xl lg:text-[4.25rem]">
-                  Public traveler pages built around the map, not buried under widgets.
-                </h1>
-                <p className="mt-5 max-w-3xl text-base leading-8 text-white/72 sm:text-lg">
-                  This MVP turns the community layer into a roadbook: each traveler has a real SVG map, a profile that feels editorial instead of dashboard-y, and state pages that read like lived trips first and utility second.
-                </p>
-              </div>
-
-              <div className="grid gap-3 rounded-[2rem] border border-white/10 bg-white/[0.05] p-5 backdrop-blur-sm sm:grid-cols-3 lg:grid-cols-1">
-                <QuickStat label="Public profiles" value={String(travelerSpotlightCards.length).padStart(2, "0")} />
-                <QuickStat label="Fresh stories" value={String(communityStoryPreviews.length).padStart(2, "0")} />
-                <QuickStat label="Centerpiece" value="SVG map" />
-              </div>
+      <main className="min-h-screen bg-[#faf7f0] pt-20 text-asphalt">
+        <div className="border-b border-[#e8e0d4] bg-[linear-gradient(180deg,#fffefb_0%,#f5efe4_100%)]">
+          <div className="mx-auto max-w-5xl px-6 py-14 text-center lg:px-8 lg:py-20">
+            <p className="font-heading text-sm font-semibold uppercase tracking-[0.28em] text-amber-800/80">
+              Chasing all 50 states
+            </p>
+            <h1 className="mt-5 font-heading text-4xl font-extrabold leading-[1.08] tracking-[-0.03em] text-[#1a1f2e] sm:text-5xl lg:text-[3.15rem]">
+              Real maps. Real miles. Real memories.
+            </h1>
+            <p className="mx-auto mt-3 max-w-2xl text-[0.7rem] font-semibold uppercase tracking-[0.42em] text-asphalt/45">
+              One road at a time · photos worth keeping
+            </p>
+            <p className="mx-auto mt-8 max-w-2xl text-lg leading-8 text-asphalt/72">
+              Every traveler here has a public page built around a U.S. map — the same idea as{" "}
+              <a
+                href="https://travelwithearps.com"
+                className="font-semibold text-amber-900 underline decoration-amber-300/80 underline-offset-4 hover:text-amber-950"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Travel With The Earps
+              </a>
+              : relive each state through <strong className="font-semibold text-asphalt/88">your pictures and videos</strong>, not
+              just a checklist.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              <Link
+                href="/map-maker"
+                className="inline-flex rounded-full bg-[#c2410c] px-8 py-3.5 text-sm font-bold text-white shadow-[0_12px_36px_rgba(194,65,12,0.28)] transition hover:bg-[#9a3412]"
+              >
+                Make your photo map
+              </Link>
+              <Link
+                href="/states"
+                className="inline-flex rounded-full border border-asphalt/15 bg-white/80 px-7 py-3.5 text-sm font-semibold text-asphalt/85 shadow-sm transition hover:border-asphalt/25"
+              >
+                Browse state guides
+              </Link>
             </div>
-          </section>
+          </div>
+        </div>
 
-          <section className="mt-10">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-asphalt/42">Traveler spotlights</p>
-                <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] sm:text-[2.4rem]">Real routes, different rhythms.</h2>
-              </div>
-              <p className="max-w-2xl text-sm leading-7 text-asphalt/60 lg:text-right">
-                Everyone gets the same map-first structure, but the page tone changes with the traveler — family loops, mountain runs, trade-road miles, and state stories worth opening.
+        <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
+          <section>
+            <div className="flex flex-col gap-4 text-center lg:text-left">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-asphalt/42">Travelers</p>
+              <h2 className="font-heading text-3xl font-extrabold tracking-[-0.03em] text-[#1a1f2e] sm:text-4xl">
+                Who&apos;s on the map right now
+              </h2>
+              <p className="mx-auto max-w-2xl text-base leading-7 text-asphalt/65 lg:mx-0">
+                Click a card to open their live map. States with a story glow on the map — click through to see photos, clips, and
+                journal entries from that stop.
               </p>
             </div>
 
-            <div className="mt-8 grid gap-5 xl:grid-cols-3">
-              {travelerSpotlightCards.map((traveler, index) => (
+            {travelerCount === 0 ? (
+              <div className="mt-10 rounded-[2rem] border border-dashed border-amber-200/90 bg-white/80 px-8 py-14 text-center shadow-sm">
+                <p className="font-heading text-2xl font-bold text-asphalt">No public traveler pages yet</p>
+                <p className="mx-auto mt-4 max-w-lg text-asphalt/65">
+                  When someone turns their profile public, they&apos;ll show up here with a cover photo from their road. Until then,
+                  you can still use the map maker and state guides.
+                </p>
                 <Link
-                  key={traveler.username}
-                  href={`/travelers/${traveler.username}`}
-                  className="group overflow-hidden rounded-[2.2rem] border border-white/60 bg-white/75 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)] backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_90px_rgba(15,23,42,0.13)]"
+                  href="/map-maker"
+                  className="mt-8 inline-flex rounded-full bg-amber-brand px-7 py-3 text-sm font-bold text-night hover:bg-amber-deep"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-asphalt/42">
-                        Traveler {String(index + 1).padStart(2, "0")}
-                      </p>
-                      <h3 className="mt-3 text-3xl font-black tracking-[-0.04em] text-asphalt">{traveler.displayName}</h3>
-                    </div>
-                    <span className="rounded-full border border-amber-300/40 bg-amber-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-900">
-                      {traveler.completionPercent}%
-                    </span>
-                  </div>
-
-                  <p className="mt-5 text-sm uppercase tracking-[0.22em] text-asphalt/45">{traveler.routeLabel}</p>
-                  <p className="mt-4 text-base leading-8 text-asphalt/70">{traveler.deck}</p>
-
-                  <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                    <CardFact label="Home base" value={traveler.homeState} />
-                    <CardFact label="States logged" value={`${traveler.statesVisited}/50`} />
-                    <CardFact label="Featured stop" value={traveler.featuredState} />
-                    <CardFact label="Story lead" value={traveler.featuredStoryTitle} />
-                  </div>
-
-                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-asphalt/72 transition group-hover:translate-x-1 group-hover:text-asphalt">
-                    Open traveler atlas <span aria-hidden="true">→</span>
-                  </span>
+                  Start your map
                 </Link>
-              ))}
-            </div>
-          </section>
-
-          <section className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(22rem,0.85fr)]">
-            <div className="rounded-[2.4rem] border border-white/60 bg-white/80 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-asphalt/42">Fresh from the road</p>
-                  <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] text-asphalt sm:text-[2.3rem]">Recent state stories.</h2>
-                </div>
-                <p className="max-w-xl text-sm leading-7 text-asphalt/58">A shared community rail that makes the profile network feel alive without breaking the map-first product story.</p>
               </div>
-
-              <div className="mt-7 grid gap-4 md:grid-cols-2">
-                {communityStoryPreviews.map((story) => (
+            ) : (
+              <div className="mt-10 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+                {travelerSpotlightCards.map((traveler) => (
                   <Link
-                    key={`${story.username}-${story.stateSlug}`}
-                    href={`/travelers/${story.username}/${story.stateSlug}`}
-                    className="group overflow-hidden rounded-[1.9rem] border border-slate-200 bg-[#fbfaf7] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_rgba(15,23,42,0.10)]"
+                    key={traveler.username}
+                    href={`/travelers/${traveler.username}`}
+                    className="group flex flex-col overflow-hidden rounded-[2rem] border border-[#e8e0d4] bg-white shadow-[0_20px_50px_rgba(26,31,46,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_70px_rgba(26,31,46,0.12)]"
                   >
-                    <div
-                      className="relative min-h-[14rem] bg-cover bg-center"
-                      style={{ backgroundImage: `linear-gradient(180deg, rgba(15,23,42,0.08), rgba(15,23,42,0.62)), url(${story.photoUrl})` }}
-                    >
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.18),transparent_26%)] opacity-80" />
-                      <div className="flex min-h-[14rem] items-end justify-between gap-4 p-5">
-                        <span className="rounded-full border border-white/15 bg-white/92 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-asphalt">
-                          {story.stateName}
-                        </span>
-                        <span className="rounded-full border border-white/12 bg-black/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/74 backdrop-blur-sm">
-                          {story.routeLabel}
+                    <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#e8e4dc]">
+                      {traveler.coverImageUrl ? (
+                        <Image
+                          src={traveler.coverImageUrl}
+                          alt={`${traveler.displayName} — trip photo`}
+                          fill
+                          className="object-cover transition duration-500 group-hover:scale-[1.04]"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full flex-col items-center justify-center bg-[linear-gradient(145deg,#fef3c7,#fde68a,#bfdbfe)] p-6 text-center">
+                          <span className="font-heading text-4xl font-extrabold text-asphalt/25">{traveler.statesVisited}</span>
+                          <span className="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-asphalt/40">states logged</span>
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                      <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/70">@{traveler.username}</p>
+                          <p className="font-heading text-2xl font-bold text-white drop-shadow-sm">{traveler.displayName}</p>
+                        </div>
+                        <span className="shrink-0 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-amber-950 shadow">
+                          {traveler.completionPercent}%
                         </span>
                       </div>
                     </div>
-                    <div className="p-5">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-asphalt/42">@{story.username} · {story.displayName}</p>
-                      <h3 className="mt-3 text-2xl font-black leading-tight tracking-[-0.03em] text-asphalt">{story.title}</h3>
-                      <p className="mt-4 text-sm leading-7 text-asphalt/65">{story.summary}</p>
+
+                    <div className="flex flex-1 flex-col p-6">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-900/80">{traveler.routeLabel}</p>
+                      <p className="mt-3 line-clamp-3 text-sm leading-7 text-asphalt/70">{traveler.deck}</p>
+                      <div className="mt-5 grid grid-cols-2 gap-2 text-left text-xs">
+                        <CardStat label="Home base" value={traveler.homeState} />
+                        <CardStat label="On the map" value={`${traveler.statesVisited}/50`} />
+                        <CardStat label="Featured state" value={traveler.featuredState} />
+                        <CardStat label="Latest story" value={traveler.featuredStoryTitle} />
+                      </div>
+                      <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-amber-900/90 transition group-hover:gap-3">
+                        Open their map <span aria-hidden="true">→</span>
+                      </span>
                     </div>
                   </Link>
                 ))}
               </div>
+            )}
+          </section>
+
+          {communityStoryPreviews.length > 0 ? (
+            <section className="mt-16 lg:mt-20">
+              <div className="flex flex-col gap-4 text-center lg:text-left">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-asphalt/42">From the road</p>
+                <h2 className="font-heading text-3xl font-extrabold tracking-[-0.03em] text-[#1a1f2e] sm:text-4xl">
+                  Recent state stops
+                </h2>
+                <p className="mx-auto max-w-2xl text-base leading-7 text-asphalt/65 lg:mx-0">
+                  Photo-led journals you can open in one click — same flow you&apos;ll use on your own page once your states are filled
+                  in.
+                </p>
+              </div>
+
+              <div className="mt-10 grid gap-6 md:grid-cols-2">
+                {communityStoryPreviews.map((story) => (
+                  <Link
+                    key={`${story.username}-${story.stateSlug}`}
+                    href={`/travelers/${story.username}/${story.stateSlug}`}
+                    className="group overflow-hidden rounded-[2rem] border border-[#e8e0d4] bg-white shadow-[0_16px_44px_rgba(26,31,46,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(26,31,46,0.1)]"
+                  >
+                    <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#e8e4dc]">
+                      <Image
+                        src={story.photoUrl}
+                        alt={`${story.stateName} — ${story.displayName}`}
+                        fill
+                        className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-end justify-between gap-2">
+                        <span className="rounded-full bg-white/95 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-asphalt">
+                          {story.stateName}
+                        </span>
+                        <span className="rounded-full bg-black/35 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+                          {story.routeLabel}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-asphalt/45">
+                        @{story.username} · {story.displayName}
+                      </p>
+                      <h3 className="mt-3 font-heading text-2xl font-bold leading-snug tracking-[-0.02em] text-[#1a1f2e]">
+                        {story.title}
+                      </h3>
+                      <p className="mt-3 line-clamp-3 text-sm leading-7 text-asphalt/65">{story.summary}</p>
+                      <span className="mt-5 inline-flex text-sm font-bold text-amber-900/90 transition group-hover:translate-x-1">
+                        See photos &amp; story →
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          <section className="mt-16 rounded-[2.4rem] border border-[#e8e0d4] bg-[#f4efe5] p-8 shadow-inner lg:mt-20 lg:p-10">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-asphalt/45">How it works</p>
+              <h2 className="mt-4 font-heading text-2xl font-extrabold text-[#1a1f2e] sm:text-3xl">Map on the page. Memories inside each state.</h2>
+              <p className="mt-4 text-asphalt/68">
+                Visited states fill in on the map; when you add a journal and upload photos or videos, that state opens into a full
+                page for anyone you share your link with — just like the early Earps site, but with the richer tools we&apos;ve built
+                here.
+              </p>
             </div>
-
-            <aside className="rounded-[2.4rem] border border-[#1e293b]/10 bg-[#f6f0e3] p-6 shadow-[0_24px_70px_rgba(15,23,42,0.06)]">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-asphalt/42">Map language</p>
-              <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] text-asphalt">How the MVP reads.</h2>
-              <div className="mt-6 space-y-4">
-                <MapLegendRow color="#34d399" label="Visited" note="State logged with memories or notes." />
-                <MapLegendRow color="#38bdf8" label="Lived" note="Places that count as longer chapters, not quick passes." />
-                <MapLegendRow color="#fbbf24" label="Wishlist" note="Planned targets still pulling the route forward." />
-                <MapLegendRow color="rgba(15,23,42,0.18)" label="Open space" note="Unmarked territory still waiting for a real trip." />
-              </div>
-
-              <div className="mt-8 rounded-[1.7rem] border border-asphalt/10 bg-white/70 p-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-asphalt/42">Tonight&apos;s usable slice</p>
-                <ul className="mt-4 space-y-3 text-sm leading-7 text-asphalt/68">
-                  <li>• Public traveler directory with profile entry points</li>
-                  <li>• Map-first traveler pages with editorial framing</li>
-                  <li>• State journal pages with stories, practical notes, and conversation mock</li>
-                  <li>• Shared visual language that avoids generic dashboard UI</li>
-                </ul>
-              </div>
-            </aside>
+            <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-3">
+              <LegendPill color="#34d399" label="Visited" />
+              <LegendPill color="#38bdf8" label="Lived" />
+              <LegendPill color="#fbbf24" label="Wishlist" />
+            </div>
           </section>
         </div>
       </main>
@@ -156,32 +221,20 @@ export default async function TravelersPage() {
   );
 }
 
-function QuickStat({ label, value }: { label: string; value: string }) {
+function CardStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[1.4rem] border border-white/10 bg-black/15 px-4 py-4">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/42">{label}</p>
-      <p className="mt-2 text-3xl font-black tracking-[-0.05em] text-white">{value}</p>
+    <div className="rounded-xl border border-[#efe8dc] bg-[#faf7f0] px-3 py-2">
+      <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-asphalt/40">{label}</p>
+      <p className="mt-1 line-clamp-2 text-[13px] font-semibold leading-snug text-asphalt">{value}</p>
     </div>
   );
 }
 
-function CardFact({ label, value }: { label: string; value: string }) {
+function LegendPill({ color, label }: { color: string; label: string }) {
   return (
-    <div className="rounded-[1.35rem] border border-slate-200 bg-white/85 px-4 py-4">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-asphalt/40">{label}</p>
-      <p className="mt-2 text-sm font-semibold leading-6 text-asphalt">{value}</p>
-    </div>
-  );
-}
-
-function MapLegendRow({ color, label, note }: { color: string; label: string; note: string }) {
-  return (
-    <div className="rounded-[1.5rem] border border-asphalt/10 bg-white/72 px-4 py-4">
-      <div className="flex items-center gap-3">
-        <span className="inline-block h-3 w-3 rounded-full" style={{ backgroundColor: color }} />
-        <p className="text-sm font-bold uppercase tracking-[0.18em] text-asphalt/70">{label}</p>
-      </div>
-      <p className="mt-3 text-sm leading-7 text-asphalt/64">{note}</p>
+    <div className="flex items-center justify-center gap-2 rounded-2xl border border-white/80 bg-white/90 px-4 py-3 text-sm font-semibold text-asphalt shadow-sm">
+      <span className="h-2.5 w-2.5 rounded-full ring-2 ring-white" style={{ backgroundColor: color }} />
+      {label}
     </div>
   );
 }

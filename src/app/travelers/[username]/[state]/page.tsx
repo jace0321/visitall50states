@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { cache } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TravelerStateStory from "@/components/community/TravelerStateStory";
@@ -7,17 +8,51 @@ import TravelerStateTips from "@/components/community/TravelerStateTips";
 import { entryPhotoCount, resolveEntryHeroImageUrl } from "@/lib/community/entry-gallery";
 import { getTravelerEntries, getTravelerEntry, getTravelerProfile } from "@/lib/community/data";
 
+const getTravelerProfileCached = cache(async (username: string) => getTravelerProfile(username));
+const getTravelerEntryCached = cache(async (username: string, stateSlug: string) => getTravelerEntry(username, stateSlug));
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export const metadata: Metadata = {
-  title: "Traveler State Entry",
-  description: "Personal state-by-state journey page mock for the Visit All 50 States community layer.",
-};
+const SITE = "https://visitall50states.com";
+
+export async function generateMetadata({ params }: { params: { username: string; state: string } }): Promise<Metadata> {
+  const profile = await getTravelerProfileCached(params.username);
+  const entry = await getTravelerEntryCached(params.username, params.state);
+
+  if (!profile || !entry) {
+    return { title: "State journal", robots: { index: false, follow: false } };
+  }
+
+  const title = `${entry.stateName} with ${profile.displayName} | Visit All 50 States`;
+  const description = entry.summary.trim().slice(0, 160);
+  const hero = resolveEntryHeroImageUrl(entry);
+  const ogImage =
+    hero.startsWith("http://") || hero.startsWith("https://")
+      ? hero
+      : `${SITE}${hero.startsWith("/") ? hero : `/${hero}`}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${SITE}/travelers/${params.username}/${params.state}`,
+      images: [{ url: ogImage, alt: `${entry.stateName} — ${profile.displayName}` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
+}
 
 export default async function TravelerStatePage({ params }: { params: { username: string; state: string } }) {
-  const profile = await getTravelerProfile(params.username);
-  const entry = await getTravelerEntry(params.username, params.state);
+  const profile = await getTravelerProfileCached(params.username);
+  const entry = await getTravelerEntryCached(params.username, params.state);
 
   if (!profile || !entry) notFound();
 
@@ -30,7 +65,7 @@ export default async function TravelerStatePage({ params }: { params: { username
       <main className="min-h-screen bg-cloud pt-20">
         <div className="mx-auto max-w-6xl space-y-8 px-6 py-12 lg:space-y-10 lg:py-14">
           <nav className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-asphalt/45">
-            <a href="/travelers" className="hover:text-asphalt">Community</a>
+            <a href="/travelers" className="hover:text-asphalt">Travelers</a>
             <span>/</span>
             <a href={`/travelers/${params.username}`} className="hover:text-asphalt">@{params.username}</a>
             <span>/</span>
@@ -46,7 +81,7 @@ export default async function TravelerStatePage({ params }: { params: { username
             <div className="relative p-8 lg:p-10 xl:p-12">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-amber-brand">
-                  {entry.stateName} journal
+                  {entry.stateName}
                 </span>
                 <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/75">
                   Traveler: @{params.username}
@@ -98,62 +133,38 @@ export default async function TravelerStatePage({ params }: { params: { username
           <TravelerStateStory entry={entry} />
           <TravelerStateTips entry={entry} />
 
-          <section className="rounded-[2.2rem] border border-slate-200 bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.06)] lg:p-8 xl:p-10">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-deep">Comments</p>
-                <h2 className="mt-2 text-3xl font-black tracking-tight text-asphalt">Traveler conversation</h2>
-                <p className="mt-3 max-w-2xl text-asphalt/62">
-                  Comments live after the journal and practical notes, so the community layer feels like the natural follow-up instead of interrupting the story.
-                </p>
-              </div>
-              <div className="rounded-full border border-slate-200 bg-cloud px-4 py-2 text-sm font-semibold text-asphalt/70">
-                {entry.comments.length} replies
-              </div>
-            </div>
-
-            <div className="mt-6 rounded-[1.75rem] border border-slate-200 bg-cloud p-5">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-night text-sm font-bold text-white">
-                  {params.username.slice(0, 2).toUpperCase()}
+          {entry.comments.length > 0 ? (
+            <section className="rounded-[2.2rem] border border-slate-200 bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.06)] lg:p-8 xl:p-10">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-deep">Notes from the road</p>
+                  <h2 className="mt-2 font-heading text-3xl font-extrabold tracking-tight text-asphalt">What people added</h2>
+                  <p className="mt-3 max-w-2xl text-asphalt/62">
+                    Shout-outs and tips saved on this entry — same thread your friends see when you share the link.
+                  </p>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-asphalt">Jump into the thread</p>
-                  <div className="mt-3 rounded-[1.25rem] border border-slate-200 bg-white px-4 py-3 text-sm text-asphalt/40">
-                    Share a tip, ask a question, or add your own memory from {entry.stateName}...
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-asphalt/45">
-                    <span className="rounded-full bg-white px-3 py-1 ring-1 ring-slate-200">Comments mock</span>
-                    <span className="rounded-full bg-white px-3 py-1 ring-1 ring-slate-200">Composer placeholder</span>
-                    <span className="rounded-full bg-white px-3 py-1 ring-1 ring-slate-200">Ready for backend wiring</span>
-                  </div>
+                <div className="rounded-full border border-slate-200 bg-cloud px-4 py-2 text-sm font-semibold text-asphalt/70">
+                  {entry.comments.length} note{entry.comments.length === 1 ? "" : "s"}
                 </div>
               </div>
-            </div>
 
-            <div className="mt-6 space-y-4">
-              {entry.comments.map((comment, index) => (
-                <div key={index} className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
-                  <div className="flex items-start gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-amber-500 text-sm font-black text-white">
-                      {comment.author.slice(0, 2).toUpperCase()}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="mt-6 space-y-4">
+                {entry.comments.map((comment, index) => (
+                  <div key={index} className="rounded-[1.75rem] border border-slate-200 bg-[#fbfaf7] p-5 shadow-sm">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-amber-500 text-sm font-bold text-white">
+                        {comment.author.slice(0, 2).toUpperCase()}
+                      </div>
+                      <div className="min-w-0 flex-1">
                         <p className="font-bold text-asphalt">{comment.author}</p>
-                        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-asphalt/40">Community reply {index + 1}</span>
-                      </div>
-                      <p className="mt-3 leading-relaxed text-asphalt/70">{comment.body}</p>
-                      <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-asphalt/45">
-                        <span className="rounded-full bg-cloud px-3 py-1">Helpful</span>
-                        <span className="rounded-full bg-cloud px-3 py-1">Reply</span>
+                        <p className="mt-3 leading-relaxed text-asphalt/70">{comment.body}</p>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            </section>
+          ) : null}
 
           {otherEntries.length > 0 && (
             <section className="rounded-[2.2rem] border border-slate-200 bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.06)] lg:p-8 xl:p-10">

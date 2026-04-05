@@ -1,6 +1,6 @@
 /**
  * HEIC/HEIF must be converted before createImageBitmap / canvas (unreliable in browsers).
- * All conversion goes through POST /api/heic-convert (Sharp on the server) — no heic2any.
+ * All conversion goes through POST /api/heic-convert (Sharp on the server).
  * ftyp sniff handles extensionless Windows/iCloud picks.
  */
 

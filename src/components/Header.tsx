@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { href: "/map-maker", label: "Map Maker" },
   { href: "/travelers", label: "Travelers" },
   { href: "/states", label: "States" },
+  { href: "/search", label: "Explore" },
   { href: "/about", label: "About" },
 ];
 
@@ -25,7 +26,7 @@ export default function Header() {
         >
           <span className="text-2xl drop-shadow-[0_3px_10px_rgba(251,191,36,0.3)] float-slow">🗺️</span>
           <span>
-            <span className="block bg-gradient-to-r from-white via-amber-100 to-sky-100 bg-clip-text text-lg font-black tracking-tight text-transparent transition-all group-hover:from-white group-hover:to-amber-brand">
+            <span className="block bg-gradient-to-r from-white via-amber-100 to-sky-100 bg-clip-text font-heading text-lg font-extrabold tracking-tight text-transparent transition-all group-hover:from-white group-hover:to-amber-brand">
               Visit All 50
             </span>
             <span className="block text-[10px] font-semibold uppercase tracking-[0.24em] text-white/52">

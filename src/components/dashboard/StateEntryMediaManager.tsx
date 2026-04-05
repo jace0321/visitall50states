@@ -352,8 +352,8 @@ export default function StateEntryMediaManager({
 
       <p className="text-sm leading-relaxed text-asphalt/62">
         <span className="font-semibold text-asphalt/85">Accepted — </span>
-        Photos: JPEG, PNG, WebP, GIF, or iPhone HEIC/HEIF (HEIC is converted on our server before saving). Videos: MP4, WebM, or
-        MOV. See limits below.
+        Photos: JPEG, PNG, WebP, GIF, or iPhone HEIC/HEIF (we try to convert HEIC on our server before saving). If HEIC won&apos;t
+        upload, export as JPEG from Photos first. Videos: MP4, WebM, or MOV. See limits below.
       </p>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">

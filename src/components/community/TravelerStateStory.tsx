@@ -1,5 +1,5 @@
 import JournalPhotoLightbox from "@/components/community/JournalPhotoLightbox";
-import { resolveJournalGallery } from "@/lib/community/entry-gallery";
+import { entryVideoCount, resolveJournalGallery } from "@/lib/community/entry-gallery";
 import type { TravelerStateEntry } from "@/lib/community/types";
 
 function splitStory(story: string) {
@@ -19,18 +19,46 @@ function splitStory(story: string) {
 export default function TravelerStateStory({ entry }: { entry: TravelerStateEntry }) {
   const storyParagraphs = splitStory(entry.story);
   const gallery = resolveJournalGallery(entry);
+  const videoCount = entryVideoCount(entry);
+  const photoCount = gallery.filter((g) => g.mediaKind === "photo").length;
 
   return (
     <section className="rounded-[2.2rem] border border-slate-200 bg-white p-6 shadow-[0_14px_36px_rgba(15,23,42,0.06)] lg:p-8 xl:p-10">
+      {gallery.length > 0 ? (
+        <div className="mb-10 space-y-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-deep">Photos &amp; videos</p>
+              <h2 className="mt-2 font-heading text-2xl font-extrabold tracking-tight text-asphalt sm:text-3xl">
+                {entry.stateName} through your lens
+              </h2>
+            </div>
+            <p className="text-sm text-asphalt/55">
+              {photoCount} photo{photoCount === 1 ? "" : "s"}
+              {videoCount > 0 ? ` · ${videoCount} video${videoCount === 1 ? "" : "s"}` : ""} · tap to enlarge
+            </p>
+          </div>
+
+          <JournalPhotoLightbox items={gallery} stateName={entry.stateName} />
+        </div>
+      ) : null}
+
       <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr] xl:items-start">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-deep">Journal entry</p>
-          <h2 className="mt-2 text-3xl font-black tracking-tight text-asphalt sm:text-4xl">{entry.title}</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-deep">Journal</p>
+          <h3 className="mt-2 font-heading text-2xl font-extrabold tracking-tight text-asphalt sm:text-3xl">The full story</h3>
           <p className="mt-4 max-w-3xl text-lg leading-relaxed text-asphalt/68">{entry.summary}</p>
 
           <div className="mt-8 max-w-3xl space-y-6 text-lg leading-9 text-asphalt/76">
             {storyParagraphs.map((paragraph, index) => (
-              <p key={`${paragraph}-${index}`} className={index === 0 ? "first-letter:mr-2 first-letter:float-left first-letter:text-6xl first-letter:font-black first-letter:leading-[0.9] first-letter:text-asphalt" : ""}>
+              <p
+                key={`${paragraph}-${index}`}
+                className={
+                  index === 0
+                    ? "first-letter:mr-2 first-letter:float-left first-letter:font-heading first-letter:text-6xl first-letter:font-extrabold first-letter:leading-[0.9] first-letter:text-asphalt"
+                    : ""
+                }
+              >
                 {paragraph}
               </p>
             ))}
@@ -64,22 +92,6 @@ export default function TravelerStateStory({ entry }: { entry: TravelerStateEntr
           </div>
         </div>
       </div>
-
-      {gallery.length > 0 ? (
-        <div className="mt-10 space-y-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-deep">Photo &amp; video journal</p>
-              <h3 className="mt-2 text-2xl font-black tracking-tight text-asphalt sm:text-3xl">The frames that carried the story</h3>
-            </div>
-            <p className="text-sm text-asphalt/52">
-              {gallery.length} item{gallery.length === 1 ? "" : "s"} · tap any frame to expand
-            </p>
-          </div>
-
-          <JournalPhotoLightbox items={gallery} stateName={entry.stateName} />
-        </div>
-      ) : null}
     </section>
   );
 }

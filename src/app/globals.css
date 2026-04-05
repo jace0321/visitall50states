@@ -31,6 +31,69 @@ body {
   100% { background-position: 200% 50%; }
 }
 
+/* Home hero: slow zoom on background + staggered copy */
+@keyframes homeHeroBgZoom {
+  0% {
+    transform: scale(1.12) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: scale(1.03) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes homeHeroReveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+/* Traveler map: state click feedback before navigation */
+@keyframes travelerStateClickPop {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(251, 191, 36, 0));
+  }
+  45% {
+    transform: scale(1.055);
+    filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.85));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(251, 191, 36, 0));
+  }
+}
+
+.traveler-map-state-pop {
+  animation: travelerStateClickPop 0.34s cubic-bezier(0.34, 1.45, 0.64, 1) forwards;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-bg-motion {
+    animation: none !important;
+    transform: scale(1.03) translate3d(0, 0, 0) !important;
+  }
+
+  .home-hero-reveal {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .traveler-map-state-pop {
+    animation: none !important;
+  }
+}
+
 @layer components {
   .site-shell-glow {
     position: relative;
@@ -96,5 +159,36 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .home-hero-bg-motion {
+    animation: homeHeroBgZoom 22s ease-out forwards;
+  }
+
+  .home-hero-reveal {
+    opacity: 0;
+    animation: homeHeroReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .home-hero-reveal-delay-1 {
+    animation-delay: 0.06s;
+  }
+  .home-hero-reveal-delay-2 {
+    animation-delay: 0.14s;
+  }
+  .home-hero-reveal-delay-3 {
+    animation-delay: 0.22s;
+  }
+  .home-hero-reveal-delay-4 {
+    animation-delay: 0.3s;
+  }
+  .home-hero-reveal-delay-5 {
+    animation-delay: 0.38s;
+  }
+  .home-hero-reveal-delay-6 {
+    animation-delay: 0.46s;
+  }
+  .home-hero-reveal-delay-7 {
+    animation-delay: 0.54s;
   }
 }

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { cache } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BadgeStrip from "@/components/community/BadgeStrip";
@@ -14,16 +15,42 @@ import {
   getTravelerProfile,
 } from "@/lib/community/data";
 
+const getTravelerProfileCached = cache(async (username: string) => getTravelerProfile(username));
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export const metadata: Metadata = {
-  title: "Traveler Profile",
-  description: "Follow a traveler's journey across all 50 states.",
-};
+export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
+  const profile = await getTravelerProfileCached(params.username);
+  if (!profile) {
+    return { title: "Traveler", robots: { index: false, follow: false } };
+  }
+
+  const title = `${profile.displayName} (@${profile.username}) — 50-state map`;
+  const description =
+    `${profile.statesVisited} states on their U.S. map. ` +
+    (profile.northStar ?? profile.journeySummary).slice(0, 155);
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://visitall50states.com/travelers/${params.username}`,
+      siteName: "Visit All 50 States",
+      type: "profile",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
+}
 
 export default async function TravelerProfilePage({ params }: { params: { username: string } }) {
-  const profile = await getTravelerProfile(params.username);
+  const profile = await getTravelerProfileCached(params.username);
   if (!profile) notFound();
 
   const mapStates = await getTravelerMapStates(params.username);
@@ -41,7 +68,7 @@ export default async function TravelerProfilePage({ params }: { params: { userna
 
           <div className="relative mx-auto max-w-[94rem] px-4 pb-4 pt-8 sm:px-6 sm:pb-6 sm:pt-10 lg:px-8 xl:px-10">
             <section className="mx-auto max-w-7xl">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-asphalt/38">Traveler atlas</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-asphalt/38">On the map</p>
               <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-4">
                 <h1 className="text-3xl font-black leading-tight tracking-[-0.04em] text-asphalt sm:text-4xl">
                   {profile.displayName}
@@ -49,7 +76,8 @@ export default async function TravelerProfilePage({ params }: { params: { userna
                 <span className="text-sm font-semibold text-asphalt/50">@{params.username}</span>
               </div>
               <p className="mt-3 max-w-3xl text-sm leading-7 text-asphalt/62">
-                The map comes first — each outline can carry a photo from that state&apos;s journal. Amber rings open the full story.
+                The map shows where they&apos;ve been and what it looked like. Amber rings mean there&apos;s a fuller story behind that
+                state — photos, memories, and the small details worth keeping.
               </p>
             </section>
           </div>
@@ -66,6 +94,20 @@ export default async function TravelerProfilePage({ params }: { params: { userna
             </div>
 
             <div className="mx-auto mt-8 max-w-[90rem] space-y-8 px-4 sm:px-6 lg:mt-10 lg:space-y-10 lg:px-8 xl:px-10">
+              {entries.length === 0 ? (
+                <section className="mx-auto max-w-7xl rounded-[2rem] border border-amber-200/80 bg-amber-50/60 px-6 py-6 shadow-sm sm:px-8 sm:py-7">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-amber-deep/90">Journal</p>
+                  <h2 className="mt-2 text-xl font-black tracking-tight text-asphalt sm:text-2xl">
+                    Trip stories will show up here.
+                  </h2>
+                  <p className="mt-3 max-w-2xl text-sm leading-7 text-asphalt/70">
+                    The map above can still show visits and synced photos. When {profile.displayName} adds written entries from their
+                    dashboard — a title, a favorite memory, a longer story — those pages appear here so this doesn&apos;t feel like a
+                    checklist alone.
+                  </p>
+                </section>
+              ) : null}
+
               <div className="mx-auto max-w-7xl">
                 <TravelerHero profile={profile} />
               </div>
@@ -143,13 +185,14 @@ export default async function TravelerProfilePage({ params }: { params: { userna
                   </a>
 
                   <div className="rounded-[2.4rem] border border-white/60 bg-[#f4efe5] p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] lg:p-8">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-asphalt/42">Editorial framing</p>
-                    <h2 className="mt-4 text-3xl font-black leading-tight tracking-[-0.04em] text-asphalt">A roadbook feel around the map.</h2>
-                    <div className="mt-6 space-y-4">
-                      <SurfaceNote label="Visual language" value="Dark atlas hero, museum-card map, warm paper editorial panels" />
-                      <SurfaceNote label="Composition" value="Map stays central while route context and stories orbit it" />
-                      <SurfaceNote label="Profile voice" value={profile.bio} />
-                    </div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-asphalt/42">About this journey</p>
+                    <h2 className="mt-4 text-3xl font-black leading-tight tracking-[-0.04em] text-asphalt">The story behind the miles.</h2>
+                    <p className="mt-5 text-sm leading-7 text-asphalt/70">{profile.bio || profile.journeySummary}</p>
+                    {profile.northStar ? (
+                      <p className="mt-4 border-l-2 border-amber-400/80 pl-4 text-sm italic leading-7 text-asphalt/65">
+                        {profile.northStar}
+                      </p>
+                    ) : null}
                   </div>
                 </section>
               ) : null}
@@ -162,7 +205,7 @@ export default async function TravelerProfilePage({ params }: { params: { userna
                       <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] text-asphalt sm:text-[2.35rem]">More from the road.</h2>
                     </div>
                     <p className="max-w-xl text-sm leading-7 text-asphalt/60 lg:text-right">
-                      Secondary entries keep the page feeling curated instead of collapsing into identical utility cards after the hero section.
+                      Each state has its own page — open any card to read the full story and see photos from the road.
                     </p>
                   </div>
 
@@ -215,7 +258,9 @@ export default async function TravelerProfilePage({ params }: { params: { userna
                       <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-asphalt/42">Community rail</p>
                       <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] text-asphalt sm:text-[2.2rem]">Elsewhere on the map.</h2>
                     </div>
-                    <p className="max-w-xl text-sm leading-7 text-asphalt/60 lg:text-right">A small shared layer keeps the traveler ecosystem connected without pulling focus off the main map and archive.</p>
+                    <p className="max-w-xl text-sm leading-7 text-asphalt/60 lg:text-right">
+                      Other travelers on the same mission — browse their states for ideas and detours.
+                    </p>
                   </div>
 
                   <div className="mt-7 grid gap-4 lg:grid-cols-3">
@@ -239,14 +284,5 @@ export default async function TravelerProfilePage({ params }: { params: { userna
       </main>
       <Footer />
     </>
-  );
-}
-
-function SurfaceNote({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-[1.4rem] border border-asphalt/10 bg-white/72 px-4 py-4">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-asphalt/40">{label}</p>
-      <p className="mt-2 text-sm leading-7 text-asphalt/68">{value}</p>
-    </div>
   );
 }

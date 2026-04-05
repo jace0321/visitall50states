@@ -97,6 +97,8 @@ export interface TravelerSpotlightCard {
   featuredState: string;
   featuredStoryTitle: string;
   deck: string;
+  /** Hero image for directory cards (first journal lead or legacy photo). */
+  coverImageUrl?: string;
 }
 
 export interface CommunityStoryPreview {

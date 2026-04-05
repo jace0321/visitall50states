@@ -293,6 +293,10 @@ export default function MapMakerEmbed() {
       <div className="mb-3 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white/95 px-4 py-4 shadow-sm sm:flex-row sm:items-start sm:justify-between sm:px-5">
         <div className="min-w-0 space-y-2">
           <p className="text-sm font-semibold text-asphalt">Traveler account sync</p>
+          <p className="text-sm leading-relaxed text-asphalt/62">
+            When your map looks right, save it to your <strong className="text-asphalt/85">live traveler page</strong> — the same
+            collage and visits, one link you can share. Use the two buttons on the right after you&apos;re signed in.
+          </p>
           <ul className="list-inside list-disc text-sm leading-relaxed text-asphalt/72">
             <li>
               <span className="font-medium text-asphalt">Sync visited states</span> only updates which states count as visited (green fill). It does{" "}
@@ -366,11 +370,8 @@ export default function MapMakerEmbed() {
       ) : null}
 
       <p className="mb-2 text-center text-xs leading-relaxed text-asphalt/55 sm:text-left sm:text-sm">
-        <span className="font-semibold text-asphalt/75">Accepted photos:</span> JPEG, PNG, WebP, GIF, and iPhone HEIC/HEIF (HEIC is
-        converted on our server).{" "}
-        <Link href="/heic-to-jpeg" className="font-medium text-amber-800 underline-offset-2 hover:underline">
-          HEIC trouble?
-        </Link>
+        <span className="font-semibold text-asphalt/75">Accepted photos:</span> JPEG, PNG, WebP, GIF, and iPhone HEIC/HEIF (we try to
+        convert HEIC on our server). If an iPhone photo won&apos;t upload, export it as JPEG from the Photos app first, then try again.
       </p>
 
       <div className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg sm:rounded-2xl">

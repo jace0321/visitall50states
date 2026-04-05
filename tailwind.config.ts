@@ -22,7 +22,13 @@ const config: Config = {
         asphalt: "#1e293b",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        sans: ["var(--font-sans)", "system-ui", "-apple-system", "sans-serif"],
+        heading: [
+          "var(--font-heading)",
+          "var(--font-sans)",
+          "system-ui",
+          "sans-serif",
+        ],
       },
       animation: {
         marquee: "marquee 60s linear infinite",

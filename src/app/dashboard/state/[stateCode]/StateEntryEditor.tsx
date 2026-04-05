@@ -285,7 +285,9 @@ export default function StateEntryEditor({ stateCode }: { stateCode: string }) {
       await refreshMediaForEntry(resolvedId);
     }
 
-    setMessage(`Saved ${form.stateName}. Your public journal page updates right away; add photos below whenever you are ready.`);
+    setMessage(
+      `Saved ${form.stateName}. Open your public page to see it live — add photos below anytime so the map shows what it looked like when you got there.`
+    );
     setSaving(false);
   }
 
@@ -301,10 +303,11 @@ export default function StateEntryEditor({ stateCode }: { stateCode: string }) {
   return (
     <>
       <section className="rounded-[2.5rem] border border-white/60 bg-[#07111f] p-8 text-white shadow-[0_30px_90px_rgba(15,23,42,0.30)] lg:p-10">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-white/48">State editor</p>
-        <h1 className="mt-4 text-4xl font-black tracking-[-0.05em] sm:text-5xl">{form.stateName} story workspace</h1>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-white/48">State memory</p>
+        <h1 className="mt-4 text-4xl font-black tracking-[-0.05em] sm:text-5xl">What did {form.stateName} mean to you?</h1>
         <p className="mt-4 max-w-3xl text-base leading-8 text-white/72">
-          This is the first real authoring layer for traveler pages. Fill in one state, save it, and it becomes a live public journal page.
+          This page becomes part of your public traveler map — the story and photos you&apos;d actually show someone, not just a dot
+          on a checklist. Save when you&apos;re ready; you can always come back and add more.
         </p>
       </section>
 
@@ -312,7 +315,10 @@ export default function StateEntryEditor({ stateCode }: { stateCode: string }) {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-asphalt/42">Entry controls</p>
-            <p className="mt-2 text-sm text-asphalt/62">Save one state at a time, then check it live on your public page.</p>
+            <p className="mt-2 text-sm text-asphalt/62">
+              Save one state at a time. Your <strong className="font-semibold text-asphalt/78">favorite memory</strong> line is what
+              often shines on your public page first — don&apos;t skip it.
+            </p>
           </div>
           {travelerUsername ? (
             <Link
@@ -360,14 +366,23 @@ export default function StateEntryEditor({ stateCode }: { stateCode: string }) {
               <textarea value={form.summary} onChange={(e) => update("summary", e.target.value)} required rows={3} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
             </Field>
 
-            <Field label="Story">
+            <div className="rounded-[1.5rem] border border-amber-200/90 bg-amber-50/80 px-5 py-4">
+              <Field label="Favorite memory (the line people see first)">
+                <textarea
+                  value={form.favoriteMemory}
+                  onChange={(e) => update("favoriteMemory", e.target.value)}
+                  placeholder="One sentence — the moment you don’t want to forget."
+                  rows={3}
+                  className="w-full rounded-2xl border border-amber-200/80 bg-white px-4 py-3 text-sm"
+                />
+              </Field>
+            </div>
+
+            <Field label="Full story">
               <textarea value={form.story} onChange={(e) => update("story", e.target.value)} required rows={8} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
             </Field>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Favorite memory">
-                <textarea value={form.favoriteMemory} onChange={(e) => update("favoriteMemory", e.target.value)} rows={3} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
-              </Field>
               <Field label="Best stop">
                 <textarea value={form.bestStop} onChange={(e) => update("bestStop", e.target.value)} rows={3} className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
               </Field>
@@ -384,7 +399,8 @@ export default function StateEntryEditor({ stateCode }: { stateCode: string }) {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-asphalt/45">State media</p>
                 <h2 className="mt-2 text-2xl font-black tracking-[-0.03em] text-asphalt">Photos &amp; video from the road</h2>
                 <p className="mt-3 max-w-2xl text-sm leading-7 text-asphalt/66">
-                  Uploads go to your Supabase bucket and appear on your public state journal. Mark one item as the cover — it leads the page hero and map inset (use a photo cover if you want a still on the map).
+                  Photos and clips show on your public state page and can appear inside that state on your big map. Pick one{" "}
+                  <strong className="text-asphalt/78">featured</strong> image if you want a clear thumbnail everywhere.
                 </p>
               </div>
 

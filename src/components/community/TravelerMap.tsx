@@ -1,6 +1,7 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import US_STATE_PATHS, {
   MAP_VIEWBOX,
   STATE_LABEL_POSITIONS,
@@ -61,6 +62,7 @@ export default function TravelerMap({
   /** When set, shows a secondary CTA to the standalone photo map builder (profile map uses journal photos). */
   mapMakerHref?: string;
 }) {
+  const router = useRouter();
   const statusByCode = new Map(states.map((s) => [s.code, s]));
 
   const visitedCount = states.filter((s) => s.status === "visited" || s.status === "lived").length;
@@ -69,11 +71,20 @@ export default function TravelerMap({
   const notYetCount = Math.max(50 - visitedCount - wishlistCount, 0);
 
   const [hovered, setHovered] = useState<string | null>(null);
+  /** Brief scale + glow on linked states before client navigation (skipped when reduced motion). */
+  const [pulseCode, setPulseCode] = useState<string | null>(null);
+  const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   /** Per-state bounds in map viewBox space so journal photos fill each state, not the whole US. */
   const [stateImageBbox, setStateImageBbox] = useState<
     Record<string, { x: number; y: number; width: number; height: number }>
   >({});
+
+  useEffect(() => {
+    return () => {
+      if (navTimerRef.current) clearTimeout(navTimerRef.current);
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const svg = svgRef.current;
@@ -99,6 +110,32 @@ export default function TravelerMap({
   const hoveredMeta = hovered ? US_STATE_PATHS.find((p) => p.code === hovered) : null;
   const hoveredHasStory = Boolean(hoveredState?.hasStory);
 
+  const handleLinkedStateClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    code: string,
+    href: string
+  ) => {
+    if (e.defaultPrevented) return;
+    if (e.button !== 0) return;
+    if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
+    e.preventDefault();
+    if (navTimerRef.current) clearTimeout(navTimerRef.current);
+
+    setPulseCode(code);
+    navTimerRef.current = setTimeout(() => {
+      navTimerRef.current = null;
+      setPulseCode(null);
+      router.push(href);
+    }, 320);
+  };
+
   return (
     <section
       className="relative overflow-hidden rounded-[2.75rem] border border-white/10 bg-[#050913] text-white shadow-[0_32px_120px_rgba(2,6,23,0.42)]"
@@ -115,7 +152,7 @@ export default function TravelerMap({
                 <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-white/45">
                   The map ledger
                 </p>
-                <h2 className="mt-3 text-3xl font-black tracking-[-0.04em] text-white sm:text-4xl lg:text-[2.8rem]">
+                <h2 className="mt-3 font-heading text-3xl font-extrabold tracking-[-0.04em] text-white sm:text-4xl lg:text-[2.8rem]">
                   The country, marked by memory.
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-7 text-white/52">
@@ -228,13 +265,22 @@ export default function TravelerMap({
                         onMouseLeave={() => setHovered(null)}
                         onFocus={() => setHovered(sp.code)}
                         onBlur={() => setHovered(null)}
-                        className={hasStory ? "cursor-pointer outline-none" : "outline-none"}
+                        className={[
+                          hasStory ? "cursor-pointer outline-none" : "outline-none",
+                          pulseCode === sp.code ? "traveler-map-state-pop" : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
                         data-state-name={sp.name}
                         data-state-status={statusLabel(status)}
                         data-has-story={hasStory ? "true" : "false"}
                       >
                         {href ? (
-                          <a href={href} aria-label={`${sp.name} — ${statusLabel(status)}. ${storyAria}`}>
+                          <a
+                            href={href}
+                            aria-label={`${sp.name} — ${statusLabel(status)}. ${storyAria}`}
+                            onClick={(e) => handleLinkedStateClick(e, sp.code, href)}
+                          >
                             {previewUrl && bb ? (
                               <image
                                 clipPath={`url(#state-photo-clip-${sp.code})`}
@@ -243,7 +289,7 @@ export default function TravelerMap({
                                 y={bb.y}
                                 width={bb.width}
                                 height={bb.height}
-                                preserveAspectRatio="xMidYMid slice"
+                                preserveAspectRatio="xMidYMid meet"
                               />
                             ) : null}
                             <path
@@ -276,7 +322,7 @@ export default function TravelerMap({
                                 y={bb.y}
                                 width={bb.width}
                                 height={bb.height}
-                                preserveAspectRatio="xMidYMid slice"
+                                preserveAspectRatio="xMidYMid meet"
                               />
                             ) : null}
                             <path
@@ -355,7 +401,12 @@ export default function TravelerMap({
                         onMouseLeave={() => setHovered(null)}
                         onFocus={() => setHovered(code)}
                         onBlur={() => setHovered(null)}
-                        className={href ? "cursor-pointer outline-none" : "outline-none"}
+                        className={[
+                          href ? "cursor-pointer outline-none" : "outline-none",
+                          pulseCode === code ? "traveler-map-state-pop" : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
                         data-state-name={sp.name}
                         data-state-status={statusLabel(status)}
                       >
@@ -369,7 +420,11 @@ export default function TravelerMap({
                           className="pointer-events-none"
                         />
                         {href ? (
-                          <a href={href} aria-label={`${sp.name} — ${statusLabel(status)}. Open linked story`}>
+                          <a
+                            href={href}
+                            aria-label={`${sp.name} — ${statusLabel(status)}. Open linked story`}
+                            onClick={(e) => handleLinkedStateClick(e, code, href)}
+                          >
                             <circle
                               cx={lx - 17}
                               cy={ly}
@@ -442,7 +497,7 @@ export default function TravelerMap({
               </p>
               <div className="mt-6 space-y-3 text-sm text-white/64">
                 <DetailRow label="Map mode" value="Profile overview" />
-                <DetailRow label="Interaction" value="Hover states + linked stories" />
+                <DetailRow label="Interaction" value="Hover + click (states with stories)" />
                 <DetailRow label="Story marker" value="Amber outline + pin marker" />
                 <DetailRow label="Stories live" value={`${storyCount} states`} />
               </div>
@@ -461,7 +516,9 @@ export default function TravelerMap({
                 <div className="mt-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h3 className="text-3xl font-black tracking-[-0.04em] text-white">{hoveredMeta.name}</h3>
+                      <h3 className="font-heading text-3xl font-extrabold tracking-[-0.04em] text-white">
+                        {hoveredMeta.name}
+                      </h3>
                       <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/48">
                         {hoveredMeta.code} — {statusLabel(hoveredState?.status ?? "not_visited")}
                       </p>

@@ -32,6 +32,7 @@ create table if not exists public.traveler_state_media (
   file_bytes bigint,
   sort_order integer not null default 0,
   is_featured boolean not null default false,
+  media_transform jsonb,
   created_at timestamptz default now(),
   updated_at timestamptz default now(),
   check (coalesce(public_url, storage_path) is not null)

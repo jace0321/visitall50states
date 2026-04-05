@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 import { STATE_NAMES } from "@/lib/states";
 import US_STATE_PATHS from "@/lib/us-map-paths";
-import { demoEntries, demoMapStates } from "@/lib/community/mock-data";
 import type { TravelerMapState } from "@/lib/community/types";
 
 type StateListItem = {
@@ -37,23 +36,15 @@ type EntryRow = {
 };
 
 const STATE_CODE_BY_NAME = new Map(US_STATE_PATHS.map((state) => [state.name, state.code]));
-const ENTRY_BY_CODE = new Map(demoEntries.map((entry) => [entry.stateCode, entry]));
-const MAP_BY_CODE = new Map(demoMapStates.map((state) => [state.code, state]));
 
-function buildFallbackItems(): StateListItem[] {
+function buildEmptyItems(): StateListItem[] {
   return STATE_NAMES.map((name) => {
     const code = STATE_CODE_BY_NAME.get(name) ?? name.slice(0, 2).toUpperCase();
-    const entry = ENTRY_BY_CODE.get(code);
-    const mapState = MAP_BY_CODE.get(code);
-
     return {
       code,
       name,
-      hasEntry: Boolean(entry),
-      status: entry?.status ?? mapState?.status ?? "not_visited",
-      title: entry?.title,
-      summary: entry?.summary,
-      updatedLabel: entry?.dateVisited ?? undefined,
+      hasEntry: false,
+      status: "not_visited",
     } satisfies StateListItem;
   });
 }
@@ -106,13 +97,13 @@ function statusMeta(status: TravelerMapState["status"], hasEntry: boolean) {
 }
 
 export default function DashboardStateIndex() {
-  const fallbackItems = useMemo(() => buildFallbackItems(), []);
+  const emptyItems = useMemo(() => buildEmptyItems(), []);
   const [state, setState] = useState<SummaryState>({
     loading: true,
     modeLabel: "Checking your saved atlas…",
-    items: fallbackItems,
-    entriesCount: fallbackItems.filter((item) => item.hasEntry).length,
-    visitedCount: fallbackItems.filter((item) => item.status === "visited" || item.status === "lived").length,
+    items: emptyItems,
+    entriesCount: 0,
+    visitedCount: 0,
   });
 
   useEffect(() => {
@@ -126,10 +117,10 @@ export default function DashboardStateIndex() {
         if (!cancelled) {
           setState({
             loading: false,
-            modeLabel: "Demo atlas preview",
-            items: fallbackItems,
-            entriesCount: fallbackItems.filter((item) => item.hasEntry).length,
-            visitedCount: fallbackItems.filter((item) => item.status === "visited" || item.status === "lived").length,
+            modeLabel: "Configure Supabase to load entries",
+            items: emptyItems,
+            entriesCount: 0,
+            visitedCount: 0,
           });
         }
         return;
@@ -145,10 +136,10 @@ export default function DashboardStateIndex() {
           if (!cancelled) {
             setState({
               loading: false,
-              modeLabel: "Sign in to load your live state entries",
-              items: fallbackItems,
-              entriesCount: fallbackItems.filter((item) => item.hasEntry).length,
-              visitedCount: fallbackItems.filter((item) => item.status === "visited" || item.status === "lived").length,
+              modeLabel: "Sign in to load your state entries",
+              items: emptyItems,
+              entriesCount: 0,
+              visitedCount: 0,
             });
           }
           return;
@@ -163,10 +154,10 @@ export default function DashboardStateIndex() {
           if (!cancelled) {
             setState({
               loading: false,
-              modeLabel: "Create your traveler profile to unlock live entries",
-              items: fallbackItems,
-              entriesCount: fallbackItems.filter((item) => item.hasEntry).length,
-              visitedCount: fallbackItems.filter((item) => item.status === "visited" || item.status === "lived").length,
+              modeLabel: "Create your traveler profile to unlock entries",
+              items: emptyItems,
+              entriesCount: 0,
+              visitedCount: 0,
             });
           }
           return;
@@ -216,10 +207,10 @@ export default function DashboardStateIndex() {
         if (!cancelled) {
           setState({
             loading: false,
-            modeLabel: "Demo atlas preview",
-            items: fallbackItems,
-            entriesCount: fallbackItems.filter((item) => item.hasEntry).length,
-            visitedCount: fallbackItems.filter((item) => item.status === "visited" || item.status === "lived").length,
+            modeLabel: "Could not load entries",
+            items: emptyItems,
+            entriesCount: 0,
+            visitedCount: 0,
           });
         }
       }
@@ -230,7 +221,7 @@ export default function DashboardStateIndex() {
     return () => {
       cancelled = true;
     };
-  }, [fallbackItems]);
+  }, [emptyItems]);
 
   const readyItems = state.items.filter((item) => item.hasEntry);
   const suggestedItems = state.items.filter((item) => !item.hasEntry && (item.status === "visited" || item.status === "lived")).slice(0, 6);
@@ -249,8 +240,8 @@ export default function DashboardStateIndex() {
 
       <div className="mt-6 grid gap-3 md:grid-cols-3">
         <SummaryTile label="States with entries" value={`${state.entriesCount}`} sublabel="ready to edit" />
-        <SummaryTile label="Visited on the map" value={`${state.visitedCount}`} sublabel="live or demo status" />
-        <SummaryTile label="Data source" value={state.loading ? "Loading…" : state.modeLabel} sublabel="falls back gracefully" />
+        <SummaryTile label="Visited on the map" value={`${state.visitedCount}`} sublabel="from your saved map" />
+        <SummaryTile label="Data source" value={state.loading ? "Loading…" : state.modeLabel} sublabel="your account" />
       </div>
 
       {suggestedItems.length > 0 ? (
