@@ -66,22 +66,6 @@ export default async function TravelerProfilePage({ params }: { params: { userna
         <div className="relative overflow-hidden">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[38rem] bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.12),transparent_28%),radial-gradient(circle_at_78%_10%,rgba(14,165,233,0.10),transparent_22%)]" />
 
-          <div className="relative mx-auto max-w-[94rem] px-4 pb-4 pt-8 sm:px-6 sm:pb-6 sm:pt-10 lg:px-8 xl:px-10">
-            <section className="mx-auto max-w-7xl">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-asphalt/38">On the map</p>
-              <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-4">
-                <h1 className="text-3xl font-black leading-tight tracking-[-0.04em] text-asphalt sm:text-4xl">
-                  {profile.displayName}
-                </h1>
-                <span className="text-sm font-semibold text-asphalt/50">@{params.username}</span>
-              </div>
-              <p className="mt-3 max-w-3xl text-sm leading-7 text-asphalt/62">
-                The map shows where they&apos;ve been and what it looked like. Amber rings mean there&apos;s a fuller story behind that
-                state — photos, memories, and the small details worth keeping.
-              </p>
-            </section>
-          </div>
-
             <div className="relative left-1/2 w-screen max-w-none -translate-x-1/2 px-3 sm:px-5 lg:px-8 xl:px-12">
               <div className="mx-auto max-w-[106rem]">
                 <TravelerMap
@@ -89,11 +73,28 @@ export default async function TravelerProfilePage({ params }: { params: { userna
                   states={mapStates}
                   featuredState={profile.featuredState}
                   mapMakerHref="/map-maker"
+                  variant="publicProfile"
                 />
               </div>
             </div>
 
-            <div className="mx-auto mt-8 max-w-[90rem] space-y-8 px-4 sm:px-6 lg:mt-10 lg:space-y-10 lg:px-8 xl:px-10">
+            <div className="relative mx-auto max-w-[94rem] px-4 pb-2 pt-6 sm:px-6 sm:pb-4 sm:pt-8 lg:px-8 xl:px-10">
+              <section className="mx-auto max-w-7xl">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-asphalt/38">Traveler</p>
+                <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-4">
+                  <h1 className="text-3xl font-black leading-tight tracking-[-0.04em] text-asphalt sm:text-4xl">
+                    {profile.displayName}
+                  </h1>
+                  <span className="text-sm font-semibold text-asphalt/50">@{params.username}</span>
+                </div>
+                <p className="mt-3 max-w-3xl text-sm leading-7 text-asphalt/62">
+                  Visited states are filled in; photos from their journal appear inside each outline when they&apos;ve added them from
+                  the map maker or dashboard.
+                </p>
+              </section>
+            </div>
+
+            <div className="mx-auto mt-4 max-w-[90rem] space-y-8 px-4 sm:px-6 lg:mt-6 lg:space-y-10 lg:px-8 xl:px-10">
               {entries.length === 0 ? (
                 <section className="mx-auto max-w-7xl rounded-[2rem] border border-amber-200/80 bg-amber-50/60 px-6 py-6 shadow-sm sm:px-8 sm:py-7">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-amber-deep/90">Journal</p>

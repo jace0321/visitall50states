@@ -68,6 +68,8 @@ export default function TravelerMap({
   featuredState,
   mapMakerHref,
   mapContext = "public",
+  /** Public traveler profile: map-first UI — no marketing title, no amber “story” rings (photos still show). */
+  variant = "default",
 }: {
   username: string;
   states: TravelerMapState[];
@@ -76,7 +78,9 @@ export default function TravelerMap({
   mapMakerHref?: string;
   /** Dashboard: visited / lived / wishlist states link to the state editor. Public: only states with a story link out. */
   mapContext?: "public" | "dashboard";
+  variant?: "default" | "publicProfile";
 }) {
+  const showStoryChrome = variant !== "publicProfile";
   const router = useRouter();
   const statusByCode = new Map(states.map((s) => [s.code, s]));
 
@@ -159,77 +163,119 @@ export default function TravelerMap({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.16),transparent_28%),radial-gradient(circle_at_82%_22%,rgba(125,211,252,0.12),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.02),transparent_28%,rgba(255,255,255,0.02))]" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/35 to-transparent" />
 
-      <div className="relative p-5 sm:p-6 lg:p-8 xl:px-10 xl:py-9 2xl:px-12 2xl:py-10">
-        <div className="grid gap-8 xl:grid-cols-[minmax(0,1.9fr)_minmax(17rem,0.45fr)] xl:items-start">
+      <div
+        className={
+          variant === "publicProfile"
+            ? "relative p-4 sm:p-5 lg:p-6 xl:px-8 xl:py-7"
+            : "relative p-5 sm:p-6 lg:p-8 xl:px-10 xl:py-9 2xl:px-12 2xl:py-10"
+        }
+      >
+        <div
+          className={
+            variant === "publicProfile"
+              ? "grid"
+              : "grid gap-8 xl:grid-cols-[minmax(0,1.9fr)_minmax(17rem,0.45fr)] xl:items-start"
+          }
+        >
           <div>
-              <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-white/45">
-                  {mapContext === "dashboard" ? "Your map" : "The map ledger"}
-                </p>
-                <h2 className="mt-3 font-heading text-3xl font-extrabold tracking-[-0.04em] text-white sm:text-4xl lg:text-[2.8rem]">
-                  {mapContext === "dashboard"
-                    ? "Tap a state to edit your journal."
-                    : "The country, marked by memory."}
-                </h2>
-                {mapContext === "dashboard" ? (
-                  <p className="mt-2 max-w-2xl text-sm leading-7 text-white/60">
-                    Visited, lived, and wishlist states open your editor. Amber outline means a published story on your public page.
-                  </p>
-                ) : (
-                  <p className="mt-2 max-w-2xl text-sm leading-7 text-white/52">
-                    States with journal photos show a glimpse inside the outline. Use the{" "}
-                    {mapMakerHref ? (
-                      <a href={mapMakerHref} className="font-semibold text-amber-200/95 underline decoration-amber-200/40 underline-offset-4 hover:text-white">
-                        photo map maker
-                      </a>
-                    ) : (
-                      "photo map maker"
-                    )}{" "}
-                    for a printable collage; when you&apos;re signed in you can <span className="text-white/65">sync marked states</span> to this same
-                    traveler map.
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/56">
-                <span className="rounded-full border border-white/10 bg-white/6 px-3 py-2 backdrop-blur-sm">
-                  {visitedCount}/50 logged
-                </span>
-                {featuredCode ? (
-                  <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-2 text-amber-100 backdrop-blur-sm">
-                    Featured: {featuredCode}
+            {variant === "publicProfile" ? (
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/55">
+                  <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">
+                    {visitedCount}/50 states
                   </span>
-                ) : null}
-              </div>
-            </div>
-
-            <div className="mt-5 flex flex-wrap gap-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/62">
-              <LegendDot color="#34d399" label="Visited" />
-              <LegendDot color="#38bdf8" label="Lived" />
-              <LegendDot color="#fbbf24" label="Wishlist" />
-              <LegendDot color="rgba(255,255,255,0.16)" label="Not yet" dimText />
-              <LegendDot color="#fbbf24" label="Story linked" ring />
-              <span className="flex items-center gap-1.5 rounded-full border border-white/8 bg-white/[0.035] px-3 py-1.5 text-white/55">
-                <span className="inline-block h-2.5 w-2.5 rounded-sm bg-gradient-to-br from-amber-200/90 to-sky-300/80 ring-1 ring-white/25" />
-                Photo inside outline = journal cover
-              </span>
-            </div>
-
-            {mapContext === "public" ? (
-              <div className="mt-4 flex flex-wrap items-center gap-3 rounded-[1.4rem] border border-white/10 bg-white/[0.045] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/68">
-                <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-amber-100">
-                  Amber ring = open story
-                </span>
-                <span className="text-white/44">Solid fill only = tracked on the map, story still to come</span>
+                  {featuredCode ? (
+                    <span className="rounded-full border border-white/10 px-3 py-1.5 text-white/70">Featured {featuredCode}</span>
+                  ) : null}
+                </div>
+                <div className="flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/50">
+                  <LegendDot color="#34d399" label="Visited" />
+                  <LegendDot color="#38bdf8" label="Lived" />
+                  <LegendDot color="#fbbf24" label="Wishlist" />
+                  <LegendDot color="rgba(255,255,255,0.16)" label="Open" dimText />
+                </div>
               </div>
             ) : (
-              <div className="mt-4 flex flex-wrap items-center gap-3 rounded-[1.4rem] border border-white/10 bg-white/[0.045] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/68">
-                <span className="text-white/55">Click any colored state to open its editor · Amber = story on public page</span>
-              </div>
+              <>
+                <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-white/45">
+                      {mapContext === "dashboard" ? "Your map" : "The map ledger"}
+                    </p>
+                    <h2 className="mt-3 font-heading text-3xl font-extrabold tracking-[-0.04em] text-white sm:text-4xl lg:text-[2.8rem]">
+                      {mapContext === "dashboard"
+                        ? "Tap a state to edit your journal."
+                        : "The country, marked by memory."}
+                    </h2>
+                    {mapContext === "dashboard" ? (
+                      <p className="mt-2 max-w-2xl text-sm leading-7 text-white/60">
+                        Visited, lived, and wishlist states open your editor. Amber outline means a published story on your public page.
+                      </p>
+                    ) : (
+                      <p className="mt-2 max-w-2xl text-sm leading-7 text-white/52">
+                        States with journal photos show a glimpse inside the outline. Use the{" "}
+                        {mapMakerHref ? (
+                          <a
+                            href={mapMakerHref}
+                            className="font-semibold text-amber-200/95 underline decoration-amber-200/40 underline-offset-4 hover:text-white"
+                          >
+                            photo map maker
+                          </a>
+                        ) : (
+                          "photo map maker"
+                        )}{" "}
+                        for a printable collage; when you&apos;re signed in you can{" "}
+                        <span className="text-white/65">sync marked states</span> to this same traveler map.
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/56">
+                    <span className="rounded-full border border-white/10 bg-white/6 px-3 py-2 backdrop-blur-sm">
+                      {visitedCount}/50 logged
+                    </span>
+                    {featuredCode ? (
+                      <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-2 text-amber-100 backdrop-blur-sm">
+                        Featured: {featuredCode}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className="mt-5 flex flex-wrap gap-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/62">
+                  <LegendDot color="#34d399" label="Visited" />
+                  <LegendDot color="#38bdf8" label="Lived" />
+                  <LegendDot color="#fbbf24" label="Wishlist" />
+                  <LegendDot color="rgba(255,255,255,0.16)" label="Not yet" dimText />
+                  <LegendDot color="#fbbf24" label="Story linked" ring />
+                  <span className="flex items-center gap-1.5 rounded-full border border-white/8 bg-white/[0.035] px-3 py-1.5 text-white/55">
+                    <span className="inline-block h-2.5 w-2.5 rounded-sm bg-gradient-to-br from-amber-200/90 to-sky-300/80 ring-1 ring-white/25" />
+                    Photo inside outline = journal cover
+                  </span>
+                </div>
+
+                {mapContext === "public" ? (
+                  <div className="mt-4 flex flex-wrap items-center gap-3 rounded-[1.4rem] border border-white/10 bg-white/[0.045] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/68">
+                    <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1.5 text-amber-100">
+                      Amber ring = open story
+                    </span>
+                    <span className="text-white/44">Solid fill only = tracked on the map, story still to come</span>
+                  </div>
+                ) : (
+                  <div className="mt-4 flex flex-wrap items-center gap-3 rounded-[1.4rem] border border-white/10 bg-white/[0.045] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/68">
+                    <span className="text-white/55">Click any colored state to open its editor · Amber = story on public page</span>
+                  </div>
+                )}
+              </>
             )}
 
-            <div className="mt-6 overflow-hidden rounded-[2.55rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.018))] px-2 py-3 sm:px-4 sm:py-5 lg:px-5 lg:py-6 xl:px-7 xl:py-8">
+            <div
+              className={
+                variant === "publicProfile"
+                  ? "mt-0 overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.018))] px-1 py-2 sm:px-3 sm:py-4 lg:px-5 lg:py-5 xl:px-6 xl:py-6"
+                  : "mt-6 overflow-hidden rounded-[2.55rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.018))] px-2 py-3 sm:px-4 sm:py-5 lg:px-5 lg:py-6 xl:px-7 xl:py-8"
+              }
+            >
               <div className="rounded-[2.15rem] border border-white/8 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.05),transparent_60%)] p-2 sm:p-3 lg:p-4 xl:p-6">
                 <svg
                   ref={svgRef}
@@ -295,7 +341,9 @@ export default function TravelerMap({
                     const linkAria =
                       mapContext === "dashboard"
                         ? `${sp.name} — ${statusLabel(status)}. Open state editor`
-                        : `${sp.name} — ${statusLabel(status)}. Open linked story`;
+                        : variant === "publicProfile" && hasStory
+                          ? `${sp.name} — open photos and notes`
+                          : `${sp.name} — ${statusLabel(status)}. Open linked story`;
 
                     return (
                       <g
@@ -340,7 +388,7 @@ export default function TravelerMap({
                               filter={isFeatured ? "url(#featured-glow)" : undefined}
                               className="transition-[fill,fill-opacity,stroke] duration-150 ease-out"
                             />
-                            {hasStory ? (
+                            {hasStory && showStoryChrome ? (
                               <path
                                 d={sp.d}
                                 fill="none"
@@ -375,7 +423,7 @@ export default function TravelerMap({
                               filter={isFeatured ? "url(#featured-glow)" : undefined}
                               className="transition-[fill,fill-opacity,stroke] duration-150 ease-out"
                             />
-                            {hasStory ? (
+                            {hasStory && showStoryChrome ? (
                               <path
                                 d={sp.d}
                                 fill="none"
@@ -415,7 +463,7 @@ export default function TravelerMap({
                           </text>
                         )}
 
-                        {hasStory && labelPos && (
+                        {hasStory && showStoryChrome && labelPos && (
                           <circle
                             cx={labelPos[0]}
                             cy={labelPos[1] + 11}
@@ -432,6 +480,7 @@ export default function TravelerMap({
             </div>
           </div>
 
+          {variant !== "publicProfile" ? (
           <aside className="grid gap-4 xl:pt-6 xl:max-w-[18rem] xl:justify-self-end">
             <div className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-5 backdrop-blur-md sm:p-6">
               <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/44">
@@ -522,6 +571,7 @@ export default function TravelerMap({
               )}
             </div>
           </aside>
+          ) : null}
         </div>
       </div>
     </section>

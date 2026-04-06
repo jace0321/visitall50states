@@ -39,6 +39,22 @@ function formatSyncFailure(reason: unknown): string {
   return base;
 }
 
+/** Network blips (e.g. “TypeError: Load failed”) sometimes break iframe postMessage — retry a few times. */
+async function withRetry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
+  let last: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      last = e;
+      if (i < attempts - 1) {
+        await new Promise((r) => setTimeout(r, 450 * (i + 1)));
+      }
+    }
+  }
+  throw last instanceof Error ? last : new Error(String(last));
+}
+
 type MapMakerSummary = {
   type: "VISITALL50_MAP_MAKER_SUMMARY";
   stateCodes: string[];
@@ -135,6 +151,7 @@ export default function MapMakerEmbed() {
   const [syncMessageOk, setSyncMessageOk] = useState(true);
   const [syncBusy, setSyncBusy] = useState(false);
   const [photoSyncBusy, setPhotoSyncBusy] = useState(false);
+  const [fullSyncBusy, setFullSyncBusy] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session ?? null));
@@ -185,7 +202,7 @@ export default function MapMakerEmbed() {
 
     setSyncBusy(true);
     try {
-      const summary = await requestSummaryFromIframe(iframe);
+      const summary = await withRetry(() => requestSummaryFromIframe(iframe));
       const rawCodes = Array.isArray(summary.stateCodes) ? summary.stateCodes : [];
       const names = Array.from(
         new Set(rawCodes.map((c) => resolveStateName(c)).filter((n): n is string => Boolean(n)))
@@ -247,7 +264,7 @@ export default function MapMakerEmbed() {
 
     setPhotoSyncBusy(true);
     try {
-      const items = await requestPhotoExportFromIframe(iframe);
+      const items = await withRetry(() => requestPhotoExportFromIframe(iframe));
       if (items.length === 0) {
         setSyncMessageOk(false);
         setSyncMessage(
@@ -288,23 +305,107 @@ export default function MapMakerEmbed() {
     }
   }, [session, supabase]);
 
+  /** Saves visited list to Supabase, then uploads placed photos to journal (so they appear on the public map). */
+  const syncFullMapToTravelerPage = useCallback(async () => {
+    setSyncMessage(null);
+    setSyncMessageOk(true);
+    const iframe = iframeRef.current;
+    if (!iframe) {
+      setSyncMessageOk(false);
+      setSyncMessage("Map frame is not ready.");
+      return;
+    }
+    if (!session?.user) {
+      setSyncMessageOk(false);
+      setSyncMessage("Sign in to sync.");
+      return;
+    }
+
+    setFullSyncBusy(true);
+    try {
+      const summary = await withRetry(() => requestSummaryFromIframe(iframe));
+      const rawCodes = Array.isArray(summary.stateCodes) ? summary.stateCodes : [];
+      const names = Array.from(
+        new Set(rawCodes.map((c) => resolveStateName(c)).filter((n): n is string => Boolean(n)))
+      ).sort((a, b) => a.localeCompare(b));
+
+      if (names.length === 0) {
+        setSyncMessageOk(false);
+        setSyncMessage(
+          "No states found in this browser yet — mark states or add photos, wait for autosave, then try again."
+        );
+        return;
+      }
+
+      const { data: existing, error: fetchErr } = await supabase
+        .from("users_maps")
+        .select("states_visited")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+
+      if (fetchErr) throw fetchErr;
+
+      const prev = Array.isArray((existing as { states_visited?: string[] } | null)?.states_visited)
+        ? ((existing as { states_visited: string[] }).states_visited ?? [])
+        : [];
+
+      const merged = Array.from(new Set([...prev, ...names])).sort((a, b) => a.localeCompare(b));
+
+      const { error: saveErr } = await saveUsersMapStates(supabase, session.user.id, merged);
+      if (saveErr) throw saveErr;
+
+      const added = names.filter((n) => !prev.includes(n)).length;
+
+      let photoMsg = "";
+      try {
+        const items = await withRetry(() => requestPhotoExportFromIframe(iframe));
+        if (items.length === 0) {
+          photoMsg =
+            " Photos were not ready to export yet — wait a few seconds after placing images, then use “Save map to traveler page” again or “Upload map photos to journal.”";
+        } else {
+          const result = await syncMapMakerPhotosToTraveler(supabase, session.user.id, items);
+          const bits: string[] = [];
+          if (result.uploaded.length) bits.push(`uploaded: ${result.uploaded.join(", ")}`);
+          if (result.skipped.length) bits.push(`skipped: ${result.skipped.join("; ")}`);
+          if (result.errors.length) bits.push(`issues: ${result.errors.join(" ")}`);
+          photoMsg = bits.length ? ` ${bits.join(" ")}` : " (no new photo uploads.)";
+        }
+      } catch (pe) {
+        photoMsg = ` Photo upload step failed (${formatSyncFailure(pe)}). Visits are saved — try “Upload map photos to journal” next.`;
+      }
+
+      setSyncMessageOk(true);
+      setSyncMessage(
+        `Saved ${merged.length} visited states (${added > 0 ? `${added} new this run` : "visits unchanged"}).${photoMsg} Refresh your public traveler page to load the latest map.`
+      );
+    } catch (e) {
+      console.error("Full map sync error:", e);
+      setSyncMessageOk(false);
+      setSyncMessage(formatSyncFailure(e));
+    } finally {
+      setFullSyncBusy(false);
+    }
+  }, [session, supabase]);
+
   return (
     <div className="w-full">
       <div className="mb-3 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white/95 px-4 py-4 shadow-sm sm:flex-row sm:items-start sm:justify-between sm:px-5">
         <div className="min-w-0 space-y-2">
           <p className="text-sm font-semibold text-asphalt">Traveler account sync</p>
           <p className="text-sm leading-relaxed text-asphalt/62">
-            When your map looks right, save it to your <strong className="text-asphalt/85">live traveler page</strong> — the same
-            collage and visits, one link you can share. Use the two buttons on the right after you&apos;re signed in.
+            When your map looks right, use <strong className="text-asphalt/85">Save map to traveler page</strong> (below) to push both
+            your visit list and your placed photos to the live map. The separate buttons are there if you only need one step.
           </p>
           <ul className="list-inside list-disc text-sm leading-relaxed text-asphalt/72">
             <li>
-              <span className="font-medium text-asphalt">Sync visited states</span> only updates which states count as visited (green fill). It does{" "}
-              <span className="font-medium">not</span> send your map-maker pictures to the server.
+              <span className="font-medium text-asphalt">Save map to traveler page</span> — updates visited states{" "}
+              <span className="font-medium">and</span> uploads placed photos so they appear inside each state on your public map.
             </li>
             <li>
-              <span className="font-medium text-asphalt">Upload map photos to journal</span> is what puts each state&apos;s picture into your traveler journal
-              and shows it inside that state on your public map (amber outline + photo). Use this after your collage has autosaved.
+              <span className="font-medium text-asphalt">Sync visited states only</span> — green fill on the live map, no photo upload.
+            </li>
+            <li>
+              <span className="font-medium text-asphalt">Upload map photos to journal only</span> — photos without changing the visit list.
             </li>
           </ul>
         </div>
@@ -313,15 +414,23 @@ export default function MapMakerEmbed() {
             <>
               <button
                 type="button"
-                disabled={syncBusy || photoSyncBusy}
-                onClick={() => void syncToTravelerMap()}
-                className="rounded-full bg-night px-5 py-2.5 text-sm font-bold uppercase tracking-[0.1em] text-white transition hover:bg-night/90 disabled:opacity-50"
+                disabled={fullSyncBusy || syncBusy || photoSyncBusy}
+                onClick={() => void syncFullMapToTravelerPage()}
+                className="rounded-full bg-amber-500 px-5 py-2.5 text-sm font-bold uppercase tracking-[0.08em] text-night shadow-sm transition hover:bg-amber-400 disabled:opacity-50"
               >
-                {syncBusy ? "Syncing…" : "Sync visited states"}
+                {fullSyncBusy ? "Saving map…" : "Save map to traveler page"}
               </button>
               <button
                 type="button"
-                disabled={photoSyncBusy || syncBusy}
+                disabled={syncBusy || photoSyncBusy || fullSyncBusy}
+                onClick={() => void syncToTravelerMap()}
+                className="rounded-full bg-night px-5 py-2.5 text-sm font-bold uppercase tracking-[0.1em] text-white transition hover:bg-night/90 disabled:opacity-50"
+              >
+                {syncBusy ? "Syncing…" : "Sync visited states only"}
+              </button>
+              <button
+                type="button"
+                disabled={photoSyncBusy || syncBusy || fullSyncBusy}
                 onClick={() => void syncPhotosToTravelerJournal()}
                 className="rounded-full border border-amber-400/90 bg-amber-50 px-5 py-2.5 text-sm font-bold uppercase tracking-[0.08em] text-amber-950 transition hover:bg-amber-100 disabled:opacity-50"
               >
