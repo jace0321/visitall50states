@@ -118,12 +118,6 @@
         font-size:13px;
         border-radius:10px;
       }
-      #openMobileMap{
-        margin:10px auto 0 !important;
-        padding:12px 14px !important;
-        font-size:15px !important;
-        border-radius:10px !important;
-      }
       .mobile-state-actions{
         display:block;
       }
@@ -216,11 +210,6 @@
         min-height:38px;
         padding:8px 10px;
         font-size:12px;
-      }
-      #openMobileMap{
-        margin:8px auto 0 !important;
-        padding:10px 12px !important;
-        font-size:14px !important;
       }
       .grid{
         gap:8px;
@@ -998,21 +987,12 @@
       font-weight: bold;
       cursor: pointer;
     }
-    #openMobileMap { display: none; }
     @media (min-width: 769px) {
       .mobile-map-modal:not(.active) { display: none !important; }
       .mobile-only { display: none !important; }
-      #openMobileMap { display: none !important; }
     }
     /* Keep modal visible when active, even in landscape */
     .mobile-map-modal.active { display: flex !important; }
-    @media (max-width: 768px) {
-      #openMobileMap {
-        display: block !important;
-        max-width: none !important;
-      }
-      .desktop-map-card { display: none; }
-    }
     @media (max-width: 768px) {
       .mobile-map-modal__header {
         padding-left: calc(16px + env(safe-area-inset-left));
@@ -1085,20 +1065,6 @@
         <button class="btn secondary" id="tabFlagMap" onclick="switchMode('flag')">Flag Map</button>
         <button class="btn secondary" id="tabColorMap" onclick="switchMode('color')">Color Map</button>
       </div>
-      <!-- Mobile: Big button to open fullscreen map -->
-      <button id="openMobileMap" type="button" style="
-        margin: 16px auto 0;
-        padding: 18px 20px;
-        font-size: 18px;
-        font-weight: 600;
-        background: var(--accent);
-        color: #fff;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        width: 100%;
-        max-width: 320px;
-      ">📍 Open Fullscreen Map</button>
     </header>
 
 <!-- Hidden canvas for editing -->
@@ -3340,8 +3306,6 @@ function blankOutSvg() {
   const mobileAddPhoto = document.getElementById('mobileAddPhoto');
   const mobileZoomIn = document.getElementById('mobileZoomIn');
   const mobileZoomOut = document.getElementById('mobileZoomOut');
-  const openMobileMapBtn = document.getElementById('openMobileMap');
-
   let mobileSelectedState = null;
   let mobileZoom = 1;
   let mobilePan = { x: 0, y: 0 };
@@ -3351,73 +3315,17 @@ function blankOutSvg() {
     return window.innerWidth <= 768;
   }
 
-  // Show/hide mobile button based on screen size
-  // Don't close modal on resize - user might be rotating phone
+  // Close fullscreen map modal when moving to desktop (no touch); map is inline on narrow viewports.
   function updateMobileUI() {
-    // Use touch detection instead of just width for button visibility
     const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    if (hasTouch || window.innerWidth <= 768) {
-      openMobileMapBtn.style.display = 'block';
-    } else {
-      openMobileMapBtn.style.display = 'none';
-      // Only close modal if truly on desktop (no touch)
-      if (!hasTouch) {
-        mobileMapModal.classList.remove('active');
-        document.body.classList.remove('modal-open');
-      }
+    if (!hasTouch && window.innerWidth > 768) {
+      mobileMapModal.classList.remove('active');
+      document.body.classList.remove('modal-open');
+      document.documentElement.classList.remove('modal-open');
     }
   }
   updateMobileUI();
   window.addEventListener('resize', updateMobileUI);
-
-  // Open mobile map modal
-  openMobileMapBtn.addEventListener('click', () => {
-    mobileMapModal.classList.add('active');
-    document.body.classList.add('modal-open');
-    document.documentElement.classList.add('modal-open');
-    window.scrollTo(0, 0);
-
-    // Clone the SVG
-    mobileSvgWrap.innerHTML = '';
-    mobileSvgClone = svg.cloneNode(true);
-    mobileSvgClone.id = 'mobileSvg';
-    mobileSvgClone.style.touchAction = 'none';
-    mobileSvgClone.style.width = '100%';
-    mobileSvgClone.style.height = 'auto';
-    mobileSvgClone.style.maxHeight = '100%';
-    mobileSvgClone.style.background = '#fff';
-
-    // Make states visible with light fill
-    mobileSvgClone.querySelectorAll('path, polygon, polyline').forEach(el => {
-      if (!el.style.fill || el.style.fill === 'none' || el.style.fill === 'transparent') {
-        el.style.fill = '#e2e8f0';
-      }
-      el.style.stroke = '#64748b';
-      el.style.strokeWidth = '1';
-    });
-
-    mobileSvgWrap.appendChild(mobileSvgClone);
-
-    // Reset zoom/pan
-    mobileZoom = 1;
-    mobilePan = { x: 0, y: 0 };
-    updateMobileTransform();
-
-    // Add click handlers to states in clone
-    mobileSvgClone.querySelectorAll('path[id], polygon[id]').forEach(el => {
-      el.style.cursor = 'pointer';
-      el.addEventListener('click', (e) => {
-        e.stopPropagation();
-        // Don't select state if user was dragging/panning the map
-        if (mobileDragged) return;
-        handleMobileStateClick(el);
-      });
-    });
-
-    mobileSelectedState = null;
-    mobileAddPhoto.disabled = true;
-    mobileAddPhoto.textContent = 'Select a state first';
-  });
 
   // Handle state selection in mobile modal
   function handleMobileStateClick(el) {

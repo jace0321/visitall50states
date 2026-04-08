@@ -268,7 +268,7 @@ export default function MapMakerEmbed() {
       if (items.length === 0) {
         setSyncMessageOk(false);
         setSyncMessage(
-          "No placed photos found in this map yet — add photos to states in the tool above, wait for autosave, then try again."
+          "No placed photos found in this map yet — add photos to states on the map, wait for autosave, then try again."
         );
         return;
       }
@@ -389,6 +389,21 @@ export default function MapMakerEmbed() {
 
   return (
     <div className="w-full">
+      <div className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg sm:rounded-2xl">
+        <iframe
+          ref={iframeRef}
+          src="/map-maker.html"
+          className="block h-[calc(100dvh-8.5rem)] min-h-[420px] w-full border-0 sm:h-[78dvh] sm:min-h-[600px] lg:h-[82dvh] xl:h-[85dvh] xl:max-h-[1100px]"
+          title="50 State Photo Map Maker"
+          allow="clipboard-write"
+        />
+      </div>
+
+      <p className="mb-3 mt-3 text-center text-xs leading-relaxed text-asphalt/55 sm:text-left sm:text-sm">
+        <span className="font-semibold text-asphalt/75">Accepted photos:</span> JPEG, PNG, WebP, GIF, and iPhone HEIC/HEIF (we try to
+        convert HEIC on our server). If an iPhone photo won&apos;t upload, export it as JPEG from the Photos app first, then try again.
+      </p>
+
       <div className="mb-3 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white/95 px-4 py-4 shadow-sm sm:flex-row sm:items-start sm:justify-between sm:px-5">
         <div className="min-w-0 space-y-2">
           <p className="text-sm font-semibold text-asphalt">Traveler account sync</p>
@@ -477,21 +492,6 @@ export default function MapMakerEmbed() {
           {syncMessage}
         </p>
       ) : null}
-
-      <p className="mb-2 text-center text-xs leading-relaxed text-asphalt/55 sm:text-left sm:text-sm">
-        <span className="font-semibold text-asphalt/75">Accepted photos:</span> JPEG, PNG, WebP, GIF, and iPhone HEIC/HEIF (we try to
-        convert HEIC on our server). If an iPhone photo won&apos;t upload, export it as JPEG from the Photos app first, then try again.
-      </p>
-
-      <div className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg sm:rounded-2xl">
-        <iframe
-          ref={iframeRef}
-          src="/map-maker.html"
-          className="block h-[calc(100dvh-8.5rem)] min-h-[420px] w-full border-0 sm:h-[78dvh] sm:min-h-[600px] lg:h-[82dvh] xl:h-[85dvh] xl:max-h-[1100px]"
-          title="50 State Photo Map Maker"
-          allow="clipboard-write"
-        />
-      </div>
     </div>
   );
 }

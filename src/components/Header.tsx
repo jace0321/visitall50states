@@ -19,17 +19,17 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/12 bg-[linear-gradient(180deg,rgba(2,6,23,0.96),rgba(5,9,19,0.88))] shadow-[0_18px_45px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-      <nav className="mx-auto flex w-full max-w-[1800px] items-center justify-between px-4 py-4 sm:px-6 xl:px-8">
+      <nav className="mx-auto flex w-full max-w-[1800px] items-center justify-between px-3 py-2 sm:px-5 sm:py-3 md:py-4 xl:px-8">
         <Link
           href="/"
-          className="group flex items-center gap-3 rounded-full border border-white/14 bg-[linear-gradient(135deg,rgba(255,255,255,0.14),rgba(255,255,255,0.05))] px-4 py-2.5 shadow-[0_14px_32px_rgba(0,0,0,0.18)] ring-1 ring-white/8 transition-all hover:-translate-y-0.5 hover:border-amber-brand/45 hover:bg-[linear-gradient(135deg,rgba(255,255,255,0.18),rgba(255,255,255,0.07))]"
+          className="group flex items-center gap-2 rounded-full border border-white/14 bg-[linear-gradient(135deg,rgba(255,255,255,0.14),rgba(255,255,255,0.05))] px-2.5 py-1.5 shadow-[0_14px_32px_rgba(0,0,0,0.18)] ring-1 ring-white/8 transition-all hover:-translate-y-0.5 hover:border-amber-brand/45 hover:bg-[linear-gradient(135deg,rgba(255,255,255,0.18),rgba(255,255,255,0.07))] sm:gap-3 sm:px-4 sm:py-2.5"
         >
-          <span className="text-2xl drop-shadow-[0_3px_10px_rgba(251,191,36,0.3)] float-slow">🗺️</span>
+          <span className="text-xl drop-shadow-[0_3px_10px_rgba(251,191,36,0.3)] float-slow sm:text-2xl">🗺️</span>
           <span>
-            <span className="block bg-gradient-to-r from-white via-amber-100 to-sky-100 bg-clip-text font-heading text-lg font-extrabold tracking-tight text-transparent transition-all group-hover:from-white group-hover:to-amber-brand">
+            <span className="block bg-gradient-to-r from-white via-amber-100 to-sky-100 bg-clip-text font-heading text-base font-extrabold tracking-tight text-transparent transition-all group-hover:from-white group-hover:to-amber-brand sm:text-lg">
               Visit All 50
             </span>
-            <span className="block text-[10px] font-semibold uppercase tracking-[0.24em] text-white/52">
+            <span className="hidden text-[10px] font-semibold uppercase tracking-[0.24em] text-white/52 sm:block">
               Travel atlas
             </span>
           </span>

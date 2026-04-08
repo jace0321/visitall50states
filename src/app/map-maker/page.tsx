@@ -19,7 +19,7 @@ const SHARE_JOURNEY_STEPS = [
   },
   {
     title: "Sync your map to your page",
-    body: "Use the buttons above the map: sync visited states, then upload map photos to your journal so your live map matches what you built.",
+    body: "Use the buttons under the map: sync visited states, then upload map photos to your journal so your live map matches what you built.",
     href: null,
     cta: null,
   },
@@ -106,7 +106,7 @@ export default function MapMakerPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       <Header />
-      <main className="min-h-screen bg-cloud pt-20">
+      <main className="min-h-screen bg-cloud pt-18 sm:pt-20">
         <div className="mx-auto w-full max-w-[2200px] px-1 py-2 sm:px-3 sm:py-6 xl:px-4">
           <MapMakerEmbed />
         </div>

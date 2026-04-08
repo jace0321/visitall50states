@@ -5,6 +5,7 @@ import Marquee from "@/components/Marquee";
 import StatBar from "@/components/StatBar";
 import EmailSignup from "@/components/EmailSignup";
 import VisitedStatesExperience from "@/components/VisitedStatesExperience";
+import HomeMapPreview from "@/components/HomeMapPreview";
 
 const WHAT_YOU_CAN_DO = [
   {
@@ -94,22 +95,26 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.22),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(14,165,233,0.16),transparent_28%)]" />
         <div className="absolute inset-0 bg-gradient-to-b from-night/85 via-night/55 to-night" />
 
-        <div className="relative z-10 mx-auto max-w-6xl px-6 pb-20 pt-28 lg:pt-32">
+        <div className="relative z-10 mx-auto max-w-6xl px-6 pb-20 pt-24 sm:pt-28 lg:pt-32">
+          <div className="home-hero-reveal home-hero-reveal-delay-1 mx-auto mb-10 max-w-xl lg:mb-12 lg:max-w-none">
+            <HomeMapPreview />
+          </div>
+
           <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start lg:gap-14">
             <div>
-              <p className="home-hero-reveal home-hero-reveal-delay-1 font-heading text-lg font-semibold italic text-amber-200/95 sm:text-xl">
+              <p className="home-hero-reveal home-hero-reveal-delay-2 font-heading text-lg font-semibold italic text-amber-200/95 sm:text-xl">
                 Visit All 50 States
               </p>
-              <p className="home-hero-reveal home-hero-reveal-delay-2 mt-2 text-sm text-white/55">
+              <p className="home-hero-reveal home-hero-reveal-delay-3 mt-2 text-sm text-white/55">
                 A home for road trippers, families, and anyone collecting America one state at a time.
               </p>
 
-              <h1 className="home-hero-reveal home-hero-reveal-delay-3 mt-8 font-heading text-4xl font-extrabold leading-[1.06] tracking-[-0.02em] text-white sm:text-5xl md:text-6xl lg:text-[3.25rem] lg:leading-[1.08]">
+              <h1 className="home-hero-reveal home-hero-reveal-delay-4 mt-6 font-heading text-4xl font-extrabold leading-[1.06] tracking-[-0.02em] text-white sm:text-5xl md:text-6xl lg:text-[3.25rem] lg:leading-[1.08]">
                 An interactive map of the U.S. where{" "}
                 <span className="text-amber-100">every state can open into your photos, videos, and stories.</span>
               </h1>
 
-              <p className="home-hero-reveal home-hero-reveal-delay-4 mt-6 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg">
+              <p className="home-hero-reveal home-hero-reveal-delay-5 mt-6 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg">
                 Not a travel agency — a{" "}
                 <strong className="font-semibold text-white/90">free photo map maker</strong>,{" "}
                 <strong className="font-semibold text-white/90">shareable traveler pages</strong>, and{" "}
@@ -117,7 +122,7 @@ export default function HomePage() {
                 link, then click any state you&apos;ve filled in to relive that leg of the trip.
               </p>
 
-              <div className="home-hero-reveal home-hero-reveal-delay-5 mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+              <div className="home-hero-reveal home-hero-reveal-delay-6 mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                 <Link
                   href="/map-maker"
                   className="inline-flex justify-center rounded-full bg-amber-brand px-7 py-3.5 text-base font-bold text-night shadow-[0_14px_40px_rgba(245,158,11,0.28)] transition duration-300 hover:scale-[1.03] hover:bg-amber-deep hover:shadow-[0_20px_50px_rgba(245,158,11,0.4)] active:scale-[0.98] motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
@@ -139,7 +144,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <aside className="home-hero-reveal home-hero-reveal-delay-6 rounded-[1.75rem] border border-amber-400/20 bg-[#0c0f14]/80 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.35)] backdrop-blur-md sm:p-7">
+            <aside className="home-hero-reveal home-hero-reveal-delay-7 rounded-[1.75rem] border border-amber-400/20 bg-[#0c0f14]/80 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.35)] backdrop-blur-md sm:p-7">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-200/70">What you can do here</p>
               <ul className="mt-5 space-y-6">
                 {WHAT_YOU_CAN_DO.map((item) => (
@@ -162,7 +167,7 @@ export default function HomePage() {
             </aside>
           </div>
 
-          <div className="home-hero-reveal home-hero-reveal-delay-7 mt-14 rounded-[1.5rem] border border-white/10 bg-black/25 px-6 py-5 sm:px-8 sm:py-6">
+          <div className="home-hero-reveal home-hero-reveal-delay-8 mt-14 rounded-[1.5rem] border border-white/10 bg-black/25 px-6 py-5 sm:px-8 sm:py-6">
             <p className="text-center font-heading text-lg font-medium italic leading-relaxed text-white/85 sm:text-xl">
               &ldquo;The goal isn&apos;t just to visit all 50. It&apos;s to remember what each one meant.&rdquo;
             </p>
